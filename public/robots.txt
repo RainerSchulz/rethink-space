@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /404.html
+Disallow: /pages/404/
+
+Sitemap: https://re-think-space.de/sitemap.xml

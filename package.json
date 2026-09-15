@@ -1,0 +1,29 @@
+{
+  "name": "rethink-space",
+  "version": "1.0.0",
+  "description": "RE-THINK SPACE — statische Website, zweisprachig DE/EN",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "vitest run && playwright test"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.48.0",
+    "eslint": "^9.39.4",
+    "globals": "^17.7.0",
+    "happy-dom": "^20.14.5",
+    "vite": "^8.1.3",
+    "vitest": "^4.1.10"
+  }
+}
