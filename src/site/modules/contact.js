@@ -9,6 +9,6 @@ export function initContact() {
   form.addEventListener('submit', (ev) => {
     ev.preventDefault();
     const note = form.querySelector('.form-status');
-    if (note) note.hidden = false;
+    if (note) { note.hidden = false; note.focus(); } // Hinweis wird vorgelesen
   });
 }

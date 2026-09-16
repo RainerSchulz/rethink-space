@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title data-i18n="deployment.meta.title">Re-Think Deployment – RE-THINK SPACE</title>
 <meta name="description" data-i18n-content="deployment.meta.description" content="Strategic implementation for lasting presence on the Moon – logistics, sequence, operations.">
-<link rel="canonical" href="https://re-think-space.de/pages/deployment/">
+<link rel="canonical" href="https://rethink.space/pages/deployment/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RE-THINK SPACE">
 <meta property="og:title" data-i18n-content="deployment.meta.title" content="Re-Think Deployment – RE-THINK SPACE">
 <meta property="og:description" data-i18n-content="deployment.meta.description" content="Strategic implementation for lasting presence on the Moon – logistics, sequence, operations.">
-<meta property="og:url" content="https://re-think-space.de/pages/deployment/">
-<meta property="og:image" content="https://re-think-space.de/og-image.jpg">
+<meta property="og:url" content="https://rethink.space/pages/deployment/">
+<meta property="og:image" content="https://rethink.space/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -28,6 +28,7 @@
 </head>
 <body>
   <header class="site-header">
+    <a class="skip-link" href="#main" data-i18n="common.skip">Skip to content</a>
     <div class="wrap header-inner">
       <a class="logo" href="/pages/landing/" aria-label="RE-THINK SPACE">
         <span>RE-THINK</span><span class="accent">SPACE</span>
@@ -37,7 +38,7 @@
           <path d="M3 6h18M3 12h18M3 18h18"/>
         </svg>
       </button>
-      <nav class="nav" id="site-nav">
+      <nav class="nav" id="site-nav" aria-label="Main navigation" data-i18n-aria-label="nav.main">
         <a href="/pages/vision/" data-i18n="nav.vision">Vision</a>
         <a href="/pages/design/" data-i18n="nav.design">Design</a>
         <a href="/pages/space/" data-i18n="nav.space">Space</a>
@@ -48,14 +49,14 @@
         <a href="/pages/autor/" data-i18n="nav.author">Author</a>
         <a class="btn-outline" href="/pages/kontakt/" data-i18n="nav.contact">Contact</a>
         <span class="lang">
-          <button type="button" data-lang="de" aria-pressed="false">DE</button>
+          <button type="button" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="false">DE</button>
           <span aria-hidden="true">/</span>
-          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="en" lang="en" aria-label="English" aria-pressed="true">EN</button>
         </span>
       </nav>
     </div>
   </header>
-  <main>
+  <main id="main" tabindex="-1">
     <div class="hero-sub">
       <img src="/Bilder/2026-09-Re-Think-Space-2.jpeg" alt="" class="hero-sub-bg">
       <div class="wrap">
@@ -69,22 +70,26 @@
         <p class="eyebrow" data-i18n="deployment.phases.eyebrow">Approach</p>
         <h2 data-i18n="deployment.phases.title">Four phases to operation.</h2>
         <div class="grid grid-2 spaced">
-          <div class="card">
-            <h3 data-i18n="deployment.phases.1.title">01 — Site</h3><hr class="rule">
+          <a class="card" href="/pages/space/">
+            <h3 data-i18n="deployment.phases.1.title">01 — Site</h3><hr class="rule" aria-hidden="true">
             <p data-i18n="deployment.phases.1.text">Selection by solar exposure, ground conditions, line of sight and proximity to resources. The site determines half of the mission economics.</p>
-          </div>
-          <div class="card">
-            <h3 data-i18n="deployment.phases.2.title">02 — Preparation</h3><hr class="rule">
+            <span class="arrow-link" data-i18n="common.more">Learn more</span>
+          </a>
+          <a class="card" href="/pages/space/">
+            <h3 data-i18n="deployment.phases.2.title">02 — Preparation</h3><hr class="rule" aria-hidden="true">
             <p data-i18n="deployment.phases.2.text">Robotic units level, compact and start construction before humans arrive. At this stage errors are still correctable.</p>
-          </div>
-          <div class="card">
-            <h3 data-i18n="deployment.phases.3.title">03 — Assembly</h3><hr class="rule">
+            <span class="arrow-link" data-i18n="common.more">Learn more</span>
+          </a>
+          <a class="card" href="/pages/design/">
+            <h3 data-i18n="deployment.phases.3.title">03 — Assembly</h3><hr class="rule" aria-hidden="true">
             <p data-i18n="deployment.phases.3.text">Erection of the primary structure, integration of pressure shell, power and life-support systems, leak testing.</p>
-          </div>
-          <div class="card">
-            <h3 data-i18n="deployment.phases.4.title">04 — Operation</h3><hr class="rule">
+            <span class="arrow-link" data-i18n="common.more">Learn more</span>
+          </a>
+          <a class="card" href="/pages/vision/">
+            <h3 data-i18n="deployment.phases.4.title">04 — Operation</h3><hr class="rule" aria-hidden="true">
             <p data-i18n="deployment.phases.4.text">Handover to the crew, maintenance cycles, expansion with further modules. Every unit is planned to be expandable from the outset.</p>
-          </div>
+            <span class="arrow-link" data-i18n="common.more">Learn more</span>
+          </a>
         </div>
       </div>
     </section>
@@ -116,7 +121,7 @@
     <div class="wrap">
       <div class="footer-inner">
         <a class="logo" href="/pages/landing/" aria-label="RE-THINK SPACE"><span>RE-THINK</span><span class="accent">SPACE</span></a>
-        <nav class="footer-nav">
+        <nav class="footer-nav" aria-label="Footer navigation" data-i18n-aria-label="footer.nav">
           <a href="/pages/vision/" data-i18n="nav.vision">Vision</a>
           <a href="/pages/design/" data-i18n="nav.design">Design</a>
           <a href="/pages/space/" data-i18n="nav.space">Space</a>
@@ -131,7 +136,7 @@
           <a href="https://www.linkedin.com/in/lierfeld/" target="_blank" rel="noopener" aria-label="LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.07-1.9-3.07-1.9 0-2.2 1.45-2.2 2.97V21H9z"/></svg>
           </a>
-          <a href="mailto:kontakt@re-think-space.de" aria-label="E-mail" data-i18n-aria-label="footer.email">
+          <a href="mailto:kontakt@rethink.space" aria-label="E-mail" data-i18n-aria-label="footer.email">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h17A1.5 1.5 0 0 1 22 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5zM4.4 6l7.6 5.7L19.6 6z"/></svg>
           </a>
         </div>

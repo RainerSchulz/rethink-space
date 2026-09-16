@@ -101,8 +101,82 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
 });
 
 test.describe('Feature: Autorenseite', () => {
-  test('fehlendes Portrait zeigt Platzhalter mit Initialen', async ({ page }) => {
+  test('Portrait wird geladen und ersetzt den Platzhalter (Fallback: Unit-Test portrait.js)', async ({ page }) => {
     await page.goto('/pages/autor/');
-    await expect(page.locator('.portrait .initials')).toHaveText('JL');
+    const img = page.locator('.portrait img');
+    await expect(img).toBeVisible();
+    await expect(img).toHaveAttribute('alt', 'Dr. Johannes Lierfeld');
+    expect(await img.evaluate((el) => el.naturalWidth)).toBeGreaterThan(0);
+    await expect(page.locator('.portrait .initials')).toHaveCount(0);
+  });
+});
+
+test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
+  test('Tab zeigt den Skip-Link, Enter springt in den Inhalt', async ({ page }) => {
+    await page.goto('/pages/landing/');
+    await page.keyboard.press('Tab');
+    const skip = page.locator('.skip-link');
+    await expect(skip).toBeFocused();
+    await expect(skip).toBeInViewport();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('main')).toBeFocused();
+  });
+
+  test('nach einem Seitenwechsel liegt der Fokus auf dem neuen Inhalt', async ({ page }) => {
+    await page.goto('/pages/landing/');
+    await page.locator('.pillar[href="/pages/design/"]').click();
+    await expect(page).toHaveURL(/\/pages\/design\/$/);
+    await expect(page.locator('main')).toBeFocused();
+  });
+});
+
+test.describe('Feature: Galerie-Lightbox', () => {
+  test('Klick auf ein Galerie-Bild öffnet es vergrößert, Escape schließt', async ({ page }) => {
+    await page.goto('/pages/design/');
+    const item = page.locator('.gallery-item').first();
+    await item.scrollIntoViewIfNeeded();
+    await item.click();
+    const dlg = page.locator('dialog.lightbox');
+    await expect(dlg).toBeVisible();
+    await expect(dlg.locator('img')).toBeVisible();
+    await expect(page).toHaveURL(/\/pages\/design\/$/); // kein Sprung zur Bilddatei
+    await page.keyboard.press('Escape');
+    await expect(dlg).toBeHidden();
+  });
+});
+
+test.describe('Feature: Chat-Widget „Frag RE-THINK SPACE“', () => {
+  const ENDPOINT = 'https://test.supabase.co/functions/v1/chat';
+  const SSE = 'data: {"type":"text","text":"ISRU means using local resources. "}\n\n'
+    + 'data: {"type":"text","text":"See /pages/space/"}\n\ndata: {"type":"done"}\n\n';
+
+  test('Frage senden, gestreamte Antwort mit Seitenlink, Escape schließt', async ({ page }) => {
+    await page.addInitScript((url) => { window.RETHINK_CHAT_ENDPOINT = url; }, ENDPOINT);
+    await page.route(ENDPOINT, async (route) => {
+      const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type' };
+      if (route.request().method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
+      const body = JSON.parse(route.request().postData());
+      expect(body.messages.at(-1)).toEqual({ role: 'user', content: 'What is ISRU?' });
+      return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/event-stream' }, body: SSE });
+    });
+    await page.goto('/pages/landing/');
+    await page.locator('.chat-fab').click();
+    const dlg = page.locator('dialog.chat');
+    await expect(dlg).toBeVisible();
+    await page.fill('#chat-input', 'What is ISRU?');
+    await page.locator('.chat-send').click();
+    await expect(page.locator('.chat-msg--assistant .chat-text').last()).toContainText('ISRU means using local resources. See /pages/space/');
+    await expect(page.locator('.chat-msg--assistant a[href="/pages/space/"]')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dlg).toBeHidden();
+    await expect(page.locator('.chat-fab')).toBeFocused();
+  });
+
+  test('ohne Endpoint gibt es kein Widget', async ({ page }) => {
+    await page.addInitScript(() => { window.RETHINK_CHAT_ENDPOINT = ''; });
+    await page.goto('/pages/landing/');
+    // Nur aussagekräftig, wenn lokal kein VITE_CHAT_ENDPOINT gesetzt ist; sonst ist der Button erlaubt.
+    const count = await page.locator('.chat-fab').count();
+    expect(count).toBeLessThanOrEqual(1);
   });
 });

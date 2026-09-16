@@ -103,7 +103,7 @@ Jede `pages/*/index.html` hat in dieser Reihenfolge:
 1. `charset`, `viewport`
 2. CSP-Meta (`default-src 'self'` …) und `referrer`
 3. `<title data-i18n="<ns>.meta.title">`, `<meta name="description" data-i18n-content="<ns>.meta.description">`
-4. `<link rel="canonical" href="https://re-think-space.de/pages/<name>/">`
+4. `<link rel="canonical" href="https://rethink.space/pages/<name>/">`
 5. Open Graph: `og:type`, `og:site_name`, `og:title`, `og:description` (beide `data-i18n-content`), `og:url`, `og:image` (`/og-image.jpg`, 1200×630), `og:locale` + `alternate`, `twitter:card`
 6. `theme-color`, Favicon (`/favicon.svg`), `apple-touch-icon`, `manifest`
 7. Optional JSON-LD (Landing: Organization + WebSite, Autor: Person)
@@ -188,7 +188,41 @@ Die Pipeline (`.github/workflows/ci.yml`) scannt mit **gitleaks** die gesamte Hi
 
 ---
 
-## ⚡ REGEL #15 — Deployment
+## ⚡ REGEL #15 — Kacheln sind IMMER klickbar (wie FORGE, Pflicht)
+
+> **Jede Kachel MUSS ein Link sein und auf eine Detailansicht führen — hier: auf die Seite, die das Thema vertieft.**
+
+### Warum
+Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist eine Sackgasse: Der Besucher klickt, nichts passiert (FORGE-Regel „KPI-Kacheln immer klickbar + Detail-Ansicht“).
+
+### Muster
+
+```html
+<!-- ✓ Korrekt — Link mit Ziel und Pfeil-Label -->
+<a class="card" href="/pages/space/">
+  <h3 data-i18n="design.cards.material.title">Material</h3><hr class="rule" aria-hidden="true">
+  <p data-i18n="design.cards.material.text">…</p>
+  <span class="arrow-link" data-i18n="common.more">Learn more</span>
+</a>
+
+<!-- ✗ VERBOTEN — Kachel ohne Link -->
+<div class="card">
+  <h3>Material</h3>
+  <p>…</p>
+</div>
+```
+
+- Gilt für `.card`, `.card-media` (News), `.pillar` (Landing). Ziel ist immer `/pages/<name>/` (Test prüft, dass die Seite existiert).
+- Ziel wählen: die Seite, die das Thema am tiefsten behandelt (Technik → `space`, Struktur/Material → `design`, Umsetzung → `deployment`, Haltung/Weg → `vision`). Gibt es später eigene Detailseiten, Ziel dorthin umhängen.
+- Kein `onclick`, kein `<div>` — die Kachel selbst ist das `<a>` (Tastatur, Screenreader, Router funktionieren dann von allein).
+- CSS: `.card:hover` hebt an und färbt den Rand, `.card:hover .arrow-link::after` schiebt den Pfeil, `:focus-visible` zeigt den Fokusring.
+- Galerie-Bilder ohne eigene Seite: `<figure><a class="gallery-item" href="/Bilder/…" data-lightbox><img …></a><figcaption>…</figcaption></figure>` — `modules/lightbox.js` öffnet das Bild vergrößert in einem `<dialog>` (Escape, Schließen-Button, Klick daneben). Ohne JS führt der Link zur Bilddatei.
+- Ohne Ziel keine Kachel-Optik: Listen (z. B. Bücher auf der Autorenseite) sind schlichte Listen mit Trennlinien.
+- `tests/unit/html-shell.test.js`: „jede Kachel ist ein Link mit Ziel und Pfeil-Label“.
+
+---
+
+## ⚡ REGEL #16 — Deployment
 
 - `dist/` läuft im Domain-Root. Docker-Image (`Dockerfile` + `deploy/nginx.conf`) wie FORGE, oder GitHub Pages mit eigener Domain.
 - Sicherheits-Header, die im `<meta>` nicht wirken (`X-Frame-Options`, `nosniff`, `frame-ancestors`), setzt `deploy/nginx.conf`.

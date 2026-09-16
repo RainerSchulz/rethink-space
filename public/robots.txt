@@ -3,4 +3,4 @@ Allow: /
 Disallow: /404.html
 Disallow: /pages/404/
 
-Sitemap: https://re-think-space.de/sitemap.xml
+Sitemap: https://rethink.space/sitemap.xml

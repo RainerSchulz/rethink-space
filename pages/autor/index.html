@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title data-i18n="author.meta.title">Dr. Johannes Lierfeld – RE-THINK SPACE</title>
 <meta name="description" data-i18n-content="author.meta.description" content="Dr. Johannes Lierfeld – author, scientist and initiator of RE-THINK SPACE.">
-<link rel="canonical" href="https://re-think-space.de/pages/autor/">
+<link rel="canonical" href="https://rethink.space/pages/autor/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RE-THINK SPACE">
 <meta property="og:title" data-i18n-content="author.meta.title" content="Dr. Johannes Lierfeld – RE-THINK SPACE">
 <meta property="og:description" data-i18n-content="author.meta.description" content="Dr. Johannes Lierfeld – author, scientist and initiator of RE-THINK SPACE.">
-<meta property="og:url" content="https://re-think-space.de/pages/autor/">
-<meta property="og:image" content="https://re-think-space.de/og-image.jpg">
+<meta property="og:url" content="https://rethink.space/pages/autor/">
+<meta property="og:image" content="https://rethink.space/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -29,10 +29,10 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Dr. Johannes Lierfeld",
-  "url": "https://re-think-space.de/pages/autor/",
+  "url": "https://rethink.space/pages/autor/",
   "sameAs": "https://www.linkedin.com/in/lierfeld/",
   "affiliation": {
-    "@id": "https://re-think-space.de/#organization"
+    "@id": "https://rethink.space/#organization"
   }
 }
 </script>
@@ -40,6 +40,7 @@
 </head>
 <body>
   <header class="site-header">
+    <a class="skip-link" href="#main" data-i18n="common.skip">Skip to content</a>
     <div class="wrap header-inner">
       <a class="logo" href="/pages/landing/" aria-label="RE-THINK SPACE">
         <span>RE-THINK</span><span class="accent">SPACE</span>
@@ -49,7 +50,7 @@
           <path d="M3 6h18M3 12h18M3 18h18"/>
         </svg>
       </button>
-      <nav class="nav" id="site-nav">
+      <nav class="nav" id="site-nav" aria-label="Main navigation" data-i18n-aria-label="nav.main">
         <a href="/pages/vision/" data-i18n="nav.vision">Vision</a>
         <a href="/pages/design/" data-i18n="nav.design">Design</a>
         <a href="/pages/space/" data-i18n="nav.space">Space</a>
@@ -60,16 +61,16 @@
         <a href="/pages/autor/" data-i18n="nav.author">Author</a>
         <a class="btn-outline" href="/pages/kontakt/" data-i18n="nav.contact">Contact</a>
         <span class="lang">
-          <button type="button" data-lang="de" aria-pressed="false">DE</button>
+          <button type="button" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="false">DE</button>
           <span aria-hidden="true">/</span>
-          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="en" lang="en" aria-label="English" aria-pressed="true">EN</button>
         </span>
       </nav>
     </div>
   </header>
-  <main>
+  <main id="main" tabindex="-1">
     <div class="hero-sub">
-      <img src="/Bilder/2026-09-Re-Think-Vision-1.jpeg" alt="" class="hero-sub-bg">
+      <img src="/Bilder/2026-09-Re-Think-Space-4.jpeg" alt="" class="hero-sub-bg">
       <div class="wrap">
         <p class="eyebrow" data-i18n="author.hero.eyebrow">The author</p>
         <h1>Dr. Johannes Lierfeld</h1>
@@ -98,12 +99,13 @@
         <p class="eyebrow" data-i18n="author.books.eyebrow">Publications</p>
         <h2 data-i18n="author.books.title">Books and contributions.</h2>
         <ul class="books">
-          <li><div class="t" lang="en">Artificial Superintelligence</div><div class="m" data-i18n="author.books.1.meta">Non-fiction – publisher and year to follow.</div></li>
-          <li><div class="t" lang="de">Brücken zwischen Protein und Silizium</div><div class="m" data-i18n="author.books.2.meta">Non-fiction, in German (“Bridges between Protein and Silicon”) – publisher and year to follow.</div></li>
-          <li><div class="t" lang="de">Digitale Perspektiven</div><div class="m" data-i18n="author.books.3.meta">Non-fiction, in German (“Digital Perspectives”) – publisher and year to follow.</div></li>
-          <li><div class="t" lang="de">Ein Log-In für die Matrix</div><div class="m" data-i18n="author.books.4.meta">Non-fiction, in German (“A Log-In for the Matrix”) – publisher and year to follow.</div></li>
+          <li><a class="book" href="https://www.amazon.de/dp/3170449605" target="_blank" rel="noopener"><span class="t" lang="de">Künstliche Intelligenz: Mythos und Wahrheit</span><span class="m" data-i18n="author.books.1.meta">Artificial intelligence: myth and truth – non-fiction, in German, Kohlhammer, 2024</span><span class="arrow-link" data-i18n="author.books.amazon">Buy on Amazon</span></a></li>
+          <li><a class="book" href="https://www.amazon.de/dp/3897335867" target="_blank" rel="noopener"><span class="t" lang="de">Ein Log-In für die Matrix</span><span class="m" data-i18n="author.books.2.meta">Brain-computer interfaces as bridges between protein and silicon – non-fiction, in German, Projekt Verlag, 2023</span><span class="arrow-link" data-i18n="author.books.amazon">Buy on Amazon</span></a></li>
+          <li><a class="book" href="https://www.amazon.de/dp/3897335549" target="_blank" rel="noopener"><span class="t" lang="de">Digitale Perspektiven</span><span class="m" data-i18n="author.books.3.meta">How artificial intelligence and robotics change our world – with Thomas Rusche, in German, Projekt Verlag, 2022</span><span class="arrow-link" data-i18n="author.books.amazon">Buy on Amazon</span></a></li>
+          <li><a class="book" href="https://www.amazon.de/dp/3897334860" target="_blank" rel="noopener"><span class="t" lang="de">Künstliche Superintelligenz und/oder Ethik</span><span class="m" data-i18n="author.books.4.meta">Utopias, dystopias, disruptions – non-fiction, in German, Projekt Verlag, 2019</span><span class="arrow-link" data-i18n="author.books.amazon">Buy on Amazon</span></a></li>
+          <li><a class="book" href="https://www.amazon.de/dp/3897334682" target="_blank" rel="noopener"><span class="t" lang="en">Artificial Superintelligence</span><span class="m" data-i18n="author.books.5.meta">Utopias, Dystopias, Disruptions – non-fiction, in English, Projekt Verlag, 2018</span><span class="arrow-link" data-i18n="author.books.amazon">Buy on Amazon</span></a></li>
         </ul>
-        <p class="note" data-i18n="author.books.note">Publisher, year, ISBN and cover images will be added once the details are available.</p>
+        <p class="note" data-i18n="author.books.note">Links open the book page on Amazon.de in a new tab.</p>
       </div>
     </section>
 
@@ -125,7 +127,7 @@
     <div class="wrap">
       <div class="footer-inner">
         <a class="logo" href="/pages/landing/" aria-label="RE-THINK SPACE"><span>RE-THINK</span><span class="accent">SPACE</span></a>
-        <nav class="footer-nav">
+        <nav class="footer-nav" aria-label="Footer navigation" data-i18n-aria-label="footer.nav">
           <a href="/pages/vision/" data-i18n="nav.vision">Vision</a>
           <a href="/pages/design/" data-i18n="nav.design">Design</a>
           <a href="/pages/space/" data-i18n="nav.space">Space</a>
@@ -140,7 +142,7 @@
           <a href="https://www.linkedin.com/in/lierfeld/" target="_blank" rel="noopener" aria-label="LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.07-1.9-3.07-1.9 0-2.2 1.45-2.2 2.97V21H9z"/></svg>
           </a>
-          <a href="mailto:kontakt@re-think-space.de" aria-label="E-mail" data-i18n-aria-label="footer.email">
+          <a href="mailto:kontakt@rethink.space" aria-label="E-mail" data-i18n-aria-label="footer.email">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h17A1.5 1.5 0 0 1 22 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5zM4.4 6l7.6 5.7L19.6 6z"/></svg>
           </a>
         </div>

@@ -27,7 +27,7 @@ npm run preview    # dist/ lokal ansehen
 - **Docker/nginx** (wie FORGE): `docker build -t rethink-space .` — das Image liefert `dist/` mit `deploy/nginx.conf` aus (Sicherheits-Header, Caching, 404-Seite, Healthcheck unter `/health/`).
 - **GitHub Pages:** Bei jedem Push auf `main` baut `.github/workflows/ci.yml` nach Lint, Tests und Secret-Scan und veröffentlicht `dist/`. Voraussetzungen: Repo-Settings → Pages → Source = "GitHub Actions" **und** eine eigene Domain (Custom domain), weil die Seite im Domain-Root laufen muss.
 
-Die Domain ist an drei Stellen hinterlegt und vor dem Livegang zu prüfen: Canonical/Open-Graph in jeder Seite (`https://re-think-space.de`), `public/sitemap.xml`, `public/robots.txt`.
+Die Domain ist an drei Stellen hinterlegt und vor dem Livegang zu prüfen: Canonical/Open-Graph in jeder Seite (`https://rethink.space`), `public/sitemap.xml`, `public/robots.txt`.
 
 Ein direktes Öffnen von `index.html` per Doppelklick funktioniert nicht (ES-Module brauchen einen HTTP-Server). Lokal `npm run dev` oder `npm run preview` verwenden.
 
@@ -83,7 +83,7 @@ Regeln: `.claude/skills/coding-guide.md`.
 - Bildzuordnung prüfen: Die Bilder wurden nach Dateinamen zugeordnet. Ändern in der jeweiligen Seite (Suche nach `/Bilder/`).
 - Texte prüfen: alle Inhalte sind Entwürfe.
 - Buchangaben (Verlag, Jahr, ISBN) auf der Autorenseite ergänzen.
-- E-Mail-Adresse `kontakt@re-think-space.de` durch die echte ersetzen (Kontaktseite, Footer, JSON-LD auf der Landing).
+- E-Mail-Adresse `kontakt@rethink.space` durch die echte ersetzen (Kontaktseite, Footer, JSON-LD auf der Landing).
 - Kontaktformular an einen Versanddienst anbinden (`src/site/modules/contact.js`) oder entfernen.
 - Impressum und Datenschutz ausfüllen.
 - Social-Links: nur LinkedIn ist gesetzt.

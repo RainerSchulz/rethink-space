@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-  { ignores: ['dist', 'node_modules', 'tests/playwright-report', 'test-results', '_old_assets'] },
+  { ignores: ['dist', 'node_modules', 'tests/playwright-report', 'test-results', '_old_assets', 'supabase'] },
 
   // Website-Code: Browser-Globals
   {
@@ -21,7 +21,7 @@ export default [
 
   // Tests + Config: Node- und Vitest-Globals
   {
-    files: ['tests/**/*.js', '*.config.js'],
+    files: ['tests/**/*.js', '*.config.js', 'scripts/**/*.mjs'],
     ...js.configs.recommended,
     languageOptions: {
       ecmaVersion: 2022,

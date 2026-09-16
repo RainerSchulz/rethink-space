@@ -5,4 +5,6 @@ dist/
 .env
 .claude/settings.local.json
 playwright-report/
+supabase/.temp/
 test-results/
+supabase/functions/chat/knowledge.txt

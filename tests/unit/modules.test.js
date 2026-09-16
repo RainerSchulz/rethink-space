@@ -149,3 +149,37 @@ describe('Feature: Autoren-Portrait (modules/portrait.js)', () => {
     expect(document.querySelector('.portrait .ph').textContent).toContain('Portrait einsetzen');
   });
 });
+
+describe('Feature: Lightbox (modules/lightbox.js)', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <main><div class="gallery">
+        <figure><a class="gallery-item" href="/Bilder/test.jpeg" data-lightbox><img src="/Bilder/test.jpeg" alt=""></a><figcaption>Dome structure</figcaption></figure>
+      </div></main>`;
+  });
+
+  it('Scenario: Klick auf ein Galerie-Bild öffnet den Dialog mit Bild und Bildunterschrift', async () => {
+    const { initLightbox } = await fresh('../../src/site/modules/lightbox.js');
+    initLightbox();
+    const ev = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+    document.querySelector('.gallery-item img').dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true); // kein Seitenwechsel zur Bilddatei
+    const dlg = document.querySelector('dialog.lightbox');
+    expect(dlg.hasAttribute('open')).toBe(true);
+    expect(dlg.querySelector('img').getAttribute('src')).toBe('/Bilder/test.jpeg');
+    expect(dlg.querySelector('figcaption').textContent).toBe('Dome structure');
+    expect(dlg.querySelector('.lightbox-close').getAttribute('aria-label')).toBe('Close image');
+  });
+
+  it('Scenario: Schließen-Button schließt den Dialog, ein zweiter Klick nutzt denselben Dialog', async () => {
+    const { initLightbox } = await fresh('../../src/site/modules/lightbox.js');
+    initLightbox();
+    const click = () => document.querySelector('.gallery-item').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }));
+    click();
+    document.querySelector('.lightbox-close').click();
+    expect(document.querySelector('dialog.lightbox').hasAttribute('open')).toBe(false);
+    click();
+    expect(document.querySelectorAll('dialog.lightbox')).toHaveLength(1);
+    expect(document.querySelector('dialog.lightbox').hasAttribute('open')).toBe(true);
+  });
+});

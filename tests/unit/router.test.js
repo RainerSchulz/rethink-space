@@ -9,7 +9,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 const PAGE = (title, h1) => `<!DOCTYPE html><html lang="en"><head>
 <title data-i18n="x">${title}</title>
 <meta name="description" content="${title} desc">
-<link rel="canonical" href="https://re-think-space.de/pages/vision/">
+<link rel="canonical" href="https://rethink.space/pages/vision/">
 <meta property="og:title" content="${title}">
 </head><body>
 <header class="site-header">FREMDER HEADER</header>
@@ -39,7 +39,7 @@ function click(el, init = {}) {
 beforeEach(() => {
   window.history.replaceState({}, '', '/pages/landing/');
   document.head.innerHTML =
-    '<title>Landing</title><meta name="description" content="landing"><link rel="canonical" href="https://re-think-space.de/pages/landing/">';
+    '<title>Landing</title><meta name="description" content="landing"><link rel="canonical" href="https://rethink.space/pages/landing/">';
   document.body.innerHTML = `
     <header class="site-header"><nav class="nav"><a id="to-vision" href="/pages/vision/">Vision</a><a id="ext" href="https://example.com/">Ext</a></nav></header>
     <main><h1>Landing</h1></main>
@@ -71,7 +71,7 @@ describe('Feature: interner Link tauscht nur <main>', () => {
     expect(document.body.textContent).not.toContain('FREMDER');
     expect(location.pathname).toBe('/pages/vision/');
     expect(document.title).toBe('Vision – RE-THINK SPACE');
-    expect(document.querySelector('link[rel="canonical"]').href).toBe('https://re-think-space.de/pages/vision/');
+    expect(document.querySelector('link[rel="canonical"]').href).toBe('https://rethink.space/pages/vision/');
     expect(document.querySelector('meta[property="og:title"]').content).toBe('Vision – RE-THINK SPACE');
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
     expect(changed).toHaveBeenCalledTimes(1);

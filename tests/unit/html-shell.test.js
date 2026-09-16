@@ -14,7 +14,7 @@ import { describe, it, expect } from 'vitest';
 import { PAGES } from '../../vite.pages.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const SITE = 'https://re-think-space.de';
+const SITE = 'https://rethink.space';
 const EXPECTED_PAGES = [
   'landing', 'vision', 'design', 'space', 'deployment', 'dual-use',
   'ip', 'news', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
@@ -98,7 +98,41 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) 
     expect(html).toMatch(/<meta property="og:title" data-i18n-content="[a-z.-]+" content="[^"]+">/);
     expect(html).toMatch(/<meta property="og:image" content="[^"]+">/);
     expect(html).toMatch(/<meta http-equiv="Content-Security-Policy"/);
+    expect(html).toContain("connect-src 'self' https://*.supabase.co;"); // Chat-Endpoint
     expect(html).toMatch(/<link rel="icon" type="image\/svg\+xml" href="\/favicon\.svg">/);
+  });
+
+  it('Barrierefreiheit: Skip-Link, fokussierbares main#main, benannte Navigationen', () => {
+    const headHtml = between(html, 'header');
+    expect(headHtml).toContain('<a class="skip-link" href="#main" data-i18n="common.skip">');
+    expect(html).toContain('<main id="main" tabindex="-1">');
+    expect(html).toMatch(/<nav class="nav" id="site-nav" aria-label="[^"]+" data-i18n-aria-label="nav\.main">/);
+    expect(html).toMatch(/<nav class="footer-nav" aria-label="[^"]+" data-i18n-aria-label="footer\.nav">/);
+    expect(html).not.toMatch(/<hr class="rule">/); // Trennlinien sind Dekoration
+  });
+
+  it('jede Kachel ist ein Link mit Ziel und Pfeil-Label (wie FORGE: Kacheln immer klickbar)', () => {
+    expect(html).not.toMatch(/<(div|section|article|li) class="(card|card-media|pillar)[" ]/);
+    const tiles = [...html.matchAll(/<a class="(card|card-media|pillar)[" ][^>]*>([\s\S]*?)<\/a>/g)];
+    for (const [tag, cls, inner] of tiles) {
+      expect(tag, cls).toMatch(/href="\/pages\/[a-z0-9-]+\/"/);
+      expect(inner, `${cls} ohne Pfeil-Label`).toMatch(/class="arrow-link"|class="body"/);
+    }
+    // Galerie-Bilder: Link auf die Bilddatei, Lightbox öffnet sie vergrößert
+    for (const [figure] of html.matchAll(/<figure>[\s\S]*?<\/figure>/g)) {
+      expect(figure).toMatch(/^<figure><a class="gallery-item" href="\/Bilder\/[^"]+" data-lightbox><img /);
+    }
+  });
+
+  it('Bücher auf der Autorenseite verlinken auf Amazon.de (neuer Tab, rel=noopener)', () => {
+    if (slug !== 'autor') return;
+    const items = [...html.matchAll(/<li><a class="book" ([^>]*)>/g)];
+    expect(items.length).toBeGreaterThanOrEqual(4);
+    for (const [, attrs] of items) {
+      expect(attrs).toMatch(/href="https:\/\/www\.amazon\.de\/dp\/[0-9X]{10}"/);
+      expect(attrs).toContain('target="_blank"');
+      expect(attrs).toContain('rel="noopener"');
+    }
   });
 
   it('404 ist noindex, alle anderen Seiten sind indexierbar', () => {
