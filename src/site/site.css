@@ -557,3 +557,12 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .moonscape { --moon-top: 220px; }
   .pillars { padding-top: 110px; }
 }
+@media (min-width: 481px) and (max-width: 940px) {
+  /* Tablet: Kacheln kleiner (linksbündig, max. 600 px) und tiefer, damit der Mondbogen frei bleibt */
+  .moonscape { --moon-top: 150px; }
+  .pillars { padding: 230px 0 72px; }
+  .pillar { max-width: 600px; grid-template-columns: 1fr 44%; gap: 12px; margin-bottom: 12px; }
+  .pillar-title { padding: 14px 16px; }
+  .pillar-title h2 { font-size: 16px; margin-bottom: 6px; }
+  .pillar-title p { font-size: 12.5px; margin-bottom: 6px; }
+}
