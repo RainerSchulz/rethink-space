@@ -196,15 +196,16 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   display: grid; grid-template-columns: 1fr minmax(0, 520px); column-gap: 32px;
   padding: 56px 0 40px; text-shadow: 0 2px 28px rgba(0, 0, 0, .6);
 }
+/* Überschrift = die zwei Leitsätze, zweizeilig; die längere Zeile füllt die Wrap-Breite */
 .hero h1 {
-  grid-column: 1 / -1; white-space: nowrap; margin: 0 0 8px;
-  font-size: min(12.4vw - 6px, 141px); letter-spacing: -.03em; line-height: 1; /* füllt die Wrap-Breite */
+  grid-column: 1 / -1; white-space: nowrap; margin: 0 0 26px;
+  font-size: min(6.86vw - 3px, 77px); letter-spacing: -.03em; line-height: 1.04;
 }
-.hero h1 span { display: inline; }
-.hero h1 .accent { color: var(--accent); }
-.hero .lead { grid-column: 2; margin: 18px 0 26px; }
-.hero .lead span { display: block; }
-.hero .btn { grid-column: 2; justify-self: start; text-shadow: none; }
+.hero h1 span { display: block; }
+.hero h1 .accent { color: inherit; } /* beide Zeilen weiß */
+
+
+.hero .btn { grid-column: 1; justify-self: start; text-shadow: none; }
 
 /* Unterseiten-Hero: das Bild bestimmt die Höhe und ist ganz zu sehen (contain),
    der Text liegt unten darüber. Bild und Text teilen sich dieselbe Grid-Zelle. */
@@ -213,14 +214,20 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   background: #000;
   border-bottom: 1px solid rgba(255, 255, 255, .06);
 }
+/* Kopfbild: gleiche Breite wie die Überschrift, einheitliches Fenster 16:9,
+   das Bild füllt es aus (Motive sind schriftfrei, Beschnitt am Rand ist ok). */
 .hero-sub-bg {
-  grid-area: 1 / 1; align-self: stretch; width: 100%; height: auto;
-  min-height: 340px; max-height: min(80vh, 860px); object-fit: contain; /* passt ohne Scrollen ins Fenster */
+  grid-area: 1 / 1; justify-self: center; align-self: start;
+  width: min(calc(100% - 48px), calc(var(--maxw) - 48px));
+  aspect-ratio: 16 / 9; height: auto; max-height: min(68vh, 620px);
+  object-fit: cover;
 }
 .hero-sub::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .85));
+  background: linear-gradient(180deg, rgba(0, 0, 0, .3), rgba(0, 0, 0, .88));
 }
+/* Der Inhalt schließt dicht an das Kopfbild an */
+.hero-sub + section { padding-top: 44px; }
 .hero-sub .wrap { grid-area: 1 / 1; align-self: end; position: relative; z-index: 2; width: 100%; padding-top: 90px; padding-bottom: 52px; }
 .hero-sub h1 { font-size: clamp(34px, 5.5vw, 64px); }
 
@@ -252,7 +259,8 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .card-media .arrow-link { margin-top: auto; padding-top: 16px; }
 /* Inhaltsbilder werden vollständig gezeigt (contain), nicht beschnitten:
    viele Motive tragen Schriftzüge oder sind Hochformat. Ränder bleiben schwarz. */
-.card-media img { width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: contain; background: #000; }
+.card-media img { width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; background: #000; } /* füllt die Kachel; Motive sind schriftfrei */
+.card-media--portrait img { object-position: top; } /* Hochformat (Titelbilder): Kopf und Schlagzeile zeigen */
 .card-media .body { padding: 22px 24px 26px; }
 .card-media h3 { font-size: 19px; margin-bottom: 8px; }
 .card-media p { font-size: 14.5px; margin: 0; }
@@ -281,9 +289,9 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .pillar-media {
   border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(255, 255, 255, .16); background: #000;
   box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
-  display: flex; align-items: center; /* Bild in voller Breite und ganzer Höhe, kein Beschnitt */
+  aspect-ratio: 16 / 10; /* alle Kacheln gleich groß; das Bild füllt die Kachel (Motive sind schriftfrei) */
 }
-.pillar-media img { width: 100%; height: auto; transition: transform .35s ease; }
+.pillar-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
 .pillar:hover .pillar-title { border-color: rgba(255, 255, 255, .34); transform: translateY(-2px); }
 .pillar:hover .pillar-media img { transform: scale(1.03); }
 .pillar:hover .arrow-link::after { transform: translateX(5px); }
@@ -299,7 +307,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 .split .text { padding: 56px 48px; }
 .split .media { position: relative; background: #000; min-height: 340px; }
-.split .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.split .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .split.reverse .text { order: 2; }
 
 .feature-list { list-style: none; margin: 0; padding: 0; }
@@ -317,7 +325,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .stat .l { font-size: 13px; color: var(--muted); }
 
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.gallery img { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: contain; background: #000; border-radius: 10px; border: 1px solid var(--line); }
+.gallery img { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: cover; background: #000; border-radius: 10px; border: 1px solid var(--line); }
 .gallery figure { margin: 0; }
 /* Galerie-Kacheln sind Links: Klick öffnet das Bild vergrößert (lightbox.js) */
 .gallery-item { display: block; border-radius: 10px; cursor: zoom-in; transition: transform .18s ease; }
@@ -495,14 +503,14 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 @media (max-width: 820px) {
   /* Handy: kleinere Überschrift, Lead und Button nebeneinander, alles kompakter */
   .hero-copy { grid-template-columns: 1fr auto; column-gap: 14px; align-items: center; padding: 22px 0 10px; }
-  .hero h1 { grid-column: 1 / -1; font-size: min(10.2vw - 4px, 96px); }
+  .hero h1 { grid-column: 1 / -1; white-space: normal; text-wrap: balance; font-size: clamp(22px, 6.6vw, 38px); line-height: 1.12; margin-bottom: 16px; }
   /* Unterseiten-Hero auf dem Handy: Bild komplett oben, Text darunter */
   .hero-sub { display: block; }
-  .hero-sub-bg { display: block; min-height: 0; max-height: none; }
+  .hero-sub-bg { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: none; }
   .hero-sub::after { display: none; }
   .hero-sub .wrap { padding-top: 28px; padding-bottom: 36px; }
-  .hero .lead { grid-column: 1; font-size: 14.5px; margin: 10px 0 8px; }
-  .hero .btn { grid-column: 2; align-self: center; margin-top: 6px; padding: 11px 18px; font-size: 11.5px; }
+
+  .hero .btn { grid-column: 1; margin-top: 0; padding: 11px 18px; font-size: 11.5px; }
   /* Schmale Seite: sehr großer Kreis weit links, damit der Rand als schräger
      Horizont abfällt und der Mond bis unter die gestapelten Kacheln reicht */
   /* Handy: kleinere Scheibe, Mittelpunkt links – der Rand läuft als deutlicher Bogen
@@ -521,10 +529,10 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .pillar-title .rule { width: 36px; height: 2px; margin-bottom: 8px; }
   .pillar-title p { font-size: 13px; line-height: 1.4; margin-bottom: 8px; }
   .pillar-title .arrow-link { font-size: 11px; margin-top: 4px; }
-  .pillar-media { display: flex; align-items: center; }
+  .pillar-media { aspect-ratio: 16 / 10; }
   /* News-Karten kompakt: Bild links (40 %), Text rechts; Abschnittskopf enger */
   .card-media { display: grid; grid-template-columns: 40% 1fr; align-items: stretch; }
-  .card-media img { aspect-ratio: auto; height: 100%; min-height: 110px; max-height: 170px; object-fit: contain; }
+  .card-media img { aspect-ratio: auto; height: 100%; min-height: 110px; max-height: 170px; object-fit: cover; }
   .card-media .body { padding: 12px 14px; }
   .card-media h3 { font-size: 15px; margin-bottom: 4px; }
   .card-media p { font-size: 13px; }
@@ -545,7 +553,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 @media (max-width: 480px) {
   .wrap { padding: 0 18px; }
   .hero-copy { padding: 18px 0 8px; }
-  .hero .lead { margin: 8px 0 6px; }
+
   .moonscape { --moon-top: 115px; }
   .pillars { padding: 130px 0 48px; }
   .pillar-title { padding: 14px 14px; }

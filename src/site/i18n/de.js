@@ -75,7 +75,7 @@ export const DE = {
   // ── Design ────────────────────────────────────────────────────────
   'design.meta.title':           'Re-Think Design – RE-THINK SPACE',
   'design.meta.description':     'Innovatives Design für sinnvolle Räume jenseits der Erde – von der Kuppelgeometrie bis zum Innenraum.',
-  'design.hero.eyebrow':         'Re-Think Design',
+  'design.hero.eyebrow':         'Design',
   'design.hero.title':           'Design, das trägt.',
   'design.hero.lead':            'Innovatives Design für sinnvolle Räume jenseits der Erde – von der Kuppelgeometrie bis zum Innenraum.',
   'design.cards.geometry.title': 'Geometrie',
@@ -99,7 +99,7 @@ export const DE = {
   // ── Space ─────────────────────────────────────────────────────────
   'space.meta.title':         'Re-Think Space – RE-THINK SPACE',
   'space.meta.description':   'Nachhaltig, funktional, menschlich – die technologische Basis für dauerhafte Präsenz jenseits der Erde.',
-  'space.hero.eyebrow':       'Re-Think Space',
+  'space.hero.eyebrow':       'Space',
   'space.hero.title':         'Raumfahrt, neu gedacht.',
   'space.hero.lead':          'Nachhaltig, funktional, menschlich – die technologische Basis für dauerhafte Präsenz jenseits der Erde.',
   'space.stats.gravity.text': 'Schwerkraft auf dem Mond – jede Struktur wird anders bemessen.',
@@ -123,7 +123,7 @@ export const DE = {
   // ── Deployment ────────────────────────────────────────────────────
   'deployment.meta.title':       'Re-Think Deployment – RE-THINK SPACE',
   'deployment.meta.description': 'Strategische Umsetzung für dauerhafte Präsenz auf dem Mond – Logistik, Sequenz, Betrieb.',
-  'deployment.hero.eyebrow':     'Re-Think Deployment',
+  'deployment.hero.eyebrow':     'Deployment',
   'deployment.hero.title':       'Von der Idee zur Landestelle.',
   'deployment.hero.lead':        'Strategische Umsetzung für dauerhafte Präsenz auf dem Mond – Logistik, Sequenz, Betrieb.',
   'deployment.phases.eyebrow':   'Vorgehen',

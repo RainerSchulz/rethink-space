@@ -75,7 +75,7 @@ export const EN = {
   // ── Design ────────────────────────────────────────────────────────
   'design.meta.title':           'Re-Think Design – RE-THINK SPACE',
   'design.meta.description':     'Innovative design for meaningful spaces beyond Earth – from dome geometry to interior.',
-  'design.hero.eyebrow':         'Re-Think Design',
+  'design.hero.eyebrow':         'Design',
   'design.hero.title':           'Design that carries.',
   'design.hero.lead':            'Innovative design for meaningful spaces beyond Earth – from dome geometry to interior.',
   'design.cards.geometry.title': 'Geometry',
@@ -99,7 +99,7 @@ export const EN = {
   // ── Space ─────────────────────────────────────────────────────────
   'space.meta.title':         'Re-Think Space – RE-THINK SPACE',
   'space.meta.description':   'Sustainable, functional, human – the technological basis for lasting presence beyond Earth.',
-  'space.hero.eyebrow':       'Re-Think Space',
+  'space.hero.eyebrow':       'Space',
   'space.hero.title':         'Space travel, rethought.',
   'space.hero.lead':          'Sustainable, functional, human – the technological basis for lasting presence beyond Earth.',
   'space.stats.gravity.text': 'Lunar gravity – every structure is dimensioned differently.',
@@ -123,7 +123,7 @@ export const EN = {
   // ── Deployment ────────────────────────────────────────────────────
   'deployment.meta.title':       'Re-Think Deployment – RE-THINK SPACE',
   'deployment.meta.description': 'Strategic implementation for lasting presence on the Moon – logistics, sequence, operations.',
-  'deployment.hero.eyebrow':     'Re-Think Deployment',
+  'deployment.hero.eyebrow':     'Deployment',
   'deployment.hero.title':       'From idea to landing site.',
   'deployment.hero.lead':        'Strategic implementation for lasting presence on the Moon – logistics, sequence, operations.',
   'deployment.phases.eyebrow':   'Approach',

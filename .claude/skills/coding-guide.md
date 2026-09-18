@@ -222,7 +222,35 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 
 ---
 
-## ⚡ REGEL #16 — Deployment
+## ⚡ REGEL #16 — Bild- und Kachelgestaltung (Pflicht, ohne Nachfrage anwenden)
+
+> **Jedes Bild füllt seine Fläche vollständig aus, alle Kacheln einer Reihe sind gleich groß, und die Wortmarke steht nur im Logo.**
+
+### Warum
+Schwarze Ränder (Letterboxing) und unterschiedlich hohe Kacheln wirken unfertig. Bilder mit eingebranntem „RE-THINK“ doppeln das Logo und stören, seit der Hero die Wortmarke nicht mehr zeigt.
+
+### Regeln
+
+```css
+/* ✓ Korrekt — feste Fläche, Bild füllt sie */
+.pillar-media { aspect-ratio: 16 / 10; }
+.pillar-media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ✗ VERBOTEN — Bild wird eingepasst, Ränder bleiben schwarz */
+.pillar-media img { object-fit: contain; background: #000; }
+```
+
+- Betroffen: `.pillar-media`, `.card-media`, `.gallery img`, `.split .media img`, `.hero-sub-bg`, `.portrait img`. Ausnahme ist nur die Lightbox selbst (dort zeigt `contain` das ganze Bild).
+- Hochformatige Motive, deren Kopf wichtig ist (Zeitschriften-Titel), bekommen `object-position: top` (`.card-media--portrait`).
+- **Bilder ohne Schriftzug:** `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` tragen die eingebrannte Wortmarke und sind in `pages/` gesperrt (`html-shell.test.js`). Neue Varianten ohne Schriftzug als `…-clean.jpg` (zugeschnitten) oder `…-wide.jpg` (Querformat-Ausschnitt) ablegen; Zuschnitt per Canvas im Playwright-Chromium, kein zusätzliches Werkzeug nötig.
+- **Galerie:** `href` und `src` zeigen auf dieselbe Datei, sonst öffnet die Lightbox ein anderes Bild (Test).
+- **Unterseiten-Hero:** Inhaltsbreite wie die Überschrift (`min(100% - 48px, var(--maxw) - 48px)`), `aspect-ratio: 16/9`, `object-fit: cover`; `.hero-sub + section` hat verkürztes `padding-top`.
+- **Landing-Hero:** Überschrift sind die zwei Leitsätze, beide weiß (`.hero h1 .accent { color: inherit }`), Button links darunter.
+- **Schmale Geräte:** kein verschenkter Platz — Landing-Kacheln zweispaltig, Kurztext erst ab Tablet, News-Karten Bild links, Burger-Menü eng; Kachelblock beginnt tief genug, dass der Mondbogen sichtbar bleibt.
+
+---
+
+## ⚡ REGEL #17 — Deployment
 
 - `dist/` läuft im Domain-Root. Docker-Image (`Dockerfile` + `deploy/nginx.conf`) wie FORGE, oder GitHub Pages mit eigener Domain.
 - Sicherheits-Header, die im `<meta>` nicht wirken (`X-Frame-Options`, `nosniff`, `frame-ancestors`), setzt `deploy/nginx.conf`.

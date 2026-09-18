@@ -124,6 +124,18 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) 
     }
   });
 
+  it('Lightbox zeigt genau das angezeigte Bild (href = src)', () => {
+    for (const [, href, src] of html.matchAll(/<a class="gallery-item" href="([^"]+)" data-lightbox><img src="([^"]+)"/g)) {
+      expect(src, `${file}: Lightbox öffnet ${href}, gezeigt wird ${src}`).toBe(href);
+    }
+  });
+
+  it('keine Bilder mit eingebrannter Wortmarke (Regel 10: Wortmarke nur im Logo)', () => {
+    const used = [...html.matchAll(/["'](\/Bilder\/[^"']+)["']/g)].map((m) => m[1]);
+    const branded = used.filter((p) => /\/2026-09-Re-Think-|\/2026-09-Re-Dual-Use\./.test(p));
+    expect(branded, `${file}: Originale mit Schriftzug – zugeschnittene Fassung (…-clean/…-wide) verwenden: ${branded.join(', ')}`).toHaveLength(0);
+  });
+
   it('Bücher auf der Autorenseite verlinken auf Amazon.de (neuer Tab, rel=noopener)', () => {
     if (slug !== 'autor') return;
     const items = [...html.matchAll(/<li><a class="book" ([^>]*)>/g)];

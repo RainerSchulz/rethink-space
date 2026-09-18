@@ -54,11 +54,23 @@ Jede Kachel (`.card`, `.card-media`, `.pillar`) ist ein `<a class="card" href="/
 ### 9. Chatbot: Schlüssel nur im Backend, Wissen nur generiert
 Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge Function. Die Website kennt nur die öffentliche Endpoint-URL (`VITE_CHAT_ENDPOINT` in `.env`, gitignored; in CI als Repository-Variable). Ohne Endpoint bleibt das Widget aus. Die Wissensbasis liegt in der Tabelle `public.chat_knowledge` (Supabase-Projekt Re-Think-Space, ref `bdkvdufrdkxezutktzlt`); nach Textänderungen `npm run knowledge` (baut `knowledge.txt`, gitignored) und `npm run knowledge:push` (Admin-Login, kein Redeploy nötig). Buchmanuskripte (NAS: `W:/Projekte/Re-Think/Doku`) nie ins Repo, nur die Zusammenfassungen unter `knowledge/books/`.
 
-### 10. Nach jeder Änderung testen
+### 10. Bilder und Kacheln — feste Gestaltungsregeln (gilt ohne Nachfrage)
+- **Bilder füllen ihre Fläche immer aus** (`object-fit: cover`). Keine schwarzen Ränder, kein Letterboxing — gilt für `.pillar-media`, `.card-media`, `.gallery`, `.split .media`, `.hero-sub-bg`, `.portrait`.
+- **Kacheln einer Reihe sind immer gleich groß**, im Zweifel kleiner statt größer (festes `aspect-ratio`, Bild per cover einpassen).
+- **Die Wortmarke steht nur im Header- und Footer-Logo.** Bilder mit eingebranntem „RE-THINK“/„WE RE-THINK X“ nicht verwenden: Schriftzug wegschneiden (Datei `…-clean.jpg`) oder textfreies Motiv nehmen. Dateien `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` sind die Originale mit Schriftzug und in `pages/` gesperrt (Test).
+- **Beim Bildtausch in Galerien immer `href` und `src` gemeinsam ändern**, sonst zeigt die Lightbox das alte Bild (Test).
+- **Landing-Hero:** Überschrift sind die zwei Leitsätze (`home.hero.lead1`/`lead2`), beide weiß, Button links darunter; keine große Wortmarke.
+- **Unterseiten-Hero:** Bild in Inhaltsbreite wie die Überschrift, einheitliches 16:9-Fenster, Inhalt schließt dicht an (`.hero-sub + section`).
+- **Handy und Tablet:** kompakt, kein verschenkter Platz — Landing-Kacheln zweispaltig (Titel links, Bild rechts), News-Karten Bild links/Text rechts, enges Burger-Menü; die Kacheln beginnen so tief, dass der Mondbogen frei sichtbar bleibt.
+- Textdokumente (Poster, Zertifikat) nur dort einsetzen, wo die Lightbox sie lesbar macht.
+
+### 11. Nach jeder Änderung testen
 ```bash
 npm run lint && npm run test:run && npm run build
 npm run test:e2e   # bei HTML/Nav/Sprache/Formular
 ```
+Nach Textänderungen zusätzlich: `npm run knowledge && npm run knowledge:push` (Chatbot) und im CMS `npm run import`.
+Committen und pushen nur auf ausdrückliche Aufforderung.
 
 Vollständiger Guide: `.claude/skills/coding-guide.md`
 
