@@ -271,7 +271,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 
 /* ---------- 7b. Landing: Themenkacheln (3 × 3 auf dem Mond) ---------- */
-.pillars { position: relative; padding: 200px 0 96px; }
+.pillars { position: relative; padding: 248px 0 96px; }
 .pillars .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .pillar {
   display: flex; flex-direction: column; overflow: hidden; color: inherit;
@@ -538,7 +538,7 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
       linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%),
       url("/Bilder/moon-full.jpg") center / 100.4% 100.4% no-repeat #1a1a1c;
   }
-  .pillars { padding: 150px 0 64px; } /* Abstand, damit der Mondbogen frei sichtbar ist */
+  .pillars { padding: 178px 0 64px; } /* Abstand, damit der Mondbogen frei sichtbar ist */
   /* Kompaktes Zweierraster */
   .pillars .wrap { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .pillar-title { padding: 14px 14px 16px; }
@@ -571,7 +571,7 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   .hero-copy { padding: 18px 0 8px; }
 
   .moonscape { --moon-top: 115px; }
-  .pillars { padding: 130px 0 48px; }
+  .pillars { padding: 155px 0 48px; }
   .pillars .wrap { gap: 10px; }
   .pillar-title { padding: 12px 12px 14px; }
   .pillar-title p { display: none; } /* Kurztext erst ab Tablet; die Unterseite hat ihn */
@@ -585,7 +585,7 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
 @media (min-width: 700px) and (max-width: 940px) {
   /* Tablet: zwei Spalten, tiefer beginnend, damit der Mondbogen frei bleibt */
   .moonscape { --moon-top: 150px; }
-  .pillars { padding: 230px 0 72px; }
+  .pillars { padding: 268px 0 72px; }
   .pillars .wrap { grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .pillar-title { padding: 14px 14px 16px; }
   .pillar-title h2 { font-size: 15px; margin-bottom: 8px; }
