@@ -53,7 +53,7 @@ export const DE = {
   'home.meta.description': 'RE-THINK SPACE – Neue Wege. Neue Räume. Die Zukunft beginnt auf dem Mond: Design, Technologie und Umsetzung für dauerhafte Präsenz jenseits der Erde.',
   'home.hero.lead1':       'Neue Wege. Neue Räume.',
   'home.hero.lead2':       'Die Zukunft beginnt auf dem Mond.',
-  'home.hero.cta':         'Unser Researching',
+  'home.hero.cta':         'Unsere Forschung',
   'home.cards.design':     'Innovatives Design für sinnvolle Räume jenseits der Erde.',
   'home.cards.space':      'Wir denken Raumfahrt neu – nachhaltig, funktional, menschlich.',
   'home.cards.deployment': 'Strategische Umsetzung für dauerhafte Präsenz auf dem Mond.',

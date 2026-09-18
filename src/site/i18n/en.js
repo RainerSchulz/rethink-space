@@ -53,7 +53,7 @@ export const EN = {
   'home.meta.description': 'RE-THINK SPACE – New ways. New spaces. The future begins on the Moon: design, technology and deployment for lasting presence beyond Earth.',
   'home.hero.lead1':       'New ways. New spaces.',
   'home.hero.lead2':       'The future begins on the Moon.',
-  'home.hero.cta':         'Our researching',
+  'home.hero.cta':         'Our research',
   'home.cards.design':     'Innovative design for meaningful spaces beyond Earth.',
   'home.cards.space':      'We think space travel new – sustainable, functional, human.',
   'home.cards.deployment': 'Strategic implementation for lasting presence on the Moon.',
