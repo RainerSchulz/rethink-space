@@ -65,7 +65,7 @@ Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge F
 - Textdokumente (Poster, Zertifikat) nur dort einsetzen, wo die Lightbox sie lesbar macht.
 
 ### 11. Testphase: Zugangsschutz über `VITE_GATE_HASH`
-`gate.js` legt eine Anmeldemaske vor die Seite, sobald `VITE_GATE_HASH` gesetzt ist (SHA-256 von `e-mail:passwort`, kleingeschrieben). Die Anmeldung bleibt im localStorage, der Browser darf die Daten speichern (`autocomplete`). Zum Livegang genügt es, die Variable zu entfernen — kein Codeumbau. **Kein echter Schutz:** die Dateien liegen weiter statisch auf dem Server; für echte Sperre braucht es Basic Auth auf einem eigenen Server oder Cloudflare Access.
+`gate.js` legt eine Anmeldemaske vor die Seite, sobald `VITE_GATE_HASH` gesetzt ist: ein SHA-256 von `e-mail:passwort` (kleingeschrieben) oder mehrere, durch Komma getrennt. Die Checkbox „Angemeldet bleiben“ (vorausgewählt) entscheidet zwischen localStorage und sessionStorage; der Browser darf die Daten speichern (`autocomplete`). Zum Livegang genügt es, die Variable zu entfernen — kein Codeumbau. **Kein echter Schutz:** die Dateien liegen weiter statisch auf dem Server; für echte Sperre braucht es Basic Auth auf einem eigenen Server oder Cloudflare Access.
 
 ### 12. Nach jeder Änderung testen
 ```bash

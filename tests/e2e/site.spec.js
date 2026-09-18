@@ -188,7 +188,7 @@ test.describe('Feature: Chat-Widget „Frag RE-THINK SPACE“', () => {
 });
 
 test.describe('Feature: Zugangsschutz der Testphase', () => {
-  const HASH = '14f2c131227c3c03ec79b35cd46b68a58467ae6ad9262976cc0d090f5590a69e';
+  const HASH = '6987d5d14499d7c677ed0aa6eb68e7745e43448197caf60cbcba7d68ecd30d57';
 
   test('Maske sperrt die Seite, richtige Daten schalten frei und bleiben gespeichert', async ({ page }) => {
     await page.addInitScript((h) => { window.RETHINK_GATE_HASH = h; }, HASH);
@@ -197,12 +197,13 @@ test.describe('Feature: Zugangsschutz der Testphase', () => {
     await expect(gate).toBeVisible();
     await expect(page.locator('main')).toBeHidden();
 
-    await page.fill('#gate-email', 'test@re-think.space');
+    await page.fill('#gate-email', 'test@rethink.space');
     await page.fill('#gate-password', 'falsch');
     await page.locator('.gate-submit').click();
     await expect(page.locator('.gate-error')).toBeVisible();
     await expect(gate).toBeVisible();
 
+    await expect(page.locator('#gate-remember')).toBeChecked(); // Merken ist vorausgewählt
     await page.fill('#gate-password', 'Re-Think-Space-26');
     await page.locator('.gate-submit').click();
     await expect(gate).toBeHidden();

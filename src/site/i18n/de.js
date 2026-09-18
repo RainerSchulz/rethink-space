@@ -43,9 +43,10 @@ export const DE = {
   'gate.intro':      'Diese Seite ist noch nicht öffentlich. Bitte melden Sie sich an.',
   'gate.email':      'E-Mail',
   'gate.password':   'Passwort',
+  'gate.remember':   'Angemeldet bleiben',
   'gate.submit':     'Anmelden',
   'gate.error':      'E-Mail oder Passwort stimmt nicht.',
-  'gate.note':       'Sie bleiben auf diesem Gerät angemeldet.',
+  'gate.note':       'Angemeldet bleiben speichert den Zugang auf diesem Gerät, bis Sie die Browserdaten löschen.',
 
   // ── Startseite ────────────────────────────────────────────────────
   'home.meta.title':       'RE-THINK SPACE – Neue Wege. Neue Räume.',

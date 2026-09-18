@@ -43,9 +43,10 @@ export const EN = {
   'gate.intro':      'This site is not public yet. Please sign in to continue.',
   'gate.email':      'E-mail',
   'gate.password':   'Password',
+  'gate.remember':   'Stay signed in',
   'gate.submit':     'Sign in',
   'gate.error':      'E-mail or password is not correct.',
-  'gate.note':       'You stay signed in on this device.',
+  'gate.note':       'Signed in, this device remembers you until you clear your browser data.',
 
   // ── Home ──────────────────────────────────────────────────────────
   'home.meta.title':       'RE-THINK SPACE – New ways. New spaces.',
