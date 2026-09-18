@@ -398,6 +398,11 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 
 /* ---------- 12. Rechtliches ---------- */
 .legal-page h1 { font-size: clamp(32px, 5vw, 54px); }
+/* Abschnittsüberschriften ruhiger als im Rest der Seite: es ist Fließtext */
+.legal-page h2 { font-size: 21px; letter-spacing: -.01em; margin: 40px 0 12px; }
+.legal-page .lead { margin-bottom: 8px; }
+.legal-page p { max-width: 68ch; }
+.legal-page .note { margin-top: 40px; }
 
 /* ---------- 13. Footer ---------- */
 .site-footer { border-top: 1px solid var(--line); padding: 44px 0; margin-top: 20px; }
