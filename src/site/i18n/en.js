@@ -6,9 +6,9 @@
 export const EN = {
   // ── Navigation & frame ────────────────────────────────────────────
   'nav.menu':        'Menu',
-  'nav.vision':      'Vision',
+  'nav.vision':      'Researching',
   'nav.design':      'Design',
-  'nav.space':       'Space',
+  'nav.space':       'New Space',
   'nav.deployment':  'Deployment',
   'nav.dual-use':    'Dual-Use',
   'nav.ip':          'IP',
@@ -53,7 +53,7 @@ export const EN = {
   'home.meta.description': 'RE-THINK SPACE – New ways. New spaces. The future begins on the Moon: design, technology and deployment for lasting presence beyond Earth.',
   'home.hero.lead1':       'New ways. New spaces.',
   'home.hero.lead2':       'The future begins on the Moon.',
-  'home.hero.cta':         'Our vision',
+  'home.hero.cta':         'Our researching',
   'home.cards.design':     'Innovative design for meaningful spaces beyond Earth.',
   'home.cards.space':      'We think space travel new – sustainable, functional, human.',
   'home.cards.deployment': 'Strategic implementation for lasting presence on the Moon.',
@@ -68,9 +68,9 @@ export const EN = {
   'home.news.all':         'View all news',
 
   // ── Vision ────────────────────────────────────────────────────────
-  'vision.meta.title':       'Vision – RE-THINK SPACE',
+  'vision.meta.title':       'Researching – RE-THINK SPACE',
   'vision.meta.description': 'The Moon is not a destination. It is the first place where it will be decided how humans live and work permanently beyond Earth.',
-  'vision.hero.eyebrow':     'Vision',
+  'vision.hero.eyebrow':     'Researching',
   'vision.hero.title':       'Space for tomorrow.',
   'vision.hero.lead':        'The Moon is not a destination. It is the first place where it will be decided how humans live and work permanently beyond Earth.',
   'vision.position.eyebrow': 'Position',
@@ -113,9 +113,9 @@ export const EN = {
   'design.cta.text':             'We bring design, structural engineering and mission framework together.',
 
   // ── Space ─────────────────────────────────────────────────────────
-  'space.meta.title':         'Re-Think Space – RE-THINK SPACE',
+  'space.meta.title':         'New Space – RE-THINK SPACE',
   'space.meta.description':   'Sustainable, functional, human – the technological basis for lasting presence beyond Earth.',
-  'space.hero.eyebrow':       'Space',
+  'space.hero.eyebrow':       'New Space',
   'space.hero.title':         'Space travel, rethought.',
   'space.hero.lead':          'Sustainable, functional, human – the technological basis for lasting presence beyond Earth.',
   'space.stats.gravity.text': 'Lunar gravity – every structure is dimensioned differently.',
@@ -250,7 +250,7 @@ export const EN = {
   'author.why.eyebrow':          'Motivation',
   'author.why.title':            'Why the Moon.',
   'author.why.text':             'Because nothing can be taken for granted there: no atmosphere, no supply chain, no grown city. Anyone building there has to justify every assumption – and learns something about building on Earth in the process.',
-  'author.why.link':             'To the vision',
+  'author.why.link':             'To our researching',
 
   // ── Contact ───────────────────────────────────────────────────────
   'contact.meta.title':       'Contact – RE-THINK SPACE',

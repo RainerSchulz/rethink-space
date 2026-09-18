@@ -6,9 +6,9 @@
 export const DE = {
   // ── Navigation & Rahmen ───────────────────────────────────────────
   'nav.menu':        'Menü',
-  'nav.vision':      'Vision',
+  'nav.vision':      'Researching',
   'nav.design':      'Design',
-  'nav.space':       'Space',
+  'nav.space':       'New Space',
   'nav.deployment':  'Deployment',
   'nav.dual-use':    'Dual-Use',
   'nav.ip':          'IP',
@@ -53,7 +53,7 @@ export const DE = {
   'home.meta.description': 'RE-THINK SPACE – Neue Wege. Neue Räume. Die Zukunft beginnt auf dem Mond: Design, Technologie und Umsetzung für dauerhafte Präsenz jenseits der Erde.',
   'home.hero.lead1':       'Neue Wege. Neue Räume.',
   'home.hero.lead2':       'Die Zukunft beginnt auf dem Mond.',
-  'home.hero.cta':         'Unsere Vision',
+  'home.hero.cta':         'Unser Researching',
   'home.cards.design':     'Innovatives Design für sinnvolle Räume jenseits der Erde.',
   'home.cards.space':      'Wir denken Raumfahrt neu – nachhaltig, funktional, menschlich.',
   'home.cards.deployment': 'Strategische Umsetzung für dauerhafte Präsenz auf dem Mond.',
@@ -68,9 +68,9 @@ export const DE = {
   'home.news.all':         'Alle News',
 
   // ── Vision ────────────────────────────────────────────────────────
-  'vision.meta.title':       'Vision – RE-THINK SPACE',
+  'vision.meta.title':       'Researching – RE-THINK SPACE',
   'vision.meta.description': 'Der Mond ist kein Ziel. Er ist der erste Ort, an dem sich entscheidet, wie Menschen dauerhaft außerhalb der Erde leben und arbeiten.',
-  'vision.hero.eyebrow':     'Vision',
+  'vision.hero.eyebrow':     'Researching',
   'vision.hero.title':       'Raum für morgen.',
   'vision.hero.lead':        'Der Mond ist kein Ziel. Er ist der erste Ort, an dem sich entscheidet, wie Menschen dauerhaft außerhalb der Erde leben und arbeiten.',
   'vision.position.eyebrow': 'Haltung',
@@ -113,9 +113,9 @@ export const DE = {
   'design.cta.text':             'Wir bringen Entwurf, Statik und Missionsrahmen zusammen.',
 
   // ── Space ─────────────────────────────────────────────────────────
-  'space.meta.title':         'Re-Think Space – RE-THINK SPACE',
+  'space.meta.title':         'New Space – RE-THINK SPACE',
   'space.meta.description':   'Nachhaltig, funktional, menschlich – die technologische Basis für dauerhafte Präsenz jenseits der Erde.',
-  'space.hero.eyebrow':       'Space',
+  'space.hero.eyebrow':       'New Space',
   'space.hero.title':         'Raumfahrt, neu gedacht.',
   'space.hero.lead':          'Nachhaltig, funktional, menschlich – die technologische Basis für dauerhafte Präsenz jenseits der Erde.',
   'space.stats.gravity.text': 'Schwerkraft auf dem Mond – jede Struktur wird anders bemessen.',
@@ -250,7 +250,7 @@ export const DE = {
   'author.why.eyebrow':          'Motivation',
   'author.why.title':            'Warum der Mond.',
   'author.why.text':             'Weil dort nichts vorausgesetzt werden kann: keine Atmosphäre, keine Lieferkette, keine gewachsene Stadt. Wer dort baut, muss jede Selbstverständlichkeit begründen – und lernt dabei etwas über das Bauen auf der Erde.',
-  'author.why.link':             'Zur Vision',
+  'author.why.link':             'Zum Researching',
 
   // ── Kontakt ───────────────────────────────────────────────────────
   'contact.meta.title':       'Kontakt – RE-THINK SPACE',

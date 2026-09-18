@@ -60,7 +60,7 @@ test.describe('Feature: Sprache — Englisch ist Standard, Deutsch optional', ()
     if (isMobile) await page.locator('.burger').click();
     await page.locator('#site-nav a[href="/pages/vision/"]').click();
     await expect(page.locator('main h1')).toHaveText('Raum für morgen.');
-    await expect(page).toHaveTitle('Vision – RE-THINK SPACE');
+    await expect(page).toHaveTitle('Researching – RE-THINK SPACE');
   });
 });
 
@@ -80,7 +80,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
 
     await expect(page).toHaveURL(/\/pages\/vision\/$/);
     await expect(page.locator('main h1')).toHaveText('Space for tomorrow.');
-    await expect(page).toHaveTitle('Vision – RE-THINK SPACE');
+    await expect(page).toHaveTitle('Researching – RE-THINK SPACE');
     await expect(page.locator('#site-nav a[href="/pages/vision/"]')).toHaveAttribute('aria-current', 'page');
     expect(await page.evaluate(() => window.__keep)).toBe(42); // kein Reload
     if (isMobile) await expect(page.locator('#site-nav')).toBeHidden(); // Menü schließt nach Wechsel

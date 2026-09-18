@@ -3,9 +3,9 @@
 ## Projekt
 - RE-THINK SPACE ist ein Projekt von Dr. Karl Johannes Lierfeld (auf der Website: Dr. Johannes Lierfeld). Claim: „New ways. New spaces. The future begins on the Moon.“ / „Neue Wege. Neue Räume. Die Zukunft beginnt auf dem Mond.“
 - Thema: Design, Technik und Umsetzung dauerhafter Präsenz auf dem Mond; Habitate aus lokalem Material (Regolith, ISRU = In-Situ Resource Utilization), robotische Errichtung vor Ankunft der Crew, Dual-Use der Verfahren auf der Erde.
-- Drei Säulen der Website: RE-THINK DESIGN (Kuppelgeometrie, Material, Innenraum), RE-THINK SPACE (Technik: additive Fertigung aus Regolith, redundante Hüllen, Energiespeicher für die 14-tägige Mondnacht), RE-THINK DEPLOYMENT (vier Phasen: Standort, Vorbereitung, Aufbau, Betrieb).
+- Drei Säulen der Website: DESIGN (Kuppelgeometrie, Material, Innenraum), NEW SPACE (Technik: additive Fertigung aus Regolith, redundante Hüllen, Energiespeicher für die 14-tägige Mondnacht), DEPLOYMENT (vier Phasen: Standort, Vorbereitung, Aufbau, Betrieb).
 - Website: https://rethink.space (Domain, Stand September 2026). Sprachen: Englisch (Standard) und Deutsch.
-- Seiten: /pages/landing/ (Start), /pages/vision/, /pages/design/, /pages/space/, /pages/deployment/, /pages/dual-use/, /pages/ip/, /pages/news/, /pages/autor/, /pages/kontakt/, /pages/impressum/, /pages/datenschutz/.
+- Seiten (Menüname → Adresse): Researching → /pages/vision/, Design → /pages/design/, New Space → /pages/space/, Deployment → /pages/deployment/, Dual-Use → /pages/dual-use/, IP → /pages/ip/, News → /pages/news/, Author → /pages/autor/, Contact → /pages/kontakt/, dazu /pages/landing/ (Start), /pages/impressum/, /pages/datenschutz/. Die Adressen behalten die alten Namen; im Menü heißen die Seiten Researching und New Space.
 - Kontakt: Kontaktformular auf /pages/kontakt/ (derzeit noch ohne Versanddienst), E-Mail kontakt@rethink.space (Adresse laut Website), LinkedIn des Autors https://www.linkedin.com/in/lierfeld/.
 - Umsetzung der Website: Rainer Schulz, Schulz-Solutions.
 
