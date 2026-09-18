@@ -61,6 +61,7 @@ jobs:
       - run: npm run build
         env:
           VITE_CHAT_ENDPOINT: ${{ vars.VITE_CHAT_ENDPOINT }}
+          VITE_GATE_HASH: ${{ vars.VITE_GATE_HASH }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -64,7 +64,10 @@ Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge F
 - **Handy und Tablet:** kompakt, kein verschenkter Platz — Landing-Kacheln zweispaltig (Titel links, Bild rechts), News-Karten Bild links/Text rechts, enges Burger-Menü; die Kacheln beginnen so tief, dass der Mondbogen frei sichtbar bleibt.
 - Textdokumente (Poster, Zertifikat) nur dort einsetzen, wo die Lightbox sie lesbar macht.
 
-### 11. Nach jeder Änderung testen
+### 11. Testphase: Zugangsschutz über `VITE_GATE_HASH`
+`gate.js` legt eine Anmeldemaske vor die Seite, sobald `VITE_GATE_HASH` gesetzt ist (SHA-256 von `e-mail:passwort`, kleingeschrieben). Die Anmeldung bleibt im localStorage, der Browser darf die Daten speichern (`autocomplete`). Zum Livegang genügt es, die Variable zu entfernen — kein Codeumbau. **Kein echter Schutz:** die Dateien liegen weiter statisch auf dem Server; für echte Sperre braucht es Basic Auth auf einem eigenen Server oder Cloudflare Access.
+
+### 12. Nach jeder Änderung testen
 ```bash
 npm run lint && npm run test:run && npm run build
 npm run test:e2e   # bei HTML/Nav/Sprache/Formular
@@ -88,7 +91,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `src/site/site.css` | Alle Stile |
 | `src/site/fonts.css` | Inter, selbst gehostet (fontsource) |
 | `src/site/i18n/` | `index.js` (Runtime), `de.js`, `en.js` |
-| `src/site/modules/` | `router.js`, `nav.js`, `lang-switch.js`, `contact.js`, `portrait.js`, `lightbox.js`, `chat.js` |
+| `src/site/modules/` | `router.js`, `nav.js`, `lang-switch.js`, `contact.js`, `portrait.js`, `lightbox.js`, `chat.js`, `gate.js` |
 | `supabase/` | Chatbot-Backend: Edge Function `functions/chat/` (Claude-Aufruf, Streaming), `knowledge/` (Fakten, Autor, Buchzusammenfassungen), Migration `chat_log`; Anleitung in `supabase/README.md` |
 | `scripts/build-knowledge.mjs`, `push-knowledge.mjs` | `npm run knowledge` baut `knowledge.txt` aus Wörterbüchern + `knowledge/`; `npm run knowledge:push` lädt sie nach `public.chat_knowledge` |
 | `deploy/nginx.conf`, `Dockerfile` | Auslieferung wie FORGE (nginx:alpine) |
@@ -111,4 +114,5 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
+- Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
 - Chatbot: Funktion `chat` ist im Projekt Re-Think-Space deployt, Wissensbasis und CMS-Tabellen befüllt (16.09.2026). Offen: Secret `ANTHROPIC_API_KEY` im Dashboard setzen, `VITE_CHAT_ENDPOINT` als GitHub-Variable, Datenschutzerklärung um den KI-Dienst (Anthropic) ergänzen

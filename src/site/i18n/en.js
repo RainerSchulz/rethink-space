@@ -38,6 +38,15 @@ export const EN = {
   'chat.you':        'You',
   'chat.bot':        'RE-THINK SPACE',
 
+  // ── Test access (VITE_GATE_HASH) ──────────────────────────────────
+  'gate.title':      'Preview access',
+  'gate.intro':      'This site is not public yet. Please sign in to continue.',
+  'gate.email':      'E-mail',
+  'gate.password':   'Password',
+  'gate.submit':     'Sign in',
+  'gate.error':      'E-mail or password is not correct.',
+  'gate.note':       'You stay signed in on this device.',
+
   // ── Home ──────────────────────────────────────────────────────────
   'home.meta.title':       'RE-THINK SPACE – New ways. New spaces.',
   'home.meta.description': 'RE-THINK SPACE – New ways. New spaces. The future begins on the Moon: design, technology and deployment for lasting presence beyond Earth.',

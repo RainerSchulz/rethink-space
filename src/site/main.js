@@ -5,6 +5,7 @@
  * nach jedem Seitenwechsel des Routers erneut, weil <main> dann neu ist.
  */
 import { applyLang } from './i18n/index.js';
+import { initGate } from './modules/gate.js';
 import { initLangSwitch } from './modules/lang-switch.js';
 import { initNav, markCurrentPage, closeMenu } from './modules/nav.js';
 import { initRouter, PAGE_EVENT } from './modules/router.js';
@@ -20,6 +21,7 @@ function initPage() {
   initPortrait();
 }
 
+initGate();     // Testphase: Anmeldemaske; ohne VITE_GATE_HASH ohne Wirkung
 initLangSwitch();
 initNav();
 initLightbox(); // vor dem Router: Galerie-Klicks werden hier abgefangen

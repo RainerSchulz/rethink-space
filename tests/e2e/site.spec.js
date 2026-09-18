@@ -4,6 +4,12 @@
  */
 import { test, expect } from '@playwright/test';
 
+// In der Testphase liegt ein Zugangsschutz vor der Seite (VITE_GATE_HASH).
+// Für alle Tests außer dem Gate-Test wird er abgeschaltet.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => { window.RETHINK_GATE_HASH = ''; });
+});
+
 const PAGES = [
   'landing', 'vision', 'design', 'space', 'deployment', 'dual-use',
   'ip', 'news', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
@@ -178,5 +184,33 @@ test.describe('Feature: Chat-Widget „Frag RE-THINK SPACE“', () => {
     // Nur aussagekräftig, wenn lokal kein VITE_CHAT_ENDPOINT gesetzt ist; sonst ist der Button erlaubt.
     const count = await page.locator('.chat-fab').count();
     expect(count).toBeLessThanOrEqual(1);
+  });
+});
+
+test.describe('Feature: Zugangsschutz der Testphase', () => {
+  const HASH = '14f2c131227c3c03ec79b35cd46b68a58467ae6ad9262976cc0d090f5590a69e';
+
+  test('Maske sperrt die Seite, richtige Daten schalten frei und bleiben gespeichert', async ({ page }) => {
+    await page.addInitScript((h) => { window.RETHINK_GATE_HASH = h; }, HASH);
+    await page.goto('/pages/landing/');
+    const gate = page.locator('.site-gate');
+    await expect(gate).toBeVisible();
+    await expect(page.locator('main')).toBeHidden();
+
+    await page.fill('#gate-email', 'test@re-think.space');
+    await page.fill('#gate-password', 'falsch');
+    await page.locator('.gate-submit').click();
+    await expect(page.locator('.gate-error')).toBeVisible();
+    await expect(gate).toBeVisible();
+
+    await page.fill('#gate-password', 'Re-Think-Space-26');
+    await page.locator('.gate-submit').click();
+    await expect(gate).toBeHidden();
+    await expect(page.locator('main')).toBeVisible();
+
+    // Zweiter Besuch: keine erneute Anmeldung
+    await page.goto('/pages/vision/');
+    await expect(page.locator('.site-gate')).toHaveCount(0);
+    await expect(page.locator('main h1')).toBeVisible();
   });
 });
