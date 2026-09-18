@@ -270,33 +270,29 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   letter-spacing: .13em; text-transform: uppercase; margin-bottom: 10px;
 }
 
-/* ---------- 7b. Landing: Säulen (Titelkachel links, Bild rechts) auf dem Mond ---------- */
+/* ---------- 7b. Landing: Themenkacheln (3 × 3 auf dem Mond) ---------- */
 .pillars { position: relative; padding: 200px 0 96px; }
+.pillars .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .pillar {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
-  max-width: 760px; color: inherit;  /* kleiner und linksbündig, wie in der Skizze */
-}
-.pillar-title {
-  background: rgba(6, 6, 8, .8); border: 1px solid rgba(255, 255, 255, .16); border-radius: var(--radius);
-  backdrop-filter: blur(8px); box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
-  padding: 26px 28px; display: flex; flex-direction: column; justify-content: center;
+  display: flex; flex-direction: column; overflow: hidden; color: inherit;
+  background: rgba(6, 6, 8, .8); border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: var(--radius); backdrop-filter: blur(8px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
   transition: border-color .18s ease, transform .18s ease;
 }
-.pillar-title h2 { font-size: clamp(20px, 2vw, 26px); font-weight: 800; letter-spacing: -.02em; line-height: 1.05; margin-bottom: 14px; }
-.pillar-title .rule { margin-bottom: 14px; }
-.pillar-title p { font-size: 14px; color: #c3c3ca; max-width: 40ch; margin-bottom: 14px; }
-.pillar-title .arrow-link { margin-top: 8px; }
-.pillar-media {
-  border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(255, 255, 255, .16); background: #000;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
-  aspect-ratio: 16 / 10; /* alle Kacheln gleich groß; das Bild füllt die Kachel (Motive sind schriftfrei) */
-}
+.pillar-media { aspect-ratio: 16 / 10; overflow: hidden; background: #000; }
 .pillar-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
-.pillar:hover .pillar-title { border-color: rgba(255, 255, 255, .34); transform: translateY(-2px); }
+.pillar-media--portrait img { object-position: top; } /* Hochformat: Kopf zeigen */
+.pillar-title { flex: 1; display: flex; flex-direction: column; padding: 20px 22px 22px; }
+.pillar-title h2 { font-size: 20px; font-weight: 800; letter-spacing: .02em; line-height: 1.1; text-transform: uppercase; margin-bottom: 12px; }
+.pillar-title .rule { width: 40px; height: 3px; margin-bottom: 12px; }
+.pillar-title p { font-size: 14.5px; color: #c3c3ca; margin-bottom: 14px; }
+.pillar-title .arrow-link { margin-top: auto; }
+.pillar:hover { border-color: rgba(255, 255, 255, .34); transform: translateY(-2px); }
 .pillar:hover .pillar-media img { transform: scale(1.03); }
 .pillar:hover .arrow-link::after { transform: translateX(5px); }
 @media (prefers-reduced-motion: reduce) {
-  .pillar-title, .pillar-media img { transition: none; }
+  .pillar, .pillar-media img { transition: none; }
 }
 
 /* ---------- 8. Split (Text + Bild) ---------- */
@@ -543,14 +539,13 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
       url("/Bilder/moon-full.jpg") center / 100.4% 100.4% no-repeat #1a1a1c;
   }
   .pillars { padding: 150px 0 64px; } /* Abstand, damit der Mondbogen frei sichtbar ist */
-  /* Kompakte Kacheln: Titel links, Bild rechts, halb so hoch wie am Desktop */
-  .pillar { max-width: none; grid-template-columns: 1fr 42%; gap: 10px; margin-bottom: 12px; align-items: stretch; }
-  .pillar-title { padding: 16px 16px; justify-content: center; }
-  .pillar-title h2 { font-size: 17px; margin-bottom: 8px; }
-  .pillar-title .rule { width: 36px; height: 2px; margin-bottom: 8px; }
-  .pillar-title p { font-size: 13px; line-height: 1.4; margin-bottom: 8px; }
-  .pillar-title .arrow-link { font-size: 11px; margin-top: 4px; }
-  .pillar-media { aspect-ratio: 16 / 10; }
+  /* Kompaktes Zweierraster */
+  .pillars .wrap { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .pillar-title { padding: 14px 14px 16px; }
+  .pillar-title h2 { font-size: 15px; margin-bottom: 8px; }
+  .pillar-title .rule { width: 30px; height: 2px; margin-bottom: 8px; }
+  .pillar-title p { font-size: 12.5px; line-height: 1.4; margin-bottom: 10px; }
+  .pillar-title .arrow-link { font-size: 10.5px; }
   /* News-Karten kompakt: Bild links (40 %), Text rechts; Abschnittskopf enger */
   .card-media { display: grid; grid-template-columns: 40% 1fr; align-items: stretch; }
   .card-media img { aspect-ratio: auto; height: 100%; min-height: 110px; max-height: 170px; object-fit: cover; }
@@ -577,7 +572,8 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
 
   .moonscape { --moon-top: 115px; }
   .pillars { padding: 130px 0 48px; }
-  .pillar-title { padding: 14px 14px; }
+  .pillars .wrap { gap: 10px; }
+  .pillar-title { padding: 12px 12px 14px; }
   .pillar-title p { display: none; } /* Kurztext erst ab Tablet; die Unterseite hat ihn */
   .split .text, .cta { padding: 32px 20px; }
 }
@@ -586,12 +582,13 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   .moonscape { --moon-top: 220px; }
   .pillars { padding-top: 110px; }
 }
-@media (min-width: 481px) and (max-width: 940px) {
-  /* Tablet: Kacheln kleiner (linksbündig, max. 600 px) und tiefer, damit der Mondbogen frei bleibt */
+@media (min-width: 700px) and (max-width: 940px) {
+  /* Tablet: zwei Spalten, tiefer beginnend, damit der Mondbogen frei bleibt */
   .moonscape { --moon-top: 150px; }
   .pillars { padding: 230px 0 72px; }
-  .pillar { max-width: 600px; grid-template-columns: 1fr 44%; gap: 12px; margin-bottom: 12px; }
-  .pillar-title { padding: 14px 16px; }
-  .pillar-title h2 { font-size: 16px; margin-bottom: 6px; }
-  .pillar-title p { font-size: 12.5px; margin-bottom: 6px; }
+  .pillars .wrap { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pillar-title { padding: 14px 14px 16px; }
+  .pillar-title h2 { font-size: 15px; margin-bottom: 8px; }
+  .pillar-title p { font-size: 12.5px; line-height: 1.4; margin-bottom: 10px; }
+  .pillar-title .arrow-link { font-size: 10.5px; }
 }
