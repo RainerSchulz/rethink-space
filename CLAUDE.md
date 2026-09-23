@@ -127,7 +127,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 
 ## Offen vor Livegang (Stand 15.09.2026)
 - Domain in Canonical/OG (`pages/*/index.html`), `public/sitemap.xml`, `public/robots.txt` prüfen
-- Impressum und Datenschutz: Firmenangabe steht (RETHINK SPACE Inc., C-Corporation in Formation, Delaware/USA, vertreten durch Dr. Karl Johannes Lierfeld). Offen: Telefonnummer (kommt später), Registered Agent, Registernummer, Steuernummer — und die **anwaltliche Prüfung**: die Texte sind auf deutsches und EU-Recht geschrieben (§ 5 DDG, § 18 MStV, deutsches Urheberrecht, EU-Streitschlichtung), der Träger ist aber eine US-Gesellschaft
+- Impressum und Datenschutz sind auf **US-Recht** umgeschrieben (Delaware als anwendbares Recht, US-Urheberrecht und DMCA, Haftungsausschluss statt deutscher Paragrafen). Die Datenschutzerklärung führt beide Seiten: DSGVO für Besucher aus Europa, dazu die Rechte nach US-Bundesstaatenrecht. Offen: Telefonnummer, Registered Agent, State File Number, Steuernummer; ob eine EU-Vertretung nach Art. 27 DSGVO nötig ist; und die **anwaltliche Prüfung auf beiden Seiten** — beides sind Entwürfe.
 - Kontaktformular an einen Versanddienst anbinden (`src/site/modules/contact.js`)
 - E-Mail-Postfach `contact@rethink.space` einrichten (Footer, Kontaktseite, JSON-LD verweisen darauf)
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
