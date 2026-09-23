@@ -44,10 +44,10 @@ Ein direktes Öffnen von `index.html` per Doppelklick funktioniert nicht (ES-Mod
 | `/pages/dual-use/` | Dual-Use |
 | `/pages/ip/` | IP & Schutzrechte |
 | `/pages/news/` | News & Presse |
-| `/pages/autor/` | Dr. Johannes Lierfeld |
-| `/pages/kontakt/` | Kontakt |
-| `/pages/impressum/` | Impressum (Platzhalter) |
-| `/pages/datenschutz/` | Datenschutz (Platzhalter) |
+| `/pages/people/` | Dr. Johannes Lierfeld |
+| `/pages/contact/` | Kontakt |
+| `/pages/legal-notice/` | Impressum (Platzhalter) |
+| `/pages/privacy/` | Datenschutz (Platzhalter) |
 | `/pages/404/` → `/404.html` | Fehlerseite (noindex) |
 
 Welche Seiten ein Build erzeugt, steht in `vite.pages.js` (`RETHINK_PAGES=landing,impressum` baut nur diese).
@@ -83,7 +83,7 @@ Regeln: `.claude/skills/coding-guide.md`.
 - Bildzuordnung prüfen: Die Bilder wurden nach Dateinamen zugeordnet. Ändern in der jeweiligen Seite (Suche nach `/Bilder/`).
 - Texte prüfen: alle Inhalte sind Entwürfe.
 - Buchangaben (Verlag, Jahr, ISBN) auf der Autorenseite ergänzen.
-- E-Mail-Adresse `kontakt@rethink.space` durch die echte ersetzen (Kontaktseite, Footer, JSON-LD auf der Landing).
+- E-Mail-Adresse `contact@rethink.space` durch die echte ersetzen (Kontaktseite, Footer, JSON-LD auf der Landing).
 - Kontaktformular an einen Versanddienst anbinden (`src/site/modules/contact.js`) oder entfernen.
 - Impressum und Datenschutz ausfüllen.
 - Social-Links: nur LinkedIn ist gesetzt.

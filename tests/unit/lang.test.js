@@ -57,7 +57,7 @@ describe('Feature: applyLang() aktualisiert das DOM', () => {
       '<meta name="description" data-i18n-content="home.meta.description" content="x">';
     document.body.innerHTML =
       '<button data-i18n-aria-label="nav.menu" aria-label="x"></button>' +
-      '<a data-i18n="nav.author">x</a>' +
+      '<a data-i18n="nav.people">x</a>' +
       '<input data-i18n-placeholder="contact.form.name" placeholder="x">';
   });
 

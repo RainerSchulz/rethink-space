@@ -17,7 +17,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SITE = 'https://rethink.space';
 const EXPECTED_PAGES = [
   'landing', 'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
-  'ip', 'news', 'history', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
+  'ip', 'news', 'history', 'people', 'contact', 'legal-notice', 'privacy', '404',
 ];
 
 const pageDirs = readdirSync(join(ROOT, 'pages')).filter((d) => statSync(join(ROOT, 'pages', d)).isDirectory());
@@ -135,8 +135,8 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) 
     expect(branded, `${file}: Originale mit Schriftzug – zugeschnittene Fassung (…-clean/…-wide) verwenden: ${branded.join(', ')}`).toHaveLength(0);
   });
 
-  it('Bücher auf der Autorenseite verlinken auf Amazon.de (neuer Tab, rel=noopener)', () => {
-    if (slug !== 'autor') return;
+  it('Bücher auf der People-Seite verlinken auf Amazon.de (neuer Tab, rel=noopener)', () => {
+    if (slug !== 'people') return;
     const items = [...html.matchAll(/<li><a class="book" ([^>]*)>/g)];
     expect(items.length).toBeGreaterThanOrEqual(4);
     for (const [, attrs] of items) {
@@ -200,7 +200,7 @@ describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
 describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
   // Seiten mit Bändern und der erwarteten Anzahl. Die Fläche ist hier
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
-  const BAND_PAGES = [['lunar-habitato', 4], ['dual-use', 2], ['autor', 2]];
+  const BAND_PAGES = [['lunar-habitato', 4], ['dual-use', 2], ['people', 2]];
 
   for (const [slug, count] of BAND_PAGES) {
     describe(`/pages/${slug}/`, () => {

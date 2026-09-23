@@ -14,11 +14,11 @@ function showPlaceholder(box) {
   initials.className = 'initials';
   initials.textContent = 'JL';
   const hint = document.createElement('span');
-  hint.textContent = t('author.portrait.placeholder');
+  hint.textContent = t('people.portrait.placeholder');
   ph.append(initials, hint);
   box.append(ph);
   window.addEventListener(LANG_EVENT, () => {
-    hint.textContent = t('author.portrait.placeholder');
+    hint.textContent = t('people.portrait.placeholder');
   });
 }
 

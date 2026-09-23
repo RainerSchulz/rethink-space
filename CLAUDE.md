@@ -35,7 +35,7 @@ Links sind absolut: `/pages/<name>/`. Neue Seite → `vite.pages.js`, `public/si
 
 ### 4. Header und Footer sind auf allen Seiten identisch
 Die Kopfnavigation führt genau vier Punkte, alle gleich gestaltet (kein abgesetzter Kontakt-Button, kein Sprachschalter):
-`Lunar Habitato` (`/pages/lunar-habitato/`) · `Dual Use` (`/pages/dual-use/`) · `People` (`/pages/autor/`) · `Contact` (`/pages/kontakt/`).
+`Lunar Habitato` (`/pages/lunar-habitato/`) · `Dual Use` (`/pages/dual-use/`) · `People` (`/pages/people/`) · `Contact` (`/pages/contact/`).
 Der Footer ist eine Zeile: Copyright, Impressum, Datenschutz, Projekthinweis und rechts die Symbole für LinkedIn und E-Mail. Keine Footer-Navigation.
 Änderung am Rahmen → alle Seiten. Aktive Seite setzt `nav.js` per `aria-current`, nicht das HTML.
 
@@ -53,7 +53,7 @@ Jede Seite hat den Skip-Link im Header, `<main id="main" tabindex="-1">` (Fokusz
 
 ### 8. Kacheln sind IMMER klickbar (wie FORGE)
 Jede Kachel (`.card`, `.card-media`, `.pillar`) ist ein `<a class="card" href="/pages/<ziel>/">` mit `<span class="arrow-link" data-i18n="common.more">` und führt auf die Seite, die das Thema vertieft. Galerie-Bilder sind `<a class="gallery-item" href="/Bilder/…" data-lightbox>`: `lightbox.js` öffnet sie vergrößert im `<dialog>`. Kein `<div class="card">`. Was keinen Link hat, bekommt keine Kachel-Optik (z. B. Bücherliste). `tests/unit/html-shell.test.js` erzwingt das.
-**Ausnahme — die Bänder der drei Menüseiten:** auf `/pages/lunar-habitato/` (4 Bänder), `/pages/dual-use/` (Defense Options, Down Streaming) und `/pages/autor/` (Founder & CEO, Team) ist die Fläche ausdrücklich *kein* Link. Nur der Knopf `.band-toggle` („Learn more") klappt den Bereich `.band-panel` direkt darunter auf, ohne Seitenwechsel (`modules/bands.js`, `aria-expanded` + `aria-controls`). Alle Bereiche tragen `hidden` schon im Markup, damit beim Laden nichts aufgeklappt aufblitzt. Deshalb heißen die Klassen `.band*` und nicht `.card`/`.pillar` — die Kachelregel oben bleibt für echte Kacheln scharf. Neue Bandseite → `BAND_PAGES` in `tests/unit/html-shell.test.js` und die Schleife im E2E-Block ergänzen.
+**Ausnahme — die Bänder der drei Menüseiten:** auf `/pages/lunar-habitato/` (4 Bänder), `/pages/dual-use/` (Defense Options, Down Streaming) und `/pages/people/` (Founder & CEO, Team) ist die Fläche ausdrücklich *kein* Link. Nur der Knopf `.band-toggle` („Learn more") klappt den Bereich `.band-panel` direkt darunter auf, ohne Seitenwechsel (`modules/bands.js`, `aria-expanded` + `aria-controls`). Alle Bereiche tragen `hidden` schon im Markup, damit beim Laden nichts aufgeklappt aufblitzt. Deshalb heißen die Klassen `.band*` und nicht `.card`/`.pillar` — die Kachelregel oben bleibt für echte Kacheln scharf. Neue Bandseite → `BAND_PAGES` in `tests/unit/html-shell.test.js` und die Schleife im E2E-Block ergänzen.
 
 ### 9. Chatbot: Schlüssel nur im Backend, Wissen nur generiert
 Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge Function. Die Website kennt nur die öffentliche Endpoint-URL (`VITE_CHAT_ENDPOINT` in `.env`, gitignored; in CI als Repository-Variable). Ohne Endpoint bleibt das Widget aus. Die Wissensbasis liegt in der Tabelle `public.chat_knowledge` (Supabase-Projekt Re-Think-Space, ref `bdkvdufrdkxezutktzlt`); nach Textänderungen `npm run knowledge` (baut `knowledge.txt`, gitignored) und `npm run knowledge:push` (Admin-Login, kein Redeploy nötig). Buchmanuskripte (NAS: `W:/Projekte/Re-Think/Doku`) nie ins Repo, nur die Zusammenfassungen unter `knowledge/books/`.
@@ -101,7 +101,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | Pfad | Inhalt |
 |---|---|
 | `index.html` | Weiterleitung auf `/pages/landing/` |
-| `pages/<name>/index.html` | 14 Seiten-Shells (inkl. `404`); `lunar-habitato` ist die frühere `vision` |
+| `pages/<name>/index.html` | 14 Seiten-Shells (inkl. `404`). **Alle Adressen sind englisch** — `lunar-habitato` (früher `vision`), `people` (`autor`), `contact` (`kontakt`), `legal-notice` (`impressum`), `privacy` (`datenschutz`) |
 | `vite.pages.js` | Seitenliste für den Build (`RETHINK_PAGES` wählt Teilmengen) |
 | `public/` | `Bilder/`, `favicon.svg`, Icons, `og-image.jpg`, `robots.txt`, `sitemap.xml`, `site.webmanifest` |
 | `public/Bilder/moon-full.jpg` | Vollmond der Landingpage (Mondscheibe in `.moonscape`). Quelle: NASA SVS „Full Moon“ (LRO/LOLA-Daten, nasa_id GSFC_20171208_Archive_e001861), gemeinfrei, auf die Scheibe zugeschnitten |
@@ -129,7 +129,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - Domain in Canonical/OG (`pages/*/index.html`), `public/sitemap.xml`, `public/robots.txt` prüfen
 - Impressum und Datenschutz ausfüllen (Platzhalter)
 - Kontaktformular an einen Versanddienst anbinden (`src/site/modules/contact.js`)
-- E-Mail-Postfach `kontakt@rethink.space` einrichten (Footer, Kontaktseite, JSON-LD verweisen darauf)
+- E-Mail-Postfach `contact@rethink.space` einrichten (Footer, Kontaktseite, JSON-LD verweisen darauf)
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server

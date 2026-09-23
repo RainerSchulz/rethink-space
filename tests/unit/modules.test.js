@@ -9,7 +9,7 @@ const HEADER = `
     <nav class="nav" id="site-nav">
       <a href="/pages/lunar-habitato/">Lunar Habitato</a>
       <a href="/pages/dual-use/">Dual Use</a>
-      <a href="/pages/kontakt/">Contact</a>
+      <a href="/pages/contact/">Contact</a>
     </nav>
   </header>
   <main><p>Inhalt</p></main>`;

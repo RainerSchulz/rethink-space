@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
 
 const PAGES = [
   'landing', 'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
-  'ip', 'news', 'history', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
+  'ip', 'news', 'history', 'people', 'contact', 'legal-notice', 'privacy', '404',
 ];
 
 test.describe('Feature: Alle Seiten laden fehlerfrei', () => {
@@ -81,21 +81,21 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
   test('Formular funktioniert auch nach einem Seitenwechsel', async ({ page, isMobile }) => {
     await page.goto('/pages/landing/');
     if (isMobile) await page.locator('.burger').click();
-    await page.locator('#site-nav a[href="/pages/kontakt/"]').click();
-    await expect(page).toHaveURL(/\/pages\/kontakt\/$/);
+    await page.locator('#site-nav a[href="/pages/contact/"]').click();
+    await expect(page).toHaveURL(/\/pages\/contact\/$/);
     await page.fill('input[name="name"]', 'Test');
     await page.fill('input[name="email"]', 'test@example.com');
     await page.fill('textarea[name="message"]', 'Hello');
     await expect(page.locator('.form-status')).toBeHidden();
     await page.locator('form[data-contact] button[type="submit"]').click();
     await expect(page.locator('.form-status')).toBeVisible();
-    await expect(page).toHaveURL(/\/pages\/kontakt\/$/);
+    await expect(page).toHaveURL(/\/pages\/contact\/$/);
   });
 });
 
 test.describe('Feature: People-Seite', () => {
   test('Portrait wird im Band „Founder & CEO“ geladen und ersetzt den Platzhalter', async ({ page }) => {
-    await page.goto('/pages/autor/');
+    await page.goto('/pages/people/');
     await page.locator('.band-toggle').first().click();
     const img = page.locator('.portrait img');
     await expect(img).toBeVisible();
@@ -126,7 +126,7 @@ test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
 });
 
 test.describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
-  for (const slug of ['lunar-habitato', 'dual-use', 'autor']) {
+  for (const slug of ['lunar-habitato', 'dual-use', 'people']) {
     test(`/pages/${slug}/: "Learn more" öffnet den Bereich darunter, ohne Seitenwechsel`, async ({ page }) => {
       await page.goto(`/pages/${slug}/`);
       await expect(page.locator('.band-panel:visible')).toHaveCount(0); // alles zu beim Laden

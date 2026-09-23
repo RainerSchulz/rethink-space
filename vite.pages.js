@@ -15,10 +15,10 @@ export const PAGES = {
   ip:          'pages/ip/index.html',
   news:        'pages/news/index.html',
   history:     'pages/history/index.html',
-  autor:       'pages/autor/index.html',
-  kontakt:     'pages/kontakt/index.html',
-  impressum:   'pages/impressum/index.html',
-  datenschutz: 'pages/datenschutz/index.html',
+  people:      'pages/people/index.html',
+  contact:     'pages/contact/index.html',
+  'legal-notice': 'pages/legal-notice/index.html',
+  privacy:     'pages/privacy/index.html',
   notfound:    'pages/404/index.html',          // wird zusätzlich nach dist/404.html kopiert
 };
 
