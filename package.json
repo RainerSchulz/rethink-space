@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "test:all": "vitest run && playwright test",
     "knowledge": "node scripts/build-knowledge.mjs",
-    "knowledge:push": "node scripts/push-knowledge.mjs"
+    "knowledge:push": "node scripts/push-knowledge.mjs",
+    "content:apply": "node scripts/apply-content.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8"

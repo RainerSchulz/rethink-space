@@ -64,7 +64,8 @@ Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge F
 - **Die Wortmarke steht nur im Header- und Footer-Logo.** Bilder mit eingebranntem „RETHINK“/„WE RETHINK X“ nicht verwenden: Schriftzug wegschneiden (Datei `…-clean.jpg`) oder textfreies Motiv nehmen. Dateien `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` sind die Originale mit Schriftzug und in `pages/` gesperrt (Test).
 - **Beim Bildtausch in Galerien immer `href` und `src` gemeinsam ändern**, sonst zeigt die Lightbox das alte Bild (Test).
 - **Startseite:** nur Claim (`home.hero.lead1`/`lead2`, in Versalien, beide weiß) und Mond — kein Button, keine Kacheln, keine News-Sektion. Der Mondbereich füllt den Bildschirm (`min-height` auf `.moonscape`); die Mondscheibe beginnt dicht unter der Überschrift (`--moon-top`) und füllt den unteren Bereich (`--moon-d`).
-- **Bandseiten (`lunar-habitato`, `dual-use`, `autor`):** gleich große Bänder untereinander (`.bands` > `.band-group`), Bild per cover über die ganze Fläche, Überschrift in Schrift und Größe der Startseiten-Überschrift (`.band-h` = `.hero h1`). Das erste Band trägt das `<h1>` der Seite, die übrigen `<h2>`. Jedes Band bekommt ein eigenes Motiv — keine zwei Bänder mit demselben Bild. Aufgeklappt wird über „Learn more", nicht verlinkt (siehe Regel 8).
+- **Bandseiten (`lunar-habitato`, `dual-use`, `autor`):** gleich große Bänder untereinander (`.bands` > `.band-group`), Bild per cover über die ganze Fläche, Überschrift in Schrift und Größe der Startseiten-Überschrift (`.band-h` = `.hero h1`). Die Überschrift steht **links unten** im Bild, „Learn more" dicht darunter (2 px). Das erste Band trägt das `<h1>` der Seite, die übrigen `<h2>`. Jedes Band bekommt ein eigenes Motiv — keine zwei Bänder mit demselben Bild. Aufgeklappt wird über „Learn more", nicht verlinkt (siehe Regel 8).
+- **Motive, die im breiten Band nicht aufgehen:** hochformatige Fotos bekommen `.band-media--top` (Ausschnitt nach oben, sonst ist der Kopf ab). Sehr breite Motive wie das Partner-Logoband brauchen fürs Handy eine eigene Fassung im 3:2-Format (`…-hoch.jpg`, eingebunden per `<picture><source media="(max-width: 820px)">`) — sonst schneidet der schmale Rahmen die Hälfte weg.
 - **Unterseiten-Hero:** Bild in Inhaltsbreite wie die Überschrift, einheitliches 16:9-Fenster, Inhalt schließt dicht an (`.hero-sub + section`).
 - **Handy und Tablet:** kompakt, kein verschenkter Platz — News-Karten Bild links/Text rechts, enges Burger-Menü.
 - Textdokumente (Poster, Zertifikat) nur dort einsetzen, wo die Lightbox sie lesbar macht.
@@ -79,6 +80,16 @@ npm run test:e2e   # bei HTML/Nav/Sprache/Formular
 ```
 Nach Textänderungen zusätzlich: `npm run knowledge && npm run knowledge:push` (Chatbot) und im CMS `npm run import`.
 Committen und pushen nur auf ausdrückliche Aufforderung.
+
+### 13. Inhalte aus dem CMS kommen nur über `content:apply` zurück
+Redaktionelle Änderungen macht der Inhaber im CMS (`../rethink-cms`, eigenes Repo), nicht von Hand in `en.js`:
+```bash
+# im CMS: Veröffentlichen → Export herunterladen (site-content.json)
+npm run content:apply -- "C:/Users/<du>/Downloads/site-content.json"
+npm run lint && npm run test:run && npm run build     # danach immer
+```
+Das Skript fasst **nur** an, was im Export steht; unbekannte Schlüssel meldet es und legt sie nicht an — **neue Schlüssel gehören weiter in den Code**, danach im CMS `npm run import`. Zweimal laufen lassen ändert nichts mehr.
+Der Editor zeigt nur Englisch; fehlt ein deutscher Text, schreibt der Generator den englischen nach `de.js`, damit der Paritätstest hält.
 
 Vollständiger Guide: `.claude/skills/coding-guide.md`
 
@@ -98,6 +109,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `src/site/i18n/` | `index.js` (Runtime), `de.js`, `en.js` |
 | `src/site/modules/` | `router.js`, `nav.js`, `contact.js`, `portrait.js`, `lightbox.js`, `bands.js`, `chat.js`, `gate.js` |
 | `supabase/` | Chatbot-Backend: Edge Function `functions/chat/` (Claude-Aufruf, Streaming), `knowledge/` (Fakten, Autor, Buchzusammenfassungen), Migration `chat_log`; Anleitung in `supabase/README.md` |
+| `scripts/apply-content.mjs`, `lib/apply.mjs` | `npm run content:apply -- <export.json>` schreibt einen CMS-Export zurück: Werte nach `en.js`/`de.js`, englischer Text an jedes `data-i18n`-Element, Bildpfade in den Shells. Umformungen in `lib/apply.mjs`, geprüft von `tests/unit/apply-content.test.js` |
 | `scripts/build-knowledge.mjs`, `push-knowledge.mjs` | `npm run knowledge` baut `knowledge.txt` aus Wörterbüchern + `knowledge/`; `npm run knowledge:push` lädt sie nach `public.chat_knowledge` |
 | `deploy/nginx.conf`, `Dockerfile` | Auslieferung wie FORGE (nginx:alpine) |
 | `tests/unit/`, `tests/e2e/` | Vitest, Playwright |
@@ -121,4 +133,5 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
 - Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
 - Seiten ohne Weg hinein: seit dem Umbau auf Bänder (23.09.2026) verlinkt nichts mehr auf `design`, `space`, `deployment`, `ip`, `news` und `history`. Ihre Inhalte stehen teils schon in den aufklappbaren Bereichen. Entscheiden, ob diese Seiten verlinkt, eingearbeitet oder gelöscht werden.
+- CMS: der Rückweg Export → Website steht (`npm run content:apply`). Offen: Publish-Knopf im CMS an GitHub Actions hängen (`repository_dispatch`), damit ohne Terminal veröffentlicht werden kann; CMS für Dr. Lierfeld deployen; Supabase-Adapter gegen das echte Projekt testen; Admin-Passwort zurücksetzen (`admin1234` greift nicht mehr)
 - Chatbot: Funktion `chat` ist im Projekt Re-Think-Space deployt, Wissensbasis und CMS-Tabellen befüllt (16.09.2026). Offen: Secret `ANTHROPIC_API_KEY` im Dashboard setzen, `VITE_CHAT_ENDPOINT` als GitHub-Variable, Datenschutzerklärung um den KI-Dienst (Anthropic) ergänzen

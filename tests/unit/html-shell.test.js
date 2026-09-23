@@ -208,7 +208,8 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
 
       it(`${count} Bänder, jedes mit Bild und Überschrift`, () => {
         expect([...html.matchAll(/<div class="band-group">/g)]).toHaveLength(count);
-        expect([...html.matchAll(/<img class="band-media" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count);
+        // Zusatzklassen erlaubt (z. B. band-media--top für hochformatige Motive)
+        expect([...html.matchAll(/<img class="band-media[^"]*" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count);
         expect([...html.matchAll(/class="band-h"/g)]).toHaveLength(count);
       });
 

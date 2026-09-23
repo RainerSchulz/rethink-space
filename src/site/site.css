@@ -270,12 +270,21 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   position: relative; overflow: hidden;
   aspect-ratio: 64 / 15; min-height: 190px; background: #000;
 }
+.band picture { position: absolute; inset: 0; display: block; }
 .band-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Hochformatige Motive im sehr breiten Band: Ausschnitt nach oben ziehen,
+   damit nicht der Kopf abgeschnitten wird. */
+.band-media--top { object-position: center 18%; }
+/* Ueberschrift steht links unten im Bild, der Knopf dicht darunter. */
 .band-title {
   position: relative; z-index: 1; height: 100%;
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 14px;
-  padding: 0 clamp(20px, 4vw, 56px);
-  background: linear-gradient(90deg, rgba(0, 0, 0, .84) 0%, rgba(0, 0, 0, .58) 52%, rgba(0, 0, 0, .18) 100%);
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 2px;
+  padding: 0 clamp(20px, 4vw, 56px) clamp(14px, 1.8vw, 24px);
+  /* Die Schrift steht unten, also verdunkelt vor allem der untere Verlauf.
+     Der linke bleibt schwach, damit Motive (z. B. die Partnerlogos) hell bleiben. */
+  background:
+    linear-gradient(180deg, transparent 34%, rgba(0, 0, 0, .46) 72%, rgba(0, 0, 0, .88) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, .4) 0%, rgba(0, 0, 0, .12) 45%, transparent 75%);
   text-shadow: 0 2px 22px rgba(0, 0, 0, .65);
 }
 /* dieselbe Schrift wie die Überschrift der Startseite (.hero h1) */
@@ -286,7 +295,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 /* Der Knopf sieht aus wie der Pfeil-Link, ist aber ein Button (kein Ziel). */
 .band-toggle {
   background: none; border: 0; cursor: pointer; font: inherit;
-  padding: 10px 0; text-shadow: none;
+  padding: 8px 0 4px; text-shadow: none;
 }
 .band-toggle::after { transition: transform .18s ease; }
 .band-toggle[aria-expanded="true"]::after { transform: rotate(90deg); }
@@ -550,7 +559,7 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   .bands .wrap { gap: 12px; }
   .band { aspect-ratio: 3 / 2; min-height: 0; }
   /* Handy: Text sitzt unten auf der dunklen Hälfte */
-  .band-title { gap: 6px; justify-content: flex-end; padding-bottom: 14px; background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .8) 100%); }
+  .band-title { gap: 2px; justify-content: flex-end; padding-bottom: 12px; background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .8) 100%); }
   .band-h { font-size: clamp(18px, 5.3vw, 38px); }
   .band-panel { padding: 20px clamp(20px, 4vw, 56px) 24px; }
   /* News-Karten kompakt: Bild links (40 %), Text rechts; Abschnittskopf enger */
