@@ -16,8 +16,8 @@ import { PAGES } from '../../vite.pages.js';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SITE = 'https://rethink.space';
 const EXPECTED_PAGES = [
-  'landing', 'vision', 'design', 'space', 'deployment', 'dual-use',
-  'ip', 'news', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
+  'landing', 'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
+  'ip', 'news', 'history', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
 ];
 
 const pageDirs = readdirSync(join(ROOT, 'pages')).filter((d) => statSync(join(ROOT, 'pages', d)).isDirectory());
@@ -195,6 +195,45 @@ describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
   it('Logo ist immer ein Home-Link', () => {
     for (const p of pages) expect(p.html, p.file).toMatch(/<a class="logo" href="\/pages\/landing\/"/);
   });
+});
+
+describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
+  // Seiten mit Bändern und der erwarteten Anzahl. Die Fläche ist hier
+  // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
+  const BAND_PAGES = [['lunar-habitato', 4], ['dual-use', 2], ['autor', 2]];
+
+  for (const [slug, count] of BAND_PAGES) {
+    describe(`/pages/${slug}/`, () => {
+      const html = readFileSync(join(ROOT, `pages/${slug}/index.html`), 'utf8');
+
+      it(`${count} Bänder, jedes mit Bild und Überschrift`, () => {
+        expect([...html.matchAll(/<div class="band-group">/g)]).toHaveLength(count);
+        expect([...html.matchAll(/<img class="band-media" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count);
+        expect([...html.matchAll(/class="band-h"/g)]).toHaveLength(count);
+      });
+
+      it('das Band selbst ist kein Link — nur der Knopf ist bedienbar', () => {
+        const groups = [...html.matchAll(/<div class="band-group">([\s\S]*?)<div class="band-panel"/g)].map((m) => m[1]);
+        expect(groups).toHaveLength(count);
+        for (const g of groups) expect(g, 'Band darf kein <a> enthalten').not.toMatch(/<a\b/);
+      });
+
+      it('jeder Knopf gehört über aria-controls zu einem vorhandenen Bereich', () => {
+        const ids = [...html.matchAll(/<div class="band-panel" id="([^"]+)" hidden>/g)].map((m) => m[1]);
+        const controls = [...html.matchAll(/<button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="([^"]+)"/g)].map((m) => m[1]);
+        expect(controls).toHaveLength(count);
+        expect([...controls].sort()).toEqual([...ids].sort());
+      });
+
+      it('alle Bereiche starten zugeklappt (hidden steht im Markup)', () => {
+        expect([...html.matchAll(/<div class="band-panel" id="[^"]+" hidden>/g)]).toHaveLength(count);
+      });
+
+      it('genau eine <h1> auf der Seite (das erste Band)', () => {
+        expect([...html.matchAll(/<h1\b/g)]).toHaveLength(1);
+      });
+    });
+  }
 });
 
 describe('Feature: Suchmaschinen-Dateien in public/', () => {

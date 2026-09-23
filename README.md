@@ -37,7 +37,7 @@ Ein direktes Öffnen von `index.html` per Doppelklick funktioniert nicht (ES-Mod
 |---|---|
 | `/` | Weiterleitung auf `/pages/landing/` |
 | `/pages/landing/` | Landingpage |
-| `/pages/vision/` | Vision |
+| `/pages/lunar-habitato/` | Vision |
 | `/pages/design/` | Design |
 | `/pages/space/` | New Space |
 | `/pages/deployment/` | Deployment |

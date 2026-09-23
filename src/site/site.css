@@ -54,14 +54,14 @@ a { color: inherit; text-decoration: none; }
 }
 .skip-link:focus { transform: none; opacity: 1; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-.pillar:focus-visible, .card-media:focus-visible, .card:focus-visible { outline-offset: 5px; border-radius: var(--radius); }
+.card-media:focus-visible, .card:focus-visible { outline-offset: 5px; border-radius: var(--radius); }
 main:focus, .form-status:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after { transition-duration: 0s !important; animation-duration: 0s !important; }
 }
 @media (prefers-contrast: more) {
   :root { --line: #7a7a84; --line-hover: #fff; --muted: #c4c4cc; --text-soft: #f0f0f4; --focus: #fff; }
-  .pillar-title, .card, .card-media, .cta, .books li, .split { background: #000; border-color: #fff; backdrop-filter: none; }
+  .band-title, .band-panel, .card, .card-media, .cta, .books li, .split { background: #000; border-color: #fff; backdrop-filter: none; }
   .hero-copy { text-shadow: none; }
 }
 @media (forced-colors: active) {
@@ -253,29 +253,56 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   letter-spacing: .13em; text-transform: uppercase; margin-bottom: 10px;
 }
 
-/* ---------- 7b. Landing: Themenkacheln (3 × 3 auf dem Mond) ---------- */
-.pillars { position: relative; padding: 248px 0 96px; }
-.pillars .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.pillar {
-  display: flex; flex-direction: column; overflow: hidden; color: inherit;
-  background: rgba(6, 6, 8, .8); border: 1px solid rgba(255, 255, 255, .16);
-  border-radius: var(--radius); backdrop-filter: blur(8px);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
-  transition: border-color .18s ease, transform .18s ease;
+/* ---------- 7b. Bänder: vier gleich große Flächen untereinander ----------
+   Anders als die Kacheln der Unterseiten ist das Band selbst KEIN Link: nur
+   „Learn more“ (.band-toggle) klappt den Bereich direkt darunter auf, ohne
+   Seitenwechsel. Das Bild deckt die Fläche vollständig (cover), die
+   Überschrift steht in Schrift und Größe der Startseiten-Überschrift. */
+.bands { padding: 34px 0 78px; }
+.bands .wrap { display: grid; gap: 18px; }
+.band-group {
+  overflow: hidden; background: #000;
+  border: 1px solid rgba(255, 255, 255, .16); border-radius: var(--radius);
+  transition: border-color .18s ease;
 }
-.pillar-media { aspect-ratio: 16 / 10; overflow: hidden; background: #000; }
-.pillar-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
-.pillar-media--portrait img { object-position: top; } /* Hochformat: Kopf zeigen */
-.pillar-title { flex: 1; display: flex; flex-direction: column; padding: 20px 22px 22px; }
-.pillar-title h2 { font-size: 20px; font-weight: 800; letter-spacing: .02em; line-height: 1.1; text-transform: uppercase; margin-bottom: 12px; }
-.pillar-title .rule { width: 40px; height: 3px; margin-bottom: 12px; }
-.pillar-title p { font-size: 14.5px; color: #c3c3ca; margin-bottom: 14px; }
-.pillar-title .arrow-link { margin-top: auto; }
-.pillar:hover { border-color: rgba(255, 255, 255, .34); transform: translateY(-2px); }
-.pillar:hover .pillar-media img { transform: scale(1.03); }
-.pillar:hover .arrow-link::after { transform: translateX(5px); }
+.band-group.is-open { border-color: rgba(255, 255, 255, .34); }
+.band {
+  position: relative; overflow: hidden;
+  aspect-ratio: 64 / 15; min-height: 190px; background: #000;
+}
+.band-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.band-title {
+  position: relative; z-index: 1; height: 100%;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 14px;
+  padding: 0 clamp(20px, 4vw, 56px);
+  background: linear-gradient(90deg, rgba(0, 0, 0, .84) 0%, rgba(0, 0, 0, .58) 52%, rgba(0, 0, 0, .18) 100%);
+  text-shadow: 0 2px 22px rgba(0, 0, 0, .65);
+}
+/* dieselbe Schrift wie die Überschrift der Startseite (.hero h1) */
+.band-h {
+  display: block; margin: 0; color: #fff; font-weight: 800; text-transform: uppercase;
+  font-size: min(5.1vw - 2px, 58px); letter-spacing: -.005em; word-spacing: .16em; line-height: 1.1;
+}
+/* Der Knopf sieht aus wie der Pfeil-Link, ist aber ein Button (kein Ziel). */
+.band-toggle {
+  background: none; border: 0; cursor: pointer; font: inherit;
+  padding: 10px 0; text-shadow: none;
+}
+.band-toggle::after { transition: transform .18s ease; }
+.band-toggle[aria-expanded="true"]::after { transform: rotate(90deg); }
+.band-panel {
+  padding: 26px clamp(20px, 4vw, 56px) 30px;
+  border-top: 1px solid rgba(255, 255, 255, .14);
+  background: rgba(10, 10, 12, .9);
+}
+.band-panel p { max-width: 70ch; color: #c3c3ca; }
+.band-panel .author { margin-bottom: 34px; }
+.band-panel h3 { font-size: 20px; margin-bottom: 14px; }
+.band-panel .eyebrow { margin-top: 8px; }
+.band-panel p + p { margin-top: 12px; }
+.band-panel[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  .pillar, .pillar-media img { transition: none; }
+  .band-group, .band-toggle::after { transition: none; }
 }
 
 /* ---------- 8. Split (Text + Bild) ---------- */
@@ -518,14 +545,14 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
       linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%),
       url("/Bilder/moon-full.jpg") center / 100.4% 100.4% no-repeat #1a1a1c;
   }
-  .pillars { padding: 178px 0 64px; } /* Abstand, damit der Mondbogen frei sichtbar ist */
-  /* Kompaktes Zweierraster */
-  .pillars .wrap { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .pillar-title { padding: 14px 14px 16px; }
-  .pillar-title h2 { font-size: 15px; margin-bottom: 8px; }
-  .pillar-title .rule { width: 30px; height: 2px; margin-bottom: 8px; }
-  .pillar-title p { font-size: 12.5px; line-height: 1.4; margin-bottom: 10px; }
-  .pillar-title .arrow-link { font-size: 10.5px; }
+  /* Bänder: höheres Format, Überschrift wie die Startseite auf dem Handy */
+  .bands { padding: 20px 0 48px; }
+  .bands .wrap { gap: 12px; }
+  .band { aspect-ratio: 3 / 2; min-height: 0; }
+  /* Handy: Text sitzt unten auf der dunklen Hälfte */
+  .band-title { gap: 6px; justify-content: flex-end; padding-bottom: 14px; background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .8) 100%); }
+  .band-h { font-size: clamp(18px, 5.3vw, 38px); }
+  .band-panel { padding: 20px clamp(20px, 4vw, 56px) 24px; }
   /* News-Karten kompakt: Bild links (40 %), Text rechts; Abschnittskopf enger */
   .card-media { display: grid; grid-template-columns: 40% 1fr; align-items: stretch; }
   .card-media img { aspect-ratio: auto; height: 100%; min-height: 110px; max-height: 170px; object-fit: cover; }
@@ -544,31 +571,21 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   section { padding: 64px 0; }
   .grid-3, .grid-2, .gallery, .stat-row { grid-template-columns: 1fr; }
   .cta { padding: 40px 26px; }
-  .pillar-title { padding: 32px 26px; }
 }
 @media (max-width: 480px) {
   .wrap { padding: 0 18px; }
   .hero-copy { padding: 18px 0 8px; }
 
   .moonscape { --moon-top: 85px; }
-  .pillars { padding: 155px 0 48px; }
-  .pillars .wrap { gap: 10px; }
-  .pillar-title { padding: 12px 12px 14px; }
-  .pillar-title p { display: none; } /* Kurztext erst ab Tablet; die Unterseite hat ihn */
+  .bands .wrap { gap: 10px; }
   .split .text, .cta { padding: 32px 20px; }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .hero-copy { padding: 24px 0 12px; }
   .moonscape { --moon-top: 115px; }
-  .pillars { padding-top: 110px; }
 }
 @media (min-width: 700px) and (max-width: 940px) {
   /* Tablet: gleicher Abstand Header→Überschrift wie Überschrift→Mond */
   .moonscape { --moon-top: 129px; }
-  .pillars { padding: 268px 0 72px; }
-  .pillars .wrap { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .pillar-title { padding: 14px 14px 16px; }
-  .pillar-title h2 { font-size: 15px; margin-bottom: 8px; }
-  .pillar-title p { font-size: 12.5px; line-height: 1.4; margin-bottom: 10px; }
-  .pillar-title .arrow-link { font-size: 10.5px; }
+  .band { aspect-ratio: 2 / 1; }
 }

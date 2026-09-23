@@ -77,8 +77,8 @@ Reihenfolge in `site.css`: Variablen → Reset → Layout → Header → Buttons
 
 ```html
 <!-- ✓ Korrekt -->
-<h2 data-i18n="vision.road.title">From study to structure.</h2>
-<meta name="description" data-i18n-content="vision.meta.description" content="…">
+<h2 data-i18n="habitat.road.title">From study to structure.</h2>
+<meta name="description" data-i18n-content="habitat.meta.description" content="…">
 <button aria-label="Menu" data-i18n-aria-label="nav.menu">
 
 <!-- ✗ VERBOTEN -->

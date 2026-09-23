@@ -39,7 +39,7 @@
         </svg>
       </button>
       <nav class="nav" id="site-nav" aria-label="Main navigation" data-i18n-aria-label="nav.main">
-        <a href="/pages/vision/" data-i18n="nav.vision">Lunar Habitato</a>
+        <a href="/pages/lunar-habitato/" data-i18n="nav.habitat">Lunar Habitato</a>
         <a href="/pages/dual-use/" data-i18n="nav.dual-use">Dual Use</a>
         <a href="/pages/autor/" data-i18n="nav.author">People</a>
         <a href="/pages/kontakt/" data-i18n="nav.contact">Contact</a>
@@ -47,53 +47,33 @@
     </div>
   </header>
   <main id="main" tabindex="-1">
-    <div class="hero-sub">
-      <img src="/Bilder/2026-09-Dual-Use-domes.jpg" alt="" class="hero-sub-bg">
+    <section class="bands">
       <div class="wrap">
-        <p class="eyebrow" data-i18n="dual.hero.eyebrow">Dual-Use</p>
-        <h1 data-i18n="dual.hero.title">Lunar technology for Earth.</h1>
-        <p class="lead" data-i18n="dual.hero.lead">What withstands extreme environments also helps where conventional construction reaches its limits on Earth.</p>
-      </div>
-    </div>
-    <section>
-      <div class="wrap grid grid-3">
-        <a class="card" href="/pages/deployment/">
-          <h3 data-i18n="dual.cards.disaster.title">Disaster response</h3><hr class="rule" aria-hidden="true">
-          <p data-i18n="dual.cards.disaster.text">Rapidly erected, sealed shelters from local material – where supply chains have broken down.</p>
-          <span class="arrow-link" data-i18n="common.more">Learn more</span>
-        </a>
-        <a class="card" href="/pages/space/">
-          <h3 data-i18n="dual.cards.extreme.title">Extreme sites</h3><hr class="rule" aria-hidden="true">
-          <p data-i18n="dual.cards.extreme.text">Research stations in polar regions, deserts or high mountains face the same questions: energy, shielding, self-sufficiency.</p>
-          <span class="arrow-link" data-i18n="common.more">Learn more</span>
-        </a>
-        <a class="card" href="/pages/design/">
-          <h3 data-i18n="dual.cards.sustainable.title">Sustainable construction</h3><hr class="rule" aria-hidden="true">
-          <p data-i18n="dual.cards.sustainable.text">Processes that work without cement and use on-site excavation reduce emissions in ordinary construction too.</p>
-          <span class="arrow-link" data-i18n="common.more">Learn more</span>
-        </a>
-      </div>
-    </section>
-    <section class="tight">
-      <div class="wrap">
-        <div class="split reverse">
-          <div class="text">
-            <p class="eyebrow" data-i18n="dual.rationale.eyebrow">Rationale</p>
-            <h2 data-i18n="dual.rationale.title">Not a by-product, but a design principle.</h2>
-            <p data-i18n="dual.rationale.p1">Space projects rarely justify themselves through their destination alone. If a development is usable terrestrially at the same time, that changes funding, schedule and risk.</p>
-            <p data-i18n="dual.rationale.p2">That is why we assess every technology twice from the start: what does it achieve on the Moon – and where does it carry weight on Earth.</p>
-            <a class="arrow-link" href="/pages/ip/" data-i18n="dual.rationale.link">See our IP</a>
+        <div class="band-group">
+          <div class="band">
+            <img class="band-media" src="/Bilder/2026-09-Dual-Use-domes.jpg" alt="" loading="lazy">
+            <div class="band-title">
+              <h1 class="band-h" data-i18n="dual.band.defense">Defense Options</h1>
+              <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-defense" data-i18n="common.more">Learn more</button>
+            </div>
           </div>
-          <div class="media"><img src="/Bilder/2026-09-Matruschka-5.jpeg" alt="" loading="lazy"></div>
+          <div class="band-panel" id="band-defense" hidden>
+            <p data-i18n="dual.panel.defense.p1">What withstands radiation, temperature swings and impacts on the Moon also holds where conventional construction reaches its limits on Earth: hardened shelter, sealed structures, supply that works without a chain behind it.</p>
+            <p data-i18n="dual.panel.defense.p2">We assess every development for its security-relevant use as well – and are transparent about where that assessment leads. Export control and end use are part of the design decision, not an afterthought.</p>
+          </div>
         </div>
-      </div>
-    </section>
-    <section class="tight">
-      <div class="wrap">
-        <div class="cta">
-          <h2 data-i18n="dual.cta.title">Have an application in mind?</h2>
-          <p class="lead" data-i18n="dual.cta.text">Together we assess whether a process can be transferred to your use case.</p>
-          <a class="btn" href="/pages/kontakt/" data-i18n="common.cta.talk">Start a conversation</a>
+        <div class="band-group">
+          <div class="band">
+            <img class="band-media" src="/Bilder/2026-09-Domes-light.jpg" alt="" loading="lazy">
+            <div class="band-title">
+              <h2 class="band-h" data-i18n="dual.band.downstream">Down Streaming</h2>
+              <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-downstream" data-i18n="common.more">Learn more</button>
+            </div>
+          </div>
+          <div class="band-panel" id="band-downstream" hidden>
+            <p data-i18n="dual.panel.downstream.p1">Space projects rarely justify themselves through their destination alone. If a development is usable terrestrially at the same time, that changes funding, schedule and risk.</p>
+            <p data-i18n="dual.panel.downstream.p2">Building without cement, on-site excavation as raw material, self-sufficient energy: the processes we qualify for the Moon reduce emissions and dependencies in ordinary construction too. Our IP covers both routes.</p>
+          </div>
         </div>
       </div>
     </section>

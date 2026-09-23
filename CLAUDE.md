@@ -1,7 +1,7 @@
 # RETHINK SPACE — Claude Code Context
 
 ## Projekt-Übersicht
-**RETHINK SPACE** — statische Website, zweisprachig DE/EN, 13 Seiten unter `pages/`
+**RETHINK SPACE** — statische Website, einsprachig Englisch (DE-Wörterbuch bleibt gepflegt), 14 Seiten unter `pages/`
 - **Inhaber:** Dr. Johannes Lierfeld · **Umsetzung:** Rainer Schulz · Schulz-Solutions
 - **Repo:** github.com/RainerSchulz/rethink-space · **Domain:** rethink.space (Stand 16.09.2026)
 - **Dev-Server:** `npm install` → `npm run dev` → http://localhost:3100/pages/landing/
@@ -16,7 +16,7 @@ Aufgebaut nach dem FORGE-Portal-Muster (forge-portal-vite): Root-`index.html` le
 ### 1. Übersetzungen — NIEMALS hartkodierter Text, die Seite ist einsprachig Englisch
 ```html
 <!-- ✓ Korrekt -->
-<h2 data-i18n="vision.road.title">From study to structure.</h2>
+<h2 data-i18n="habitat.road.title">From study to structure.</h2>
 <!-- ✗ VERBOTEN -->
 <h2>From study to structure.</h2>
 ```
@@ -35,7 +35,7 @@ Links sind absolut: `/pages/<name>/`. Neue Seite → `vite.pages.js`, `public/si
 
 ### 4. Header und Footer sind auf allen Seiten identisch
 Die Kopfnavigation führt genau vier Punkte, alle gleich gestaltet (kein abgesetzter Kontakt-Button, kein Sprachschalter):
-`Lunar Habitato` (`/pages/vision/`) · `Dual Use` (`/pages/dual-use/`) · `People` (`/pages/autor/`) · `Contact` (`/pages/kontakt/`).
+`Lunar Habitato` (`/pages/lunar-habitato/`) · `Dual Use` (`/pages/dual-use/`) · `People` (`/pages/autor/`) · `Contact` (`/pages/kontakt/`).
 Der Footer ist eine Zeile: Copyright, Impressum, Datenschutz, Projekthinweis und rechts die Symbole für LinkedIn und E-Mail. Keine Footer-Navigation.
 Änderung am Rahmen → alle Seiten. Aktive Seite setzt `nav.js` per `aria-current`, nicht das HTML.
 
@@ -53,6 +53,7 @@ Jede Seite hat den Skip-Link im Header, `<main id="main" tabindex="-1">` (Fokusz
 
 ### 8. Kacheln sind IMMER klickbar (wie FORGE)
 Jede Kachel (`.card`, `.card-media`, `.pillar`) ist ein `<a class="card" href="/pages/<ziel>/">` mit `<span class="arrow-link" data-i18n="common.more">` und führt auf die Seite, die das Thema vertieft. Galerie-Bilder sind `<a class="gallery-item" href="/Bilder/…" data-lightbox>`: `lightbox.js` öffnet sie vergrößert im `<dialog>`. Kein `<div class="card">`. Was keinen Link hat, bekommt keine Kachel-Optik (z. B. Bücherliste). `tests/unit/html-shell.test.js` erzwingt das.
+**Ausnahme — die Bänder der drei Menüseiten:** auf `/pages/lunar-habitato/` (4 Bänder), `/pages/dual-use/` (Defense Options, Down Streaming) und `/pages/autor/` (Founder & CEO, Team) ist die Fläche ausdrücklich *kein* Link. Nur der Knopf `.band-toggle` („Learn more") klappt den Bereich `.band-panel` direkt darunter auf, ohne Seitenwechsel (`modules/bands.js`, `aria-expanded` + `aria-controls`). Alle Bereiche tragen `hidden` schon im Markup, damit beim Laden nichts aufgeklappt aufblitzt. Deshalb heißen die Klassen `.band*` und nicht `.card`/`.pillar` — die Kachelregel oben bleibt für echte Kacheln scharf. Neue Bandseite → `BAND_PAGES` in `tests/unit/html-shell.test.js` und die Schleife im E2E-Block ergänzen.
 
 ### 9. Chatbot: Schlüssel nur im Backend, Wissen nur generiert
 Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge Function. Die Website kennt nur die öffentliche Endpoint-URL (`VITE_CHAT_ENDPOINT` in `.env`, gitignored; in CI als Repository-Variable). Ohne Endpoint bleibt das Widget aus. Die Wissensbasis liegt in der Tabelle `public.chat_knowledge` (Supabase-Projekt Re-Think-Space, ref `bdkvdufrdkxezutktzlt`); nach Textänderungen `npm run knowledge` (baut `knowledge.txt`, gitignored) und `npm run knowledge:push` (Admin-Login, kein Redeploy nötig). Buchmanuskripte (NAS: `W:/Projekte/Re-Think/Doku`) nie ins Repo, nur die Zusammenfassungen unter `knowledge/books/`.
@@ -63,6 +64,7 @@ Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge F
 - **Die Wortmarke steht nur im Header- und Footer-Logo.** Bilder mit eingebranntem „RETHINK“/„WE RETHINK X“ nicht verwenden: Schriftzug wegschneiden (Datei `…-clean.jpg`) oder textfreies Motiv nehmen. Dateien `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` sind die Originale mit Schriftzug und in `pages/` gesperrt (Test).
 - **Beim Bildtausch in Galerien immer `href` und `src` gemeinsam ändern**, sonst zeigt die Lightbox das alte Bild (Test).
 - **Startseite:** nur Claim (`home.hero.lead1`/`lead2`, in Versalien, beide weiß) und Mond — kein Button, keine Kacheln, keine News-Sektion. Der Mondbereich füllt den Bildschirm (`min-height` auf `.moonscape`); die Mondscheibe beginnt dicht unter der Überschrift (`--moon-top`) und füllt den unteren Bereich (`--moon-d`).
+- **Bandseiten (`lunar-habitato`, `dual-use`, `autor`):** gleich große Bänder untereinander (`.bands` > `.band-group`), Bild per cover über die ganze Fläche, Überschrift in Schrift und Größe der Startseiten-Überschrift (`.band-h` = `.hero h1`). Das erste Band trägt das `<h1>` der Seite, die übrigen `<h2>`. Jedes Band bekommt ein eigenes Motiv — keine zwei Bänder mit demselben Bild. Aufgeklappt wird über „Learn more", nicht verlinkt (siehe Regel 8).
 - **Unterseiten-Hero:** Bild in Inhaltsbreite wie die Überschrift, einheitliches 16:9-Fenster, Inhalt schließt dicht an (`.hero-sub + section`).
 - **Handy und Tablet:** kompakt, kein verschenkter Platz — News-Karten Bild links/Text rechts, enges Burger-Menü.
 - Textdokumente (Poster, Zertifikat) nur dort einsetzen, wo die Lightbox sie lesbar macht.
@@ -86,7 +88,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | Pfad | Inhalt |
 |---|---|
 | `index.html` | Weiterleitung auf `/pages/landing/` |
-| `pages/<name>/index.html` | 13 Seiten-Shells (inkl. `404`) |
+| `pages/<name>/index.html` | 14 Seiten-Shells (inkl. `404`); `lunar-habitato` ist die frühere `vision` |
 | `vite.pages.js` | Seitenliste für den Build (`RETHINK_PAGES` wählt Teilmengen) |
 | `public/` | `Bilder/`, `favicon.svg`, Icons, `og-image.jpg`, `robots.txt`, `sitemap.xml`, `site.webmanifest` |
 | `public/Bilder/moon-full.jpg` | Vollmond der Landingpage (Mondscheibe in `.moonscape`). Quelle: NASA SVS „Full Moon“ (LRO/LOLA-Daten, nasa_id GSFC_20171208_Archive_e001861), gemeinfrei, auf die Scheibe zugeschnitten |
@@ -94,7 +96,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `src/site/site.css` | Alle Stile |
 | `src/site/fonts.css` | Inter, selbst gehostet (fontsource) |
 | `src/site/i18n/` | `index.js` (Runtime), `de.js`, `en.js` |
-| `src/site/modules/` | `router.js`, `nav.js`, `contact.js`, `portrait.js`, `lightbox.js`, `chat.js`, `gate.js` |
+| `src/site/modules/` | `router.js`, `nav.js`, `contact.js`, `portrait.js`, `lightbox.js`, `bands.js`, `chat.js`, `gate.js` |
 | `supabase/` | Chatbot-Backend: Edge Function `functions/chat/` (Claude-Aufruf, Streaming), `knowledge/` (Fakten, Autor, Buchzusammenfassungen), Migration `chat_log`; Anleitung in `supabase/README.md` |
 | `scripts/build-knowledge.mjs`, `push-knowledge.mjs` | `npm run knowledge` baut `knowledge.txt` aus Wörterbüchern + `knowledge/`; `npm run knowledge:push` lädt sie nach `public.chat_knowledge` |
 | `deploy/nginx.conf`, `Dockerfile` | Auslieferung wie FORGE (nginx:alpine) |
@@ -118,5 +120,5 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
 - Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
-- Seiten ohne Menüeintrag: `design`, `space`, `deployment`, `ip`, `news` sind seit der Menükürzung (23.09.2026) nur noch über die direkte Adresse und die `sitemap.xml` erreichbar — entscheiden, ob sie verlinkt, zusammengelegt oder gelöscht werden
+- Seiten ohne Weg hinein: seit dem Umbau auf Bänder (23.09.2026) verlinkt nichts mehr auf `design`, `space`, `deployment`, `ip`, `news` und `history`. Ihre Inhalte stehen teils schon in den aufklappbaren Bereichen. Entscheiden, ob diese Seiten verlinkt, eingearbeitet oder gelöscht werden.
 - Chatbot: Funktion `chat` ist im Projekt Re-Think-Space deployt, Wissensbasis und CMS-Tabellen befüllt (16.09.2026). Offen: Secret `ANTHROPIC_API_KEY` im Dashboard setzen, `VITE_CHAT_ENDPOINT` als GitHub-Variable, Datenschutzerklärung um den KI-Dienst (Anthropic) ergänzen

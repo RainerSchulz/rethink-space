@@ -7,7 +7,7 @@ const HEADER = `
   <header class="site-header">
     <button class="burger" type="button" aria-expanded="false"></button>
     <nav class="nav" id="site-nav">
-      <a href="/pages/vision/">Lunar Habitato</a>
+      <a href="/pages/lunar-habitato/">Lunar Habitato</a>
       <a href="/pages/dual-use/">Dual Use</a>
       <a href="/pages/kontakt/">Contact</a>
     </nav>
@@ -29,7 +29,7 @@ describe('Feature: Navigation (modules/nav.js)', () => {
     const { initNav } = await fresh('../../src/site/modules/nav.js');
     initNav();
     expect(document.querySelector('a[href="/pages/dual-use/"]').getAttribute('aria-current')).toBe('page');
-    expect(document.querySelector('a[href="/pages/vision/"]').hasAttribute('aria-current')).toBe(false);
+    expect(document.querySelector('a[href="/pages/lunar-habitato/"]').hasAttribute('aria-current')).toBe(false);
   });
 
   it('Scenario: auch /pages/dual-use/index.html und /pages/dual-use werden erkannt', async () => {
@@ -75,6 +75,63 @@ describe('Feature: Navigation (modules/nav.js)', () => {
     document.querySelector('.burger').click();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(document.querySelector('.nav').classList.contains('open')).toBe(false);
+  });
+});
+
+describe('Feature: Bänder (modules/bands.js)', () => {
+  const BANDS = `
+    <div class="band-group">
+      <div class="band"><div class="band-title">
+        <h1 class="band-h">Eins</h1>
+        <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-1">Learn more</button>
+      </div></div>
+      <div class="band-panel" id="band-1" hidden><p>Text eins</p></div>
+    </div>
+    <div class="band-group">
+      <div class="band"><div class="band-title">
+        <h2 class="band-h">Zwei</h2>
+        <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-2">Learn more</button>
+      </div></div>
+      <div class="band-panel" id="band-2" hidden><p>Text zwei</p></div>
+    </div>`;
+
+  beforeEach(() => { document.body.innerHTML = BANDS; });
+
+  it('Scenario: alle Bereiche starten zugeklappt — im Markup und nach initBands()', async () => {
+    expect(document.getElementById('band-1').hidden).toBe(true); // schon ohne JS zu
+    expect(document.getElementById('band-2').hidden).toBe(true);
+    const { initBands } = await fresh('../../src/site/modules/bands.js');
+    initBands();
+    expect(document.getElementById('band-1').hidden).toBe(true);
+    expect(document.getElementById('band-2').hidden).toBe(true);
+    expect(document.querySelectorAll('.band-toggle[aria-expanded="true"]')).toHaveLength(0);
+  });
+
+  it('Scenario: Klick auf „Learn more" öffnet nur den eigenen Bereich', async () => {
+    const { initBands } = await fresh('../../src/site/modules/bands.js');
+    initBands();
+    document.querySelector('[aria-controls="band-1"]').click();
+    expect(document.getElementById('band-1').hidden).toBe(false);
+    expect(document.querySelector('[aria-controls="band-1"]').getAttribute('aria-expanded')).toBe('true');
+    expect(document.getElementById('band-2').hidden).toBe(true);
+    expect(document.querySelector('.band-group').classList.contains('is-open')).toBe(true);
+  });
+
+  it('Scenario: zweiter Klick schließt wieder', async () => {
+    const { initBands } = await fresh('../../src/site/modules/bands.js');
+    initBands();
+    const btn = document.querySelector('[aria-controls="band-2"]');
+    btn.click();
+    btn.click();
+    expect(document.getElementById('band-2').hidden).toBe(true);
+    expect(btn.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('Scenario: Klick auf das Band selbst öffnet nichts', async () => {
+    const { initBands } = await fresh('../../src/site/modules/bands.js');
+    initBands();
+    document.querySelector('.band-h').click();
+    expect(document.getElementById('band-1').hidden).toBe(true);
   });
 });
 

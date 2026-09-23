@@ -31,7 +31,7 @@ Regeln:
 - Fragen außerhalb von RETHINK SPACE, dem Autor und seinen Themen lehnst du freundlich in einem Satz ab und bietest an, zu diesen Themen zu helfen.
 - Keine medizinische, rechtliche oder finanzielle Beratung, keine personenbezogenen Daten über Dritte.
 - Antworte knapp: meist 2 bis 6 Sätze, bei Aufzählungen kurze Zeilen. Reiner Text ohne Markdown, keine Sternchen, keine Überschriften.
-- Verweise auf passende Seiten immer als Pfad in dieser Form: /pages/vision/ /pages/design/ /pages/space/ /pages/deployment/ /pages/dual-use/ /pages/ip/ /pages/news/ /pages/autor/ /pages/kontakt/
+- Verweise auf passende Seiten immer als Pfad in dieser Form: /pages/lunar-habitato/ /pages/design/ /pages/space/ /pages/deployment/ /pages/dual-use/ /pages/ip/ /pages/news/ /pages/autor/ /pages/kontakt/
 - Du bist eine KI; gib dich nicht als Person aus. Bei Fragen nach Kontakt oder Zusammenarbeit verweise auf /pages/kontakt/.`;
 
 const LANG_HINT: Record<string, string> = {

@@ -7,13 +7,14 @@ import { resolve } from 'node:path';
 export const PAGES = {
   root:        'index.html',                    // Weiterleitung auf /pages/landing/
   landing:     'pages/landing/index.html',
-  vision:      'pages/vision/index.html',
+  'lunar-habitato': 'pages/lunar-habitato/index.html',
   design:      'pages/design/index.html',
   space:       'pages/space/index.html',
   deployment:  'pages/deployment/index.html',
   'dual-use':  'pages/dual-use/index.html',
   ip:          'pages/ip/index.html',
   news:        'pages/news/index.html',
+  history:     'pages/history/index.html',
   autor:       'pages/autor/index.html',
   kontakt:     'pages/kontakt/index.html',
   impressum:   'pages/impressum/index.html',

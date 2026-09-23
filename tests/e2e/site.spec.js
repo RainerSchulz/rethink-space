@@ -11,8 +11,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 const PAGES = [
-  'landing', 'vision', 'design', 'space', 'deployment', 'dual-use',
-  'ip', 'news', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
+  'landing', 'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
+  'ip', 'news', 'history', 'autor', 'kontakt', 'impressum', 'datenschutz', '404',
 ];
 
 test.describe('Feature: Alle Seiten laden fehlerfrei', () => {
@@ -64,12 +64,11 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
       await expect(burger).toHaveAttribute('aria-expanded', 'true');
       await expect(page.locator('#site-nav')).toBeVisible();
     }
-    await page.locator('#site-nav a[href="/pages/vision/"]').click();
+    await page.locator('#site-nav a[href="/pages/lunar-habitato/"]').click();
 
-    await expect(page).toHaveURL(/\/pages\/vision\/$/);
-    await expect(page.locator('main h1')).toHaveText('Space for tomorrow.');
-    await expect(page).toHaveTitle('Researching – RETHINK SPACE');
-    await expect(page.locator('#site-nav a[href="/pages/vision/"]')).toHaveAttribute('aria-current', 'page');
+    await expect(page).toHaveURL(/\/pages\/lunar-habitato\/$/);
+    await expect(page).toHaveTitle('Lunar Habitato – RETHINK SPACE');
+    await expect(page.locator('#site-nav a[href="/pages/lunar-habitato/"]')).toHaveAttribute('aria-current', 'page');
     expect(await page.evaluate(() => window.__keep)).toBe(42); // kein Reload
     if (isMobile) await expect(page.locator('#site-nav')).toBeHidden(); // Menü schließt nach Wechsel
 
@@ -94,9 +93,10 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
   });
 });
 
-test.describe('Feature: Autorenseite', () => {
-  test('Portrait wird geladen und ersetzt den Platzhalter (Fallback: Unit-Test portrait.js)', async ({ page }) => {
+test.describe('Feature: People-Seite', () => {
+  test('Portrait wird im Band „Founder & CEO“ geladen und ersetzt den Platzhalter', async ({ page }) => {
     await page.goto('/pages/autor/');
+    await page.locator('.band-toggle').first().click();
     const img = page.locator('.portrait img');
     await expect(img).toBeVisible();
     await expect(img).toHaveAttribute('alt', 'Dr. Johannes Lierfeld');
@@ -123,6 +123,35 @@ test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
     await expect(page).toHaveURL(/\/pages\/dual-use\/$/);
     await expect(page.locator('main')).toBeFocused();
   });
+});
+
+test.describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
+  for (const slug of ['lunar-habitato', 'dual-use', 'autor']) {
+    test(`/pages/${slug}/: "Learn more" öffnet den Bereich darunter, ohne Seitenwechsel`, async ({ page }) => {
+      await page.goto(`/pages/${slug}/`);
+      await expect(page.locator('.band-panel:visible')).toHaveCount(0); // alles zu beim Laden
+
+      const group = page.locator('.band-group').first();
+      const toggle = group.locator('.band-toggle');
+      const panel = group.locator('.band-panel');
+
+      await toggle.click();
+      await expect(panel).toBeVisible();
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      await expect(page).toHaveURL(new RegExp(`/pages/${slug}/$`)); // kein Seitenwechsel
+      await expect(page.locator('.band-panel:visible')).toHaveCount(1); // übrige bleiben zu
+
+      await toggle.click();
+      await expect(panel).toBeHidden();
+    });
+
+    test(`/pages/${slug}/: ein Klick auf das Band selbst führt nirgendwohin`, async ({ page }) => {
+      await page.goto(`/pages/${slug}/`);
+      await page.locator('.band-h').first().click();
+      await expect(page).toHaveURL(new RegExp(`/pages/${slug}/$`));
+      await expect(page.locator('.band-panel').first()).toBeHidden();
+    });
+  }
 });
 
 test.describe('Feature: Galerie-Lightbox', () => {
@@ -199,7 +228,7 @@ test.describe('Feature: Zugangsschutz der Testphase', () => {
     await expect(page.locator('main')).toBeVisible();
 
     // Zweiter Besuch: keine erneute Anmeldung
-    await page.goto('/pages/vision/');
+    await page.goto('/pages/lunar-habitato/');
     await expect(page.locator('.site-gate')).toHaveCount(0);
     await expect(page.locator('main h1')).toBeVisible();
   });

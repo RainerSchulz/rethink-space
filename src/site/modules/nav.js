@@ -2,7 +2,7 @@
  * Navigation: Mobilmenü (Burger) und Markierung der aktiven Seite.
  */
 
-/** "/pages/vision/index.html" und "/pages/vision" → "/pages/vision/" */
+/** "/pages/lunar-habitato/index.html" und "/pages/lunar-habitato" → "/pages/lunar-habitato/" */
 function normalizePath(p) {
   return p.toLowerCase().replace(/index\.html$/, '').replace(/\/?$/, '/');
 }

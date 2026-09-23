@@ -11,6 +11,7 @@ import { initRouter, PAGE_EVENT } from './modules/router.js';
 import { initContact } from './modules/contact.js';
 import { initPortrait } from './modules/portrait.js';
 import { initLightbox } from './modules/lightbox.js';
+import { initBands } from './modules/bands.js';
 import { initChat } from './modules/chat.js';
 
 function initPage() {
@@ -23,6 +24,7 @@ function initPage() {
 initGate();     // Testphase: Anmeldemaske; ohne VITE_GATE_HASH ohne Wirkung
 initNav();
 initLightbox(); // vor dem Router: Galerie-Klicks werden hier abgefangen
+initBands();    // aufklappbare Bereiche auf /pages/lunar-habitato/
 initChat();     // Widget lebt außerhalb von <main>; ohne VITE_CHAT_ENDPOINT bleibt es aus
 initRouter();
 initPage();
