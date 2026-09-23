@@ -40,7 +40,10 @@ Das CSS wird bewusst **nicht** aus `main.js` importiert: im Dev-Server käme es 
 │   ├── site.css                 ← Alle Stile (Variablen in :root)
 │   ├── fonts.css                ← Schrift-Imports
 │   ├── i18n/                    ← index.js (t, setLang, applyLang), de.js, en.js
-│   └── modules/                 ← nav.js, lang-switch.js, contact.js, portrait.js
+│   └── modules/                 ← router.js, nav.js, contact.js, portrait.js,
+│                                   lightbox.js, bands.js, chat.js, gate.js
+├── scripts/                     ← apply-content.mjs (CMS-Rückweg), lib/apply.mjs,
+│                                   build-knowledge.mjs, push-knowledge.mjs
 ├── deploy/nginx.conf, Dockerfile
 └── tests/unit/, tests/e2e/
 ```
@@ -57,7 +60,7 @@ Das CSS wird bewusst **nicht** aus `main.js` importiert: im Dev-Server käme es 
 - **Maximal 200 Zeilen** pro Modul. Ausnahme: die Wörterbücher `de.js` / `en.js`.
 - Neue Module in `main.js` importieren und dort starten — nirgends sonst.
 - Module kommunizieren über Ereignisse (`rethink:langchange`, `rethink:pagechange`), nicht über globale Variablen.
-- **Seitenwechsel:** `router.js` tauscht bei internen Links nur `<main>` und die Kopfdaten. Ein Modul, das Elemente aus `<main>` braucht, gehört in `initPage()` in `main.js` — es läuft dann nach jedem Wechsel erneut. Module, die nur Header/Footer betreffen (Navigation, Sprachschalter), laufen einmal und nutzen Event-Delegation auf `document`.
+- **Seitenwechsel:** `router.js` tauscht bei internen Links nur `<main>` und die Kopfdaten. Ein Modul, das Elemente aus `<main>` braucht, gehört in `initPage()` in `main.js` — es läuft dann nach jedem Wechsel erneut. Module, die nur Header/Footer betreffen (Navigation), laufen einmal und nutzen Event-Delegation auf `document`. `bands.js` hängt seinen Klick-Horcher **nur einmal** an (Merker am `document`) — ein zweiter Aufruf würde sonst jeden Klick doppelt schalten, der Bereich bliebe zu.
 
 ---
 
@@ -86,9 +89,10 @@ Reihenfolge in `site.css`: Variablen → Reset → Layout → Header → Buttons
 <span class="de">…</span><span class="en">…</span>
 ```
 
-- **Englisch ist die Standardsprache.** Der Text im HTML ist der **englische Fallback** und muss dem EN-Wert exakt entsprechen (Test). Deutsch erscheint nur nach Klick auf DE (gemerkt in localStorage); `<html lang="en">`, `og:locale` en_US.
+- **Die Seite ist einsprachig Englisch.** Es gibt keinen DE/EN-Schalter mehr; `detectInitialLang()` liefert fest `'en'` und ignoriert eine früher gespeicherte Wahl — sonst hinge ein Besucher ohne Schalter dauerhaft auf Deutsch fest. Der Text im HTML ist der **englische Fallback** und muss dem EN-Wert exakt entsprechen (Test). `<html lang="en">`, `og:locale` en_US.
+- **`de.js` bleibt trotzdem gepflegt**, damit die zweite Sprache ohne Umbau zurückkommen kann (Schalter ins Markup, `detectInitialLang()` zurücksetzen). Der Paritätstest hält beide Wörterbücher in Deckung; fehlt ein deutscher Text, schreibt `content:apply` den englischen hinein.
 - Schlüssel-Format: `namespace.bereich.detail`, nur Kleinbuchstaben, Ziffern, `-` und `.`.
-- Namespaces: `nav`, `footer`, `common`, `home`, `vision`, `design`, `space`, `deployment`, `dual`, `ip`, `news`, `author`, `contact`, `legal`, `imprint`, `privacy`, `notfound`.
+- Namespaces: `nav`, `footer`, `common`, `home`, `habitat` (Lunar Habitato), `people` (Bänder der People-Seite), `history`, `design`, `space`, `deployment`, `dual`, `ip`, `news`, `author`, `contact`, `legal`, `imprint`, `privacy`, `notfound`.
 - Nicht übersetzen: Markenname RETHINK SPACE, Eigennamen, Buchtitel, Zahlen mit Einheit, Daten, E-Mail-Adressen.
 - Ein fehlender Schlüssel ist **kein Fehler, sondern ein Text**: `t()` gibt den Schlüssel zurück und er steht blank auf der Seite. Deshalb prüft `tests/unit/i18n.test.js` jeden verwendeten Schlüssel gegen beide Wörterbücher und jeden definierten Schlüssel auf Verwendung.
 
@@ -109,7 +113,7 @@ Jede `pages/*/index.html` hat in dieser Reihenfolge:
 7. Optional JSON-LD (Landing: Organization + WebSite, Autor: Person)
 8. Vite-Entry
 
-Die 404-Seite trägt zusätzlich `<meta name="robots" content="noindex">`. Am einfachsten: Kopf von `pages/vision/index.html` kopieren und Namespace/Slug ersetzen.
+Die 404-Seite trägt zusätzlich `<meta name="robots" content="noindex">`. Am einfachsten: Kopf einer bestehenden Seite kopieren und Namespace/Slug ersetzen.
 
 ---
 
@@ -119,7 +123,8 @@ Die 404-Seite trägt zusätzlich `<meta name="robots" content="noindex">`. Am ei
 - Hero-Hintergründe als `<img class="hero-sub-bg">`, Split-Bilder als `<img>` in `.media` — keine `background-image` im Markup.
 - Bilder unterhalb des sichtbaren Bereichs bekommen `loading="lazy"`.
 - Das Portrait wird per `data-portrait-src` von `portrait.js` geladen, damit eine fehlende Datei den Build nicht bricht.
-- Icons und OG-Bild liegen fertig in `public/` (`favicon.svg` ist die Quelle).
+- Icons liegen fertig in `public/` (`favicon.svg` ist die Quelle).
+- **`og-image.jpg` wird erzeugt, nicht gemalt:** ein Playwright-Lauf gegen den Vorschau-Server rendert die Wortmarke mit der echten Inter der Seite auf 1200 × 630 und misst die Sperrung von `SPACE` im Browser. Ändern sich Name, Claim oder Akzentfarbe, muss das Bild neu erzeugt werden — sonst zeigt jede geteilte Vorschau den alten Stand.
 
 ---
 
@@ -133,7 +138,7 @@ Kommentare erklären das **Warum**, nicht das Was. Datei-Kopf mit einem Satz zur
 
 1. Gibt es die Klasse / das Modul / den Schlüssel schon? (`grep` in `site.css`, `de.js`)
 2. Passt die Änderung in ein bestehendes Modul, oder braucht sie ein neues?
-3. Betrifft sie Header oder Footer? Dann **alle 13 Seiten** identisch ändern (Test vergleicht sie).
+3. Betrifft sie Header oder Footer? Dann **alle 14 Seiten** identisch ändern (Test vergleicht sie).
 
 ---
 
@@ -157,12 +162,13 @@ npm run test:e2e    # Playwright — bei Änderungen an HTML, Navigation, Sprach
 
 ## ⚡ REGEL #11 — Neue Seite anlegen (Checkliste)
 
-- [ ] `pages/<name>/index.html`, Kopf/Header/Footer 1:1 von `pages/vision/index.html` übernommen, Canonical/OG-URL auf `/pages/<name>/` gesetzt
+- [ ] `pages/<name>/index.html`, Kopf/Header/Footer 1:1 von einer bestehenden Seite übernommen, Canonical/OG-URL auf `/pages/<name>/` gesetzt
 - [ ] Schlüssel `<ns>.meta.title`, `<ns>.meta.description`, `<ns>.hero.*` in **de.js und en.js**
 - [ ] Eintrag in `vite.pages.js`
 - [ ] Eintrag in `public/sitemap.xml`
-- [ ] Link in Header-Nav **und** Footer-Nav auf **allen** Seiten ergänzt
+- [ ] Nur wenn die Seite ins Menü soll: Link in der Header-Nav auf **allen** Seiten ergänzt (der Footer hat keine Navigation mehr, und das Menü führt bewusst nur vier Punkte)
 - [ ] Seite in `EXPECTED_PAGES` (`tests/unit/html-shell.test.js`) und `PAGES` (`tests/e2e/site.spec.js`) eintragen
+- [ ] Im CMS `npm run import`, damit der Editor die neue Seite kennt
 - [ ] `npm run test:run && npm run build` grün
 
 ---
@@ -212,8 +218,9 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 </div>
 ```
 
-- Gilt für `.card`, `.card-media` (News), `.pillar` (Landing). Ziel ist immer `/pages/<name>/` (Test prüft, dass die Seite existiert).
-- Ziel wählen: die Seite, die das Thema am tiefsten behandelt (Technik → `space`, Struktur/Material → `design`, Umsetzung → `deployment`, Haltung/Weg → `vision`). Gibt es später eigene Detailseiten, Ziel dorthin umhängen.
+- Gilt für `.card` und `.card-media` (News). Ziel ist immer `/pages/<name>/` (Test prüft, dass die Seite existiert).
+- **Ausnahme — die Bänder auf `lunar-habitato`, `dual-use` und `autor`:** dort ist die Fläche ausdrücklich *kein* Link. Nur der Knopf `.band-toggle` („Learn more") klappt den Bereich `.band-panel` direkt darunter auf, ohne Seitenwechsel (`modules/bands.js`, `aria-expanded` + `aria-controls`). Alle Bereiche tragen `hidden` **schon im Markup**, damit beim Laden nichts aufgeklappt aufblitzt. Deshalb heißen die Klassen `.band*` und nicht `.card`/`.pillar` — so bleibt die Kachelregel für echte Kacheln scharf. Neue Bandseite → `BAND_PAGES` in `html-shell.test.js` und die Schleife im E2E-Block ergänzen.
+- Ziel wählen: die Seite, die das Thema am tiefsten behandelt (Technik → `space`, Struktur/Material → `design`, Umsetzung → `deployment`, Schutzrechte → `ip`). Gibt es später eigene Detailseiten, Ziel dorthin umhängen.
 - Kein `onclick`, kein `<div>` — die Kachel selbst ist das `<a>` (Tastatur, Screenreader, Router funktionieren dann von allein).
 - CSS: `.card:hover` hebt an und färbt den Rand, `.card:hover .arrow-link::after` schiebt den Pfeil, `:focus-visible` zeigt den Fokusring.
 - Galerie-Bilder ohne eigene Seite: `<figure><a class="gallery-item" href="/Bilder/…" data-lightbox><img …></a><figcaption>…</figcaption></figure>` — `modules/lightbox.js` öffnet das Bild vergrößert in einem `<dialog>` (Escape, Schließen-Button, Klick daneben). Ohne JS führt der Link zur Bilddatei.
@@ -224,7 +231,7 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 
 ## ⚡ REGEL #16 — Bild- und Kachelgestaltung (Pflicht, ohne Nachfrage anwenden)
 
-> **Jedes Bild füllt seine Fläche vollständig aus, alle Kacheln einer Reihe sind gleich groß, und die Wortmarke steht nur im Logo.**
+> **Jedes Bild füllt seine Fläche vollständig aus, alle Kacheln einer Reihe sind gleich groß, die Wortmarke steht nur im Logo, und der Akzent ist Cyan.**
 
 ### Warum
 Schwarze Ränder (Letterboxing) und unterschiedlich hohe Kacheln wirken unfertig. Bilder mit eingebranntem „RETHINK“ doppeln das Logo und stören, seit der Hero die Wortmarke nicht mehr zeigt.
@@ -233,24 +240,46 @@ Schwarze Ränder (Letterboxing) und unterschiedlich hohe Kacheln wirken unfertig
 
 ```css
 /* ✓ Korrekt — feste Fläche, Bild füllt sie */
-.pillar-media { aspect-ratio: 16 / 10; }
-.pillar-media img { width: 100%; height: 100%; object-fit: cover; }
+.band { aspect-ratio: 64 / 15; }
+.band-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
 /* ✗ VERBOTEN — Bild wird eingepasst, Ränder bleiben schwarz */
-.pillar-media img { object-fit: contain; background: #000; }
+.band-media { object-fit: contain; background: #000; }
 ```
 
-- Betroffen: `.pillar-media`, `.card-media`, `.gallery img`, `.split .media img`, `.hero-sub-bg`, `.portrait img`. Ausnahme ist nur die Lightbox selbst (dort zeigt `contain` das ganze Bild).
-- Hochformatige Motive, deren Kopf wichtig ist (Zeitschriften-Titel), bekommen `object-position: top` (`.card-media--portrait`).
+- Betroffen: `.band-media`, `.card-media`, `.gallery img`, `.split .media img`, `.hero-sub-bg`, `.portrait img`. Ausnahme ist nur die Lightbox selbst (dort zeigt `contain` das ganze Bild).
+- Hochformatige Motive, deren Kopf wichtig ist, bekommen `.band-media--top` bzw. `object-position: top` — im sehr breiten Band schneidet der mittige Ausschnitt sonst den Kopf ab.
+- **Motive, die im Rahmen nicht aufgehen, brauchen eine zweite Fassung.** Das Partner-Logoband ist 5:2, die Kachel auf dem Handy 3:2 — der schmale Rahmen schnitt ein Logo ganz und zwei halb weg. Lösung: hochformatige Fassung (`…-hoch.jpg`, Logos im 2×2-Raster, per Canvas im Playwright-Chromium erzeugt), eingebunden per `<picture><source media="(max-width: 820px)">`. Weder `contain` noch ein anderes Seitenverhältnis für eine einzelne Kachel.
 - **Bilder ohne Schriftzug:** `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` tragen die eingebrannte Wortmarke und sind in `pages/` gesperrt (`html-shell.test.js`). Neue Varianten ohne Schriftzug als `…-clean.jpg` (zugeschnitten) oder `…-wide.jpg` (Querformat-Ausschnitt) ablegen; Zuschnitt per Canvas im Playwright-Chromium, kein zusätzliches Werkzeug nötig.
 - **Galerie:** `href` und `src` zeigen auf dieselbe Datei, sonst öffnet die Lightbox ein anderes Bild (Test).
 - **Unterseiten-Hero:** Inhaltsbreite wie die Überschrift (`min(100% - 48px, var(--maxw) - 48px)`), `aspect-ratio: 16/9`, `object-fit: cover`; `.hero-sub + section` hat verkürztes `padding-top`.
-- **Landing-Hero:** Überschrift sind die zwei Leitsätze, beide weiß (`.hero h1 .accent { color: inherit }`), Button links darunter.
-- **Schmale Geräte:** kein verschenkter Platz — Landing-Kacheln zweispaltig, Kurztext erst ab Tablet, News-Karten Bild links, Burger-Menü eng; Kachelblock beginnt tief genug, dass der Mondbogen sichtbar bleibt.
+- **Landing-Hero:** nur der Claim (zwei Leitsätze, beide weiß) vor dem Mond — kein Button, keine Kacheln, keine News. Abstand Header → Überschrift und Überschrift → Mondbogen sind **gleich groß** (56 px Desktop, 22 px Tablet, 18 px Handy); wird die Schriftgröße geändert, muss `--moon-top` in allen Breakpoints nachgezogen werden.
+- **Bänder:** Überschrift links **unten** im Bild in Schrift und Größe der Startseiten-Überschrift (`.band-h` = `.hero h1`), „Learn more" dicht darunter (2 px). Das erste Band trägt das `<h1>` der Seite, die übrigen `<h2>`. Jedes Band bekommt ein eigenes Motiv — keine zwei Bänder mit demselben Bild.
+- **Farbe:** der Akzent ist `#00d9ff` (`--accent`), auf Schwarz 12,4:1. Auf farbigen Flächen ist die Schrift **schwarz** (`--accent-on: #001014`, 12,4:1) — Weiß käme dort nur auf 1,7:1 und fiele durch. Betrifft `.btn`, Skip-Link, `.chat-fab`, die Nutzer-Blase im Chat und das Kreuz der Lightbox beim Überfahren. Fokusring `#9beaff` (sichtbar auf Schwarz **und** auf der hellen Mondfläche). Kein Orange mehr im Projekt.
+- **Wortmarke:** `SPACE` ist per `letter-spacing: .2784em` auf die Breite von `RETHINK` gesperrt — gleiche Schrift, gleiche Größe. Der Wert ist gemessen ((83,9 − 62,8) px auf vier Zwischenräume bei 19 px), nicht geschätzt; `margin-right: -.2784em` nimmt die Sperrung hinter dem letzten Buchstaben zurück, damit der Logo-Block nicht breiter wird als die Schrift.
+- **Schmale Geräte:** kein verschenkter Platz — Bänder im Format 3:2 mit Text unten auf der dunklen Hälfte, News-Karten Bild links, Burger-Menü eng.
 
 ---
 
-## ⚡ REGEL #17 — Deployment
+## ⚡ REGEL #17 — Inhalte aus dem CMS (Rückweg)
+
+> **Redaktionelle Texte und Bilder ändert der Inhaber im CMS (`../rethink-cms`, eigenes Repo) — nicht von Hand in `en.js`.**
+
+```bash
+# im CMS: Veröffentlichen → Export herunterladen (site-content.json)
+npm run content:apply -- "C:/Users/<du>/Downloads/site-content.json"
+npm run lint && npm run test:run && npm run build     # danach immer
+```
+
+- `scripts/apply-content.mjs` schreibt die Werte nach `en.js`/`de.js`, den englischen Text an **jedes** `data-i18n`-Element und die Bildpfade in den Shells. Die Umformungen stehen in `scripts/lib/apply.mjs` und sind in `tests/unit/apply-content.test.js` geprüft.
+- **Titel und Beschreibung stehen je Seite zweimal** (`name="description"` und `og:description`) unter demselben Schlüssel. Wer nur die erste Fundstelle ersetzt, lässt die Open-Graph-Angaben still veralten — deshalb ersetzt der Generator jede Fundstelle, und ein Test hält das fest.
+- Das Skript **legt nie neue Schlüssel an**: unbekannte meldet es und geht weiter. Neue Texte entstehen weiter im Code, danach im CMS `npm run import`.
+- Bei Galerie-Bildern wandern `href` und `src` gemeinsam; passt die Bildanzahl nicht zur Seite, bleibt die Seite unangetastet — lieber nichts tun als Bilder verschieben.
+- Zweimal anwenden ändert nichts mehr (idempotent). Der Generator gegen einen frischen `npm run import` muss **null** Änderungen ergeben; das ist der schnellste Test, ob Import und Rückweg noch zusammenpassen.
+
+---
+
+## ⚡ REGEL #18 — Deployment
 
 - `dist/` läuft im Domain-Root. Docker-Image (`Dockerfile` + `deploy/nginx.conf`) wie FORGE, oder GitHub Pages mit eigener Domain.
 - Sicherheits-Header, die im `<meta>` nicht wirken (`X-Frame-Options`, `nosniff`, `frame-ancestors`), setzt `deploy/nginx.conf`.
