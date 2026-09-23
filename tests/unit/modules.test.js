@@ -1,5 +1,5 @@
 /**
- * Feature: Seiten-Module (nav, lang-switch, contact, portrait)
+ * Feature: Seiten-Module (nav, contact, portrait)
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -7,13 +7,9 @@ const HEADER = `
   <header class="site-header">
     <button class="burger" type="button" aria-expanded="false"></button>
     <nav class="nav" id="site-nav">
-      <a href="/pages/vision/">Vision</a>
-      <a href="/pages/design/">Design</a>
-      <a class="btn-outline" href="/pages/kontakt/">Kontakt</a>
-      <span class="lang">
-        <button type="button" data-lang="de" aria-pressed="true">DE</button>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
-      </span>
+      <a href="/pages/vision/">Lunar Habitato</a>
+      <a href="/pages/dual-use/">Dual Use</a>
+      <a href="/pages/kontakt/">Contact</a>
     </nav>
   </header>
   <main><p>Inhalt</p></main>`;
@@ -26,22 +22,22 @@ async function fresh(path) {
 describe('Feature: Navigation (modules/nav.js)', () => {
   beforeEach(() => {
     document.body.innerHTML = HEADER;
-    window.history.pushState({}, '', '/pages/design/');
+    window.history.pushState({}, '', '/pages/dual-use/');
   });
 
   it('Scenario: aktuelle Seite trägt aria-current="page"', async () => {
     const { initNav } = await fresh('../../src/site/modules/nav.js');
     initNav();
-    expect(document.querySelector('a[href="/pages/design/"]').getAttribute('aria-current')).toBe('page');
+    expect(document.querySelector('a[href="/pages/dual-use/"]').getAttribute('aria-current')).toBe('page');
     expect(document.querySelector('a[href="/pages/vision/"]').hasAttribute('aria-current')).toBe(false);
   });
 
-  it('Scenario: auch /pages/design/index.html und /pages/design werden erkannt', async () => {
-    for (const path of ['/pages/design/index.html', '/pages/design']) {
+  it('Scenario: auch /pages/dual-use/index.html und /pages/dual-use werden erkannt', async () => {
+    for (const path of ['/pages/dual-use/index.html', '/pages/dual-use']) {
       window.history.pushState({}, '', path);
       const { initNav } = await fresh('../../src/site/modules/nav.js');
       initNav();
-      expect(document.querySelector('a[href="/pages/design/"]').getAttribute('aria-current'), path).toBe('page');
+      expect(document.querySelector('a[href="/pages/dual-use/"]').getAttribute('aria-current'), path).toBe('page');
     }
   });
 
@@ -79,29 +75,6 @@ describe('Feature: Navigation (modules/nav.js)', () => {
     document.querySelector('.burger').click();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(document.querySelector('.nav').classList.contains('open')).toBe(false);
-  });
-});
-
-describe('Feature: Sprachschalter (modules/lang-switch.js)', () => {
-  beforeEach(() => {
-    document.body.innerHTML = HEADER + '<p id="probe" data-i18n="nav.contact">Contact</p>';
-  });
-
-  it('Scenario: Start markiert EN als aktiv', async () => {
-    const { initLangSwitch } = await fresh('../../src/site/modules/lang-switch.js');
-    initLangSwitch();
-    expect(document.querySelector('[data-lang="en"]').getAttribute('aria-pressed')).toBe('true');
-    expect(document.querySelector('[data-lang="de"]').getAttribute('aria-pressed')).toBe('false');
-  });
-
-  it('Scenario: Klick auf DE übersetzt die Seite und markiert den Button', async () => {
-    const { initLangSwitch } = await fresh('../../src/site/modules/lang-switch.js');
-    initLangSwitch();
-    document.querySelector('.lang button[data-lang="de"]').click();
-    expect(document.getElementById('probe').textContent).toBe('Kontakt');
-    expect(document.querySelector('[data-lang="de"]').getAttribute('aria-pressed')).toBe('true');
-    expect(document.querySelector('[data-lang="en"]').getAttribute('aria-pressed')).toBe('false');
-    expect(document.documentElement.lang).toBe('de');
   });
 });
 

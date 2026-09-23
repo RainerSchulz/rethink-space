@@ -1,5 +1,5 @@
 /**
- * E2E: Weiterleitung, Sprachwechsel, Seitenwechsel ohne Neuladen,
+ * E2E: Weiterleitung, einsprachige Anzeige, Seitenwechsel ohne Neuladen,
  * Mobilmenü, Kontaktformular. Läuft gegen den Vite-Dev-Server.
  */
 import { test, expect } from '@playwright/test';
@@ -35,32 +35,20 @@ test.describe('Feature: Alle Seiten laden fehlerfrei', () => {
   });
 });
 
-test.describe('Feature: Sprache — Englisch ist Standard, Deutsch optional', () => {
-  test('Seite startet auf Englisch, auch im deutschen Browser', async ({ page }) => {
+test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () => {
+  test('Seite startet auf Englisch, auch im deutschen Browser; kein Sprachschalter', async ({ page }) => {
     await page.goto('/pages/landing/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(page).toHaveTitle('RE-THINK SPACE – New ways. New spaces.');
-    await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText('New ways. New spaces.');
-    await expect(page.locator('.lang button[data-lang="en"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page).toHaveTitle('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
+    await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText('New Space Economy for');
+    await expect(page.locator('[data-i18n="footer.project"]')).toHaveText('A project by Dr. Johannes Lierfeld');
+    await expect(page.locator('.lang')).toHaveCount(0);
   });
 
-  test('DE übersetzt Seite und Titel, bleibt nach Reload und Seitenwechsel erhalten', async ({ page, isMobile }) => {
+  test('Kopfnavigation führt genau vier Punkte', async ({ page, isMobile }) => {
     await page.goto('/pages/landing/');
     if (isMobile) await page.locator('.burger').click();
-    await page.locator('.lang button[data-lang="de"]').click();
-
-    await expect(page.locator('html')).toHaveAttribute('lang', 'de');
-    await expect(page).toHaveTitle('RE-THINK SPACE – Neue Wege. Neue Räume.');
-    await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText('Neue Wege. Neue Räume.');
-
-    await page.reload();
-    await expect(page.locator('html')).toHaveAttribute('lang', 'de');
-    await expect(page.locator('[data-i18n="nav.author"]').first()).toHaveText('Autor');
-
-    if (isMobile) await page.locator('.burger').click();
-    await page.locator('#site-nav a[href="/pages/vision/"]').click();
-    await expect(page.locator('main h1')).toHaveText('Raum für morgen.');
-    await expect(page).toHaveTitle('Researching – RE-THINK SPACE');
+    await expect(page.locator('#site-nav a')).toHaveText(['Lunar Habitato', 'Dual Use', 'People', 'Contact']);
   });
 });
 
@@ -80,7 +68,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
 
     await expect(page).toHaveURL(/\/pages\/vision\/$/);
     await expect(page.locator('main h1')).toHaveText('Space for tomorrow.');
-    await expect(page).toHaveTitle('Researching – RE-THINK SPACE');
+    await expect(page).toHaveTitle('Researching – RETHINK SPACE');
     await expect(page.locator('#site-nav a[href="/pages/vision/"]')).toHaveAttribute('aria-current', 'page');
     expect(await page.evaluate(() => window.__keep)).toBe(42); // kein Reload
     if (isMobile) await expect(page.locator('#site-nav')).toBeHidden(); // Menü schließt nach Wechsel
@@ -128,10 +116,11 @@ test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
     await expect(page.locator('main')).toBeFocused();
   });
 
-  test('nach einem Seitenwechsel liegt der Fokus auf dem neuen Inhalt', async ({ page }) => {
+  test('nach einem Seitenwechsel liegt der Fokus auf dem neuen Inhalt', async ({ page, isMobile }) => {
     await page.goto('/pages/landing/');
-    await page.locator('.pillar[href="/pages/design/"]').click();
-    await expect(page).toHaveURL(/\/pages\/design\/$/);
+    if (isMobile) await page.locator('.burger').click();
+    await page.locator('#site-nav a[href="/pages/dual-use/"]').click();
+    await expect(page).toHaveURL(/\/pages\/dual-use\/$/);
     await expect(page.locator('main')).toBeFocused();
   });
 });
@@ -151,7 +140,7 @@ test.describe('Feature: Galerie-Lightbox', () => {
   });
 });
 
-test.describe('Feature: Chat-Widget „Frag RE-THINK SPACE“', () => {
+test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {
   const ENDPOINT = 'https://test.supabase.co/functions/v1/chat';
   const SSE = 'data: {"type":"text","text":"ISRU means using local resources. "}\n\n'
     + 'data: {"type":"text","text":"See /pages/space/"}\n\ndata: {"type":"done"}\n\n';

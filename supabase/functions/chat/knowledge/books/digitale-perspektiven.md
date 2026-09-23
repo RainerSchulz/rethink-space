@@ -56,7 +56,7 @@ Rusche und Lierfeld verstehen ihr Buch als Beitrag zur digitalen Bildung und als
 - „Wir Menschen und nicht die Maschinen tragen die Verantwortung für die Zukunft unserer Welt.“ (S. 59)
 - „Argumentiere rational, sei glaubwürdig, strebe nach Konsens und verbessere die Dialogchancen.“ (S. 159)
 
-## Bezug zu RE-THINK SPACE
+## Bezug zu RETHINK SPACE
 
 - Robotik: Der stärkste Berührungspunkt. Kapitel 6 liefert eine Ethik der Robotik, Autonomiestufen (in, on, out of the loop; Fahrstufen 0 bis 5), Kriterien für soziale Roboter und die These, dass Roboterethik zunächst eine Ethik für die Menschen ist, die Roboter entwerfen, produzieren und einsetzen.
 - Autonome Fertigung: Nur knapp behandelt. Das Buch nennt Roboter, die die definierte Umgebung der Produktionshallen verlassen, und empfiehlt dem deutschen Maschinenbau die Kooperation mit Hochschulen zur Entwicklung integrierter, intelligent gesteuerter, vollautonomer Maschinen; heutige Anlagen seien meist teilautonom und nicht selbstlernend.

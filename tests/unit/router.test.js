@@ -47,7 +47,7 @@ beforeEach(() => {
   globalThis.fetch = vi.fn(async (path) => ({
     ok: path === '/pages/vision/',
     status: path === '/pages/vision/' ? 200 : 404,
-    text: async () => PAGE('Vision – RE-THINK SPACE', 'Space for tomorrow.'),
+    text: async () => PAGE('Vision – RETHINK SPACE', 'Space for tomorrow.'),
   }));
   window.scrollTo = vi.fn();
 });
@@ -70,9 +70,9 @@ describe('Feature: interner Link tauscht nur <main>', () => {
     expect(document.getElementById('footer')).toBe(footer);
     expect(document.body.textContent).not.toContain('FREMDER');
     expect(location.pathname).toBe('/pages/vision/');
-    expect(document.title).toBe('Vision – RE-THINK SPACE');
+    expect(document.title).toBe('Vision – RETHINK SPACE');
     expect(document.querySelector('link[rel="canonical"]').href).toBe('https://rethink.space/pages/vision/');
-    expect(document.querySelector('meta[property="og:title"]').content).toBe('Vision – RE-THINK SPACE');
+    expect(document.querySelector('meta[property="og:title"]').content).toBe('Vision – RETHINK SPACE');
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
     expect(changed).toHaveBeenCalledTimes(1);
   });

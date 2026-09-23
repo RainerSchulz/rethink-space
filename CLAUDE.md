@@ -1,7 +1,7 @@
-# RE-THINK SPACE — Claude Code Context
+# RETHINK SPACE — Claude Code Context
 
 ## Projekt-Übersicht
-**RE-THINK SPACE** — statische Website, zweisprachig DE/EN, 13 Seiten unter `pages/`
+**RETHINK SPACE** — statische Website, zweisprachig DE/EN, 13 Seiten unter `pages/`
 - **Inhaber:** Dr. Johannes Lierfeld · **Umsetzung:** Rainer Schulz · Schulz-Solutions
 - **Repo:** github.com/RainerSchulz/rethink-space · **Domain:** rethink.space (Stand 16.09.2026)
 - **Dev-Server:** `npm install` → `npm run dev` → http://localhost:3100/pages/landing/
@@ -13,15 +13,15 @@ Aufgebaut nach dem FORGE-Portal-Muster (forge-portal-vite): Root-`index.html` le
 
 ## KRITISCHE REGELN (immer befolgen)
 
-### 1. Übersetzungen — NIEMALS hartkodierter Text, Englisch ist Standard
+### 1. Übersetzungen — NIEMALS hartkodierter Text, die Seite ist einsprachig Englisch
 ```html
 <!-- ✓ Korrekt -->
 <h2 data-i18n="vision.road.title">From study to structure.</h2>
 <!-- ✗ VERBOTEN -->
 <h2>From study to structure.</h2>
 ```
-- Schlüssel IMMER simultan in `src/site/i18n/de.js` **und** `en.js`.
-- Englischer Text im HTML = EN-Wert (Test vergleicht). Startsprache ist immer Englisch, Deutsch nur nach Wahl (localStorage).
+- Schlüssel IMMER simultan in `src/site/i18n/de.js` **und** `en.js` (Paritätstest), auch wenn DE gerade nicht angezeigt wird.
+- Englischer Text im HTML = EN-Wert (Test vergleicht). Die Seite zeigt **nur Englisch**: kein DE/EN-Schalter, `detectInitialLang()` liefert fest `'en'`, eine früher gespeicherte Wahl wird ignoriert. Das deutsche Wörterbuch bleibt gepflegt, damit die zweite Sprache später ohne Umbau zurückkommt (Schalter + `detectInitialLang()`).
 - `tests/unit/i18n.test.js` prüft Parität, Abdeckung und ungenutzte Schlüssel.
 
 ### 2. HTML-Shells enthalten nur Markup und Kopfdaten
@@ -34,6 +34,9 @@ Kein `<style>`, kein `style="…"`, kein `<script>` außer dem Vite-Entry und JS
 Links sind absolut: `/pages/<name>/`. Neue Seite → `vite.pages.js`, `public/sitemap.xml`, Header- und Footer-Nav auf **allen** Seiten, `EXPECTED_PAGES` in den Tests.
 
 ### 4. Header und Footer sind auf allen Seiten identisch
+Die Kopfnavigation führt genau vier Punkte, alle gleich gestaltet (kein abgesetzter Kontakt-Button, kein Sprachschalter):
+`Lunar Habitato` (`/pages/vision/`) · `Dual Use` (`/pages/dual-use/`) · `People` (`/pages/autor/`) · `Contact` (`/pages/kontakt/`).
+Der Footer ist eine Zeile: Copyright, Impressum, Datenschutz, Projekthinweis und rechts die Symbole für LinkedIn und E-Mail. Keine Footer-Navigation.
 Änderung am Rahmen → alle Seiten. Aktive Seite setzt `nav.js` per `aria-current`, nicht das HTML.
 
 ### 5. Jedes neue Modul in `src/site/main.js` starten
@@ -57,11 +60,11 @@ Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge F
 ### 10. Bilder und Kacheln — feste Gestaltungsregeln (gilt ohne Nachfrage)
 - **Bilder füllen ihre Fläche immer aus** (`object-fit: cover`). Keine schwarzen Ränder, kein Letterboxing — gilt für `.pillar-media`, `.card-media`, `.gallery`, `.split .media`, `.hero-sub-bg`, `.portrait`.
 - **Kacheln einer Reihe sind immer gleich groß**, im Zweifel kleiner statt größer (festes `aspect-ratio`, Bild per cover einpassen).
-- **Die Wortmarke steht nur im Header- und Footer-Logo.** Bilder mit eingebranntem „RE-THINK“/„WE RE-THINK X“ nicht verwenden: Schriftzug wegschneiden (Datei `…-clean.jpg`) oder textfreies Motiv nehmen. Dateien `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` sind die Originale mit Schriftzug und in `pages/` gesperrt (Test).
+- **Die Wortmarke steht nur im Header- und Footer-Logo.** Bilder mit eingebranntem „RETHINK“/„WE RETHINK X“ nicht verwenden: Schriftzug wegschneiden (Datei `…-clean.jpg`) oder textfreies Motiv nehmen. Dateien `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` sind die Originale mit Schriftzug und in `pages/` gesperrt (Test).
 - **Beim Bildtausch in Galerien immer `href` und `src` gemeinsam ändern**, sonst zeigt die Lightbox das alte Bild (Test).
-- **Landing-Hero:** Überschrift sind die zwei Leitsätze (`home.hero.lead1`/`lead2`), beide weiß, Button links darunter; keine große Wortmarke.
+- **Startseite:** nur Claim (`home.hero.lead1`/`lead2`, in Versalien, beide weiß) und Mond — kein Button, keine Kacheln, keine News-Sektion. Der Mondbereich füllt den Bildschirm (`min-height` auf `.moonscape`); die Mondscheibe beginnt dicht unter der Überschrift (`--moon-top`) und füllt den unteren Bereich (`--moon-d`).
 - **Unterseiten-Hero:** Bild in Inhaltsbreite wie die Überschrift, einheitliches 16:9-Fenster, Inhalt schließt dicht an (`.hero-sub + section`).
-- **Handy und Tablet:** kompakt, kein verschenkter Platz — Landing-Kacheln zweispaltig (Titel links, Bild rechts), News-Karten Bild links/Text rechts, enges Burger-Menü; die Kacheln beginnen so tief, dass der Mondbogen frei sichtbar bleibt.
+- **Handy und Tablet:** kompakt, kein verschenkter Platz — News-Karten Bild links/Text rechts, enges Burger-Menü.
 - Textdokumente (Poster, Zertifikat) nur dort einsetzen, wo die Lightbox sie lesbar macht.
 
 ### 11. Testphase: Zugangsschutz über `VITE_GATE_HASH`
@@ -91,7 +94,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `src/site/site.css` | Alle Stile |
 | `src/site/fonts.css` | Inter, selbst gehostet (fontsource) |
 | `src/site/i18n/` | `index.js` (Runtime), `de.js`, `en.js` |
-| `src/site/modules/` | `router.js`, `nav.js`, `lang-switch.js`, `contact.js`, `portrait.js`, `lightbox.js`, `chat.js`, `gate.js` |
+| `src/site/modules/` | `router.js`, `nav.js`, `contact.js`, `portrait.js`, `lightbox.js`, `chat.js`, `gate.js` |
 | `supabase/` | Chatbot-Backend: Edge Function `functions/chat/` (Claude-Aufruf, Streaming), `knowledge/` (Fakten, Autor, Buchzusammenfassungen), Migration `chat_log`; Anleitung in `supabase/README.md` |
 | `scripts/build-knowledge.mjs`, `push-knowledge.mjs` | `npm run knowledge` baut `knowledge.txt` aus Wörterbüchern + `knowledge/`; `npm run knowledge:push` lädt sie nach `public.chat_knowledge` |
 | `deploy/nginx.conf`, `Dockerfile` | Auslieferung wie FORGE (nginx:alpine) |
@@ -115,4 +118,5 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
 - Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
+- Seiten ohne Menüeintrag: `design`, `space`, `deployment`, `ip`, `news` sind seit der Menükürzung (23.09.2026) nur noch über die direkte Adresse und die `sitemap.xml` erreichbar — entscheiden, ob sie verlinkt, zusammengelegt oder gelöscht werden
 - Chatbot: Funktion `chat` ist im Projekt Re-Think-Space deployt, Wissensbasis und CMS-Tabellen befüllt (16.09.2026). Offen: Secret `ANTHROPIC_API_KEY` im Dashboard setzen, `VITE_CHAT_ENDPOINT` als GitHub-Variable, Datenschutzerklärung um den KI-Dienst (Anthropic) ergänzen

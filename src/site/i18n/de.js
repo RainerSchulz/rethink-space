@@ -1,19 +1,14 @@
 /**
- * RE-THINK SPACE — Wörterbuch Deutsch
+ * RETHINK SPACE — Wörterbuch Deutsch
  * Jeder Schlüssel hat ein Pendant in en.js (Parität wird getestet).
  * Schlüssel-Format: namespace.bereich.detail
  */
 export const DE = {
   // ── Navigation & Rahmen ───────────────────────────────────────────
   'nav.menu':        'Menü',
-  'nav.vision':      'Researching',
-  'nav.design':      'Design',
-  'nav.space':       'New Space',
-  'nav.deployment':  'Deployment',
-  'nav.dual-use':    'Dual-Use',
-  'nav.ip':          'IP',
-  'nav.news':        'News',
-  'nav.author':      'Autor',
+  'nav.vision':      'Lunar Habitato',
+  'nav.dual-use':    'Dual Use',
+  'nav.author':      'Menschen',
   'nav.contact':     'Kontakt',
   'footer.imprint':  'Impressum',
   'footer.privacy':  'Datenschutz',
@@ -23,12 +18,11 @@ export const DE = {
   'common.cta.talk': 'Gespräch vereinbaren',
   'common.skip':     'Zum Inhalt springen',
   'nav.main':        'Hauptnavigation',
-  'footer.nav':      'Fußzeilen-Navigation',
   'lightbox.close':  'Bild schließen',
   'chat.label':      'Fragen?',
   'chat.open':       'Chat öffnen',
   'chat.close':      'Chat schließen',
-  'chat.title':      'Frag RE-THINK SPACE',
+  'chat.title':      'Frag RETHINK SPACE',
   'chat.intro':      'Fragen zum Projekt, zur Technik oder zum Autor? Die Antworten erzeugt eine KI, Fehler sind möglich.',
   'chat.placeholder': 'Ihre Frage …',
   'chat.send':       'Senden',
@@ -36,7 +30,7 @@ export const DE = {
   'chat.error':      'Leider ist etwas schiefgelaufen. Bitte versuchen Sie es erneut.',
   'chat.hint':       'Ihre Frage wird an unseren KI-Dienst (Anthropic) übermittelt. Bitte keine personenbezogenen Daten eingeben.',
   'chat.you':        'Sie',
-  'chat.bot':        'RE-THINK SPACE',
+  'chat.bot':        'RETHINK SPACE',
 
   // ── Testzugang (VITE_GATE_HASH) ───────────────────────────────────
   'gate.title':      'Zugang zur Vorschau',
@@ -49,26 +43,13 @@ export const DE = {
   'gate.note':       'Angemeldet bleiben speichert den Zugang auf diesem Gerät, bis Sie die Browserdaten löschen.',
 
   // ── Startseite ────────────────────────────────────────────────────
-  'home.meta.title':       'RE-THINK SPACE – Neue Wege. Neue Räume.',
-  'home.meta.description': 'RE-THINK SPACE – Neue Wege. Neue Räume. Die Zukunft beginnt auf dem Mond: Design, Technologie und Umsetzung für dauerhafte Präsenz jenseits der Erde.',
-  'home.hero.lead1':       'Neue Wege. Neue Räume.',
-  'home.hero.lead2':       'Die Zukunft beginnt auf dem Mond.',
-  'home.hero.cta':         'Unsere Forschung',
-  'home.cards.design':     'Innovatives Design für sinnvolle Räume jenseits der Erde.',
-  'home.cards.space':      'Wir denken Raumfahrt neu – nachhaltig, funktional, menschlich.',
-  'home.cards.deployment': 'Strategische Umsetzung für dauerhafte Präsenz auf dem Mond.',
-  'home.cards.vision':     'Warum sich auf dem Mond entscheidet, wie wir jenseits der Erde leben.',
-  'home.cards.dual':       'Was extreme Umgebungen aushält, hilft auch auf der Erde.',
-  'home.cards.ip':         'Geschützte Verfahren sichern die Verwertbarkeit.',
-  'home.cards.news':       'Meldungen, Studien und Presseberichte.',
-  'home.cards.author':     'Autor, Wissenschaftler und Initiator des Projekts.',
-  'home.cards.contact':    'Forschung, Industrie, Presse – sprechen wir.',
-  'home.news.eyebrow':     'News & Updates',
-  'home.news.title':       'Immer auf dem Laufenden.',
-  'home.news.all':         'Alle News',
+  'home.meta.title':       'RETHINK SPACE – New Space Economy for Lunar Infrastructure',
+  'home.meta.description': 'New Space Economy for Lunar Infrastructure: Design, Technologie und Umsetzung für dauerhafte Präsenz auf dem Mond.',
+  'home.hero.lead1':       'New Space Economy for',
+  'home.hero.lead2':       'Lunar Infrastructure',
 
   // ── Vision ────────────────────────────────────────────────────────
-  'vision.meta.title':       'Researching – RE-THINK SPACE',
+  'vision.meta.title':       'Researching – RETHINK SPACE',
   'vision.meta.description': 'Der Mond ist kein Ziel. Er ist der erste Ort, an dem sich entscheidet, wie Menschen dauerhaft außerhalb der Erde leben und arbeiten.',
   'vision.hero.eyebrow':     'Researching',
   'vision.hero.title':       'Raum für morgen.',
@@ -76,7 +57,7 @@ export const DE = {
   'vision.position.eyebrow': 'Haltung',
   'vision.position.title':   'Warum wir Raumfahrt neu denken.',
   'vision.position.p1':      'Raumfahrt war jahrzehntelang eine Frage der Technik. Die nächste Etappe ist eine Frage der Gestaltung: Wie sehen Orte aus, an denen Menschen nicht nur überleben, sondern arbeiten, forschen und sich erholen?',
-  'vision.position.p2':      'RE-THINK SPACE verbindet Architektur, Materialforschung und Missionsplanung zu einem Ansatz, der vom Menschen aus denkt – und von dort zurück zur Technik.',
+  'vision.position.p2':      'RETHINK SPACE verbindet Architektur, Materialforschung und Missionsplanung zu einem Ansatz, der vom Menschen aus denkt – und von dort zurück zur Technik.',
   'vision.list.1':           'Bauen mit lokalen Ressourcen statt teurer Transportlogistik.',
   'vision.list.2':           'Strukturen, die Strahlung, Temperatur und Mikrometeoriten standhalten.',
   'vision.list.3':           'Räume, die psychologisch tragfähig sind – Licht, Weite, Rückzug.',
@@ -89,7 +70,7 @@ export const DE = {
   'vision.cta.text':         'Ob Forschungseinrichtung, Industriepartner oder Agentur – wir starten mit einem Gespräch.',
 
   // ── Design ────────────────────────────────────────────────────────
-  'design.meta.title':           'Re-Think Design – RE-THINK SPACE',
+  'design.meta.title':           'Design – RETHINK SPACE',
   'design.meta.description':     'Innovatives Design für sinnvolle Räume jenseits der Erde – von der Kuppelgeometrie bis zum Innenraum.',
   'design.hero.eyebrow':         'Design',
   'design.hero.title':           'Design, das trägt.',
@@ -113,7 +94,7 @@ export const DE = {
   'design.cta.text':             'Wir bringen Entwurf, Statik und Missionsrahmen zusammen.',
 
   // ── Space ─────────────────────────────────────────────────────────
-  'space.meta.title':         'New Space – RE-THINK SPACE',
+  'space.meta.title':         'New Space – RETHINK SPACE',
   'space.meta.description':   'Nachhaltig, funktional, menschlich – die technologische Basis für dauerhafte Präsenz jenseits der Erde.',
   'space.hero.eyebrow':       'New Space',
   'space.hero.title':         'Raumfahrt, neu gedacht.',
@@ -137,7 +118,7 @@ export const DE = {
   'space.cta.text':           'Für Forschungspartner stellen wir Studien und Materialdaten bereit.',
 
   // ── Deployment ────────────────────────────────────────────────────
-  'deployment.meta.title':       'Re-Think Deployment – RE-THINK SPACE',
+  'deployment.meta.title':       'Deployment – RETHINK SPACE',
   'deployment.meta.description': 'Strategische Umsetzung für dauerhafte Präsenz auf dem Mond – Logistik, Sequenz, Betrieb.',
   'deployment.hero.eyebrow':     'Deployment',
   'deployment.hero.title':       'Von der Idee zur Landestelle.',
@@ -161,7 +142,7 @@ export const DE = {
   'deployment.cta.text':         'Wir steigen in jeder Phase ein – von der Machbarkeitsstudie bis zur Integration.',
 
   // ── Dual-Use ──────────────────────────────────────────────────────
-  'dual.meta.title':              'Dual-Use – RE-THINK SPACE',
+  'dual.meta.title':              'Dual-Use – RETHINK SPACE',
   'dual.meta.description':        'Was extreme Umgebungen aushält, hilft auch dort, wo auf der Erde konventionelles Bauen an Grenzen stößt.',
   'dual.hero.eyebrow':            'Dual-Use',
   'dual.hero.title':              'Mondtechnik für die Erde.',
@@ -181,7 +162,7 @@ export const DE = {
   'dual.cta.text':                'Wir prüfen gemeinsam, ob sich ein Verfahren auf Ihren Anwendungsfall übertragen lässt.',
 
   // ── IP ────────────────────────────────────────────────────────────
-  'ip.meta.title':       'IP & Schutzrechte – RE-THINK SPACE',
+  'ip.meta.title':       'IP & Schutzrechte – RETHINK SPACE',
   'ip.meta.description': 'Eigene Schutzrechte sichern die Verwertbarkeit – auf dem Mond wie auf der Erde.',
   'ip.hero.eyebrow':     'IP',
   'ip.hero.title':       'Geschützte Verfahren.',
@@ -199,11 +180,11 @@ export const DE = {
   'ip.cta.text':         'Für Industriepartner sind Lizenzmodelle und gemeinsame Weiterentwicklung möglich.',
 
   // ── News ──────────────────────────────────────────────────────────
-  'news.meta.title':       'News – RE-THINK SPACE',
-  'news.meta.description': 'Meldungen, Studien und Presseberichte rund um RE-THINK SPACE.',
+  'news.meta.title':       'News – RETHINK SPACE',
+  'news.meta.description': 'Meldungen, Studien und Presseberichte rund um RETHINK SPACE.',
   'news.hero.eyebrow':     'News & Updates',
   'news.hero.title':       'Immer auf dem Laufenden.',
-  'news.hero.lead':        'Meldungen, Studien und Presseberichte rund um RE-THINK SPACE.',
+  'news.hero.lead':        'Meldungen, Studien und Presseberichte rund um RETHINK SPACE.',
   'news.tag.mission':      'Mission',
   'news.tag.design':       'Design',
   'news.tag.partnership':  'Partnerschaft',
@@ -227,15 +208,15 @@ export const DE = {
   'news.cta.text':         'Schreiben Sie uns, wenn Sie Studien oder Pressematerial erhalten möchten.',
 
   // ── Autor ─────────────────────────────────────────────────────────
-  'author.meta.title':           'Dr. Johannes Lierfeld – RE-THINK SPACE',
-  'author.meta.description':     'Dr. Johannes Lierfeld – Autor, Wissenschaftler und Initiator von RE-THINK SPACE.',
+  'author.meta.title':           'Dr. Johannes Lierfeld – RETHINK SPACE',
+  'author.meta.description':     'Dr. Johannes Lierfeld – Autor, Wissenschaftler und Initiator von RETHINK SPACE.',
   'author.hero.eyebrow':         'Der Verfasser',
-  'author.hero.lead':            'Autor, Wissenschaftler und Initiator von RE-THINK SPACE.',
+  'author.hero.lead':            'Autor, Wissenschaftler und Initiator von RETHINK SPACE.',
   'author.portrait.placeholder': 'Portrait einsetzen als public/Bilder/Lierfeld.jpg',
   'author.profile.eyebrow':      'Zur Person',
   'author.profile.title':        'Zwischen Technologie und Zukunftsfrage.',
   'author.profile.p1':           'Dr. Johannes Lierfeld beschäftigt sich seit Jahren mit den Folgen technologischer Umbrüche – von künstlicher Intelligenz über die Schnittstelle von Biologie und Rechnersystemen bis zur Frage, wie Menschen in künstlich geschaffenen Umgebungen leben.',
-  'author.profile.p2':           'RE-THINK SPACE führt diese Linien zusammen: Der Mond ist der Ort, an dem sich Technik, Architektur und menschliches Maß zum ersten Mal vollständig neu verhandeln lassen.',
+  'author.profile.p2':           'RETHINK SPACE führt diese Linien zusammen: Der Mond ist der Ort, an dem sich Technik, Architektur und menschliches Maß zum ersten Mal vollständig neu verhandeln lassen.',
   'author.profile.p3':           'Als Autor mehrerer Sachbücher schreibt er über diese Entwicklungen für ein breites Publikum – und arbeitet zugleich an ihrer praktischen Umsetzung.',
   'author.profile.contact':      'Kontakt aufnehmen',
   'author.books.eyebrow':        'Veröffentlichungen',
@@ -253,7 +234,7 @@ export const DE = {
   'author.why.link':             'Zum Researching',
 
   // ── Kontakt ───────────────────────────────────────────────────────
-  'contact.meta.title':       'Kontakt – RE-THINK SPACE',
+  'contact.meta.title':       'Kontakt – RETHINK SPACE',
   'contact.meta.description': 'Forschung, Industrie, Presse – wir antworten auf jede ernst gemeinte Anfrage.',
   'contact.hero.eyebrow':     'Kontakt',
   'contact.hero.title':       'Sprechen wir.',
@@ -270,11 +251,11 @@ export const DE = {
 
   // ── Rechtliches ───────────────────────────────────────────────────
   'legal.eyebrow':            'Rechtliches',
-  'imprint.meta.title':       'Impressum – RE-THINK SPACE',
-  'imprint.meta.description': 'Impressum von RE-THINK SPACE.',
+  'imprint.meta.title':       'Impressum – RETHINK SPACE',
+  'imprint.meta.description': 'Impressum von RETHINK SPACE.',
   'imprint.title':             'Impressum',
   'imprint.operator.title':    'Angaben gemäß § 5 DDG',
-  'imprint.operator.body':     'Dr. Karl Johannes Lierfeld, RE-THINK SPACE, [Straße und Hausnummer], [PLZ und Ort], Deutschland. Rechtsform, Registergericht und Registernummer sowie die Umsatzsteuer-Identifikationsnummer nach § 27 a UStG sind vor der Veröffentlichung zu ergänzen, soweit vorhanden.',
+  'imprint.operator.body':     'Dr. Karl Johannes Lierfeld, RETHINK SPACE, [Straße und Hausnummer], [PLZ und Ort], Deutschland. Rechtsform, Registergericht und Registernummer sowie die Umsatzsteuer-Identifikationsnummer nach § 27 a UStG sind vor der Veröffentlichung zu ergänzen, soweit vorhanden.',
   'imprint.contact.title':     'Kontakt',
   'imprint.contact.body':      'E-Mail: kontakt@rethink.space · Telefon: [Telefonnummer]. Anfragen beantworten wir schriftlich; eine telefonische Rechtsberatung findet nicht statt.',
   'imprint.responsible.title': 'Verantwortlich für den Inhalt',
@@ -292,12 +273,12 @@ export const DE = {
   'imprint.dispute.title':     'Streitbeilegung',
   'imprint.dispute.body':      'Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: https://ec.europa.eu/consumers/odr. Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.',
   'imprint.draft.note':        'Entwurf, Stand 18. September 2026. Die in eckigen Klammern stehenden Angaben sind vor der Veröffentlichung zu ergänzen. Der Text ersetzt keine Rechtsberatung und sollte vor dem Livegang juristisch geprüft werden.',
-  'privacy.meta.title':       'Datenschutz – RE-THINK SPACE',
-  'privacy.meta.description': 'Datenschutzerklärung von RE-THINK SPACE.',
+  'privacy.meta.title':       'Datenschutz – RETHINK SPACE',
+  'privacy.meta.description': 'Datenschutzerklärung von RETHINK SPACE.',
   'privacy.title':            'Datenschutzerklärung',
   'privacy.intro':            'Kurz vorweg: Diese Website setzt keine Cookies, bindet keine Inhalte von Drittanbietern ein und verwendet keine Analyse- oder Werbedienste. Deshalb erscheint auch kein Einwilligungsbanner. Schriften werden vom eigenen Server geladen. Personenbezogene Daten fallen nur dort an, wo Sie uns selbst schreiben oder den KI-Assistenten nutzen.',
   'privacy.controller.title': '1. Verantwortlicher',
-  'privacy.controller.body':  'Verantwortlich im Sinne der Datenschutz-Grundverordnung ist Dr. Karl Johannes Lierfeld, RE-THINK SPACE, [Straße und Hausnummer], [PLZ und Ort], Deutschland, E-Mail kontakt@rethink.space. Eine Datenschutzbeauftragte oder ein Datenschutzbeauftragter ist nicht bestellt; die Voraussetzungen dafür liegen derzeit nicht vor.',
+  'privacy.controller.body':  'Verantwortlich im Sinne der Datenschutz-Grundverordnung ist Dr. Karl Johannes Lierfeld, RETHINK SPACE, [Straße und Hausnummer], [PLZ und Ort], Deutschland, E-Mail kontakt@rethink.space. Eine Datenschutzbeauftragte oder ein Datenschutzbeauftragter ist nicht bestellt; die Voraussetzungen dafür liegen derzeit nicht vor.',
   'privacy.hosting.title':    '2. Hosting und Protokolldateien',
   'privacy.hosting.body':     'Die Website wird bei GitHub Pages gehostet, einem Dienst der GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA. Beim Aufruf der Seiten verarbeitet GitHub technisch notwendige Verbindungsdaten, insbesondere IP-Adresse, Datum und Uhrzeit, aufgerufene Adresse, übertragene Datenmenge und Browserkennung. Diese Verarbeitung ist für die Auslieferung der Seiten und die Abwehr von Angriffen erforderlich. Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren und stabilen Betrieb nach Artikel 6 Absatz 1 Buchstabe f DSGVO. Auf Speicherdauer und Umfang dieser Protokolle haben wir keinen Einfluss; Einzelheiten nennt die Datenschutzerklärung von GitHub.',
   'privacy.storage.title':    '3. Speicherung im Browser',
@@ -319,7 +300,7 @@ export const DE = {
   'privacy.draft.note':       'Entwurf, Stand 18. September 2026. Die in eckigen Klammern stehenden Angaben sind vor der Veröffentlichung zu ergänzen. Der Text ersetzt keine Rechtsberatung und sollte vor dem Livegang juristisch geprüft werden.',
 
   // ── 404 ───────────────────────────────────────────────────────────
-  'notfound.meta.title':       'Seite nicht gefunden – RE-THINK SPACE',
+  'notfound.meta.title':       'Seite nicht gefunden – RETHINK SPACE',
   'notfound.meta.description': 'Diese Seite gibt es nicht oder nicht mehr.',
   'notfound.eyebrow':          'Fehler 404',
   'notfound.title':            'Seite nicht gefunden.',

@@ -1,7 +1,7 @@
 {
   "name": "rethink-space",
   "version": "1.0.0",
-  "description": "RE-THINK SPACE — statische Website, zweisprachig DE/EN",
+  "description": "RETHINK SPACE — statische Website, zweisprachig DE/EN",
   "private": true,
   "type": "module",
   "scripts": {

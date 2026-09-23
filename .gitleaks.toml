@@ -2,7 +2,7 @@
 # Standard-Regeln ohne Ausnahmen: Diese Website hat keine öffentlichen Keys.
 # Findet der Scan ein Secret, läuft weder Build noch Deploy.
 
-title = "RE-THINK SPACE — gitleaks"
+title = "RETHINK SPACE — gitleaks"
 
 [extend]
 useDefault = true

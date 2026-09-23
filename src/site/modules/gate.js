@@ -76,7 +76,7 @@ function build(allowed, onOpen) {
 
   const form = el('form', 'gate-box');
   const logo = el('p', 'gate-logo');
-  logo.append(el('span', null, 'RE-THINK'), el('span', 'accent', 'SPACE'));
+  logo.append(el('span', null, 'RETHINK'), el('span', 'accent', 'SPACE'));
   const title = el('h1', 'gate-title', t('gate.title'));
   title.id = 'gate-title';
   title.dataset.i18n = 'gate.title';

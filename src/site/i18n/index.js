@@ -1,19 +1,19 @@
 /**
- * RE-THINK SPACE — i18n
- * DE/EN Übersetzungen, Sprachwechsel, Anwendung auf data-i18n-Elemente.
+ * RETHINK SPACE — i18n
+ * Die Website erscheint ausschließlich auf Englisch — der DE/EN-Schalter ist
+ * entfernt. Das deutsche Wörterbuch bleibt erhalten, damit die zweite Sprache
+ * später ohne Umbau wieder eingeschaltet werden kann: detectInitialLang()
+ * zurücksetzen und den Schalter in den Header aufnehmen.
  */
 import { DE } from './de.js';
 import { EN } from './en.js';
 
 const DICT = { de: DE, en: EN };
-const STORAGE_KEY = 'rethink_lang';
 export const LANG_EVENT = 'rethink:langchange';
 
-/** Englisch ist immer der Standard; Deutsch nur, wenn es einmal gewählt wurde. */
+/** Einsprachig: immer Englisch, unabhängig von Browser und gespeicherter Wahl. */
 export function detectInitialLang() {
-  let saved = null;
-  try { saved = localStorage.getItem(STORAGE_KEY); } catch { /* Storage gesperrt */ }
-  return saved === 'de' ? 'de' : 'en';
+  return 'en';
 }
 
 let _lang = detectInitialLang();
@@ -51,11 +51,12 @@ export function applyLang(root = document) {
   });
 }
 
-/** Sprache wechseln, speichern, DOM aktualisieren, Komponenten benachrichtigen. */
+/** Sprache umschalten, DOM aktualisieren, Komponenten benachrichtigen.
+ *  Ohne Schalter ruft die Website das nicht auf; die Funktion trägt die
+ *  zweisprachige Fassung für eine spätere Wiedereinführung. */
 export function setLang(lang) {
   if (lang !== 'de' && lang !== 'en') return;
   _lang = lang;
-  try { localStorage.setItem(STORAGE_KEY, lang); } catch { /* Storage gesperrt */ }
   applyLang();
   window.dispatchEvent(new CustomEvent(LANG_EVENT, { detail: { lang } }));
 }

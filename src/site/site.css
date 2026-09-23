@@ -1,4 +1,4 @@
-/* RE-THINK SPACE — Stylesheet
+/* RETHINK SPACE — Stylesheet
    Reihenfolge: Variablen → Reset → Layout → Komponenten → Seiten → Responsive
    Farben aus dem Original-Mockup abgeleitet.
    Wird direkt im HTML verlinkt, damit die Seite nie ohne CSS erscheint. */
@@ -125,18 +125,6 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 .nav a:hover,
 .nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--accent); }
-.nav .btn-outline {
-  border: 1px solid rgba(255, 255, 255, .55); border-radius: 999px;
-  padding: 10px 22px; font-size: 12.5px; font-weight: 600;
-  letter-spacing: .1em; text-transform: uppercase;
-}
-.nav .btn-outline:hover { background: #fff; color: #000; border-color: #fff; }
-.lang { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
-.lang button {
-  background: none; border: 0; color: var(--muted); cursor: pointer;
-  font: inherit; padding: 12px 6px; min-width: 32px; /* Touch-Ziel ≥ 24 px */
-}
-.lang button[aria-pressed="true"] { color: var(--accent); }
 .burger { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 9px; margin-left: auto; } /* 44 × 44 px */
 .burger svg { display: block; }
 
@@ -169,9 +157,10 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .moonscape {
   position: relative; overflow: hidden; isolation: isolate;
   background: #000; container-type: inline-size;
-  --moon-d: 240cqw;                  /* Durchmesser: 2,4 × Seitenbreite */
-  --moon-x: -10cqw;                  /* Mittelpunkt etwas links vom Rand */
-  --moon-top: 300px;                 /* hier beginnt der Rand links oben */
+  min-height: calc(100vh - var(--header-h)); /* Startseite ist nur Claim und Mond */
+  --moon-d: 280cqw;                  /* Durchmesser: so groß, dass der Mond den unteren Bereich füllt */
+  --moon-x: 88cqw;                   /* Mittelpunkt nahe dem rechten Rand (Mond gespiegelt) */
+  --moon-top: 240px;                 /* Oberkante der Kugel: gleicher Abstand wie Header→Überschrift (56px) */
 }
 .moonscape::before {
   content: ""; position: absolute; z-index: -1; pointer-events: none;
@@ -180,32 +169,26 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   width: var(--moon-d); height: var(--moon-d);
   border-radius: 50%;
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, .18) 0%, rgba(0, 0, 0, .42) 40%, rgba(0, 0, 0, .7) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, .04) 0%, rgba(0, 0, 0, .14) 40%, rgba(0, 0, 0, .3) 100%),
     url("/Bilder/moon-full.jpg") center / 100.4% 100.4% no-repeat #1a1a1c;
   box-shadow: 0 0 140px rgba(215, 220, 240, .16);
-}
-.moonscape::after {                  /* Übergang in die schwarze News-Sektion */
-  content: ""; position: absolute; z-index: -1; pointer-events: none;
-  left: 0; right: 0; bottom: 0; height: 200px;
-  background: linear-gradient(180deg, transparent, #000);
+  transform: scaleX(-1);             /* Krater ebenfalls spiegeln */
 }
 
 .hero { position: relative; }
 .hero .wrap { position: relative; z-index: 2; width: 100%; }
 .hero-copy {
   display: grid; grid-template-columns: 1fr minmax(0, 520px); column-gap: 32px;
-  padding: 56px 0 40px; text-shadow: 0 2px 28px rgba(0, 0, 0, .6);
+  padding: 56px 0 24px; text-shadow: 0 2px 28px rgba(0, 0, 0, .6);
 }
 /* Überschrift = die zwei Leitsätze, zweizeilig; die längere Zeile füllt die Wrap-Breite */
 .hero h1 {
-  grid-column: 1 / -1; white-space: nowrap; margin: 0 0 26px;
-  font-size: min(6.86vw - 3px, 77px); letter-spacing: -.03em; line-height: 1.04;
+  grid-column: 1 / -1; white-space: nowrap; margin: 0 0 26px; text-transform: uppercase;
+  font-size: min(5.1vw - 2px, 58px); letter-spacing: -.005em; word-spacing: .16em; line-height: 1.1;
 }
 .hero h1 span { display: block; }
 .hero h1 .accent { color: inherit; } /* beide Zeilen weiß */
 
-
-.hero .btn { grid-column: 1; justify-self: start; text-shadow: none; }
 
 /* Unterseiten-Hero: das Bild bestimmt die Höhe und ist ganz zu sehen (contain),
    der Text liegt unten darüber. Bild und Text teilen sich dieselbe Grid-Zelle. */
@@ -405,18 +388,17 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .legal-page .note { margin-top: 40px; }
 
 /* ---------- 13. Footer ---------- */
-.site-footer { border-top: 1px solid var(--line); padding: 44px 0; margin-top: 20px; }
-.footer-inner { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
-.footer-nav { display: flex; gap: 24px; flex-wrap: wrap; }
-.footer-nav a { display: inline-block; padding: 6px 0; font-size: 12.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: #c9c9d0; }
-.footer-nav a:hover { color: var(--accent); }
-.social { margin-left: auto; display: flex; gap: 0; align-items: center; }
-.social a { color: #c9c9d0; display: block; padding: 12px; } /* 43 × 43 px Touch-Ziel */
-.social a:hover { color: var(--accent); }
-.social svg { width: 19px; height: 19px; display: block; fill: currentColor; }
-.legal { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 20px; font-size: 12.5px; color: var(--muted); display: flex; gap: 22px; flex-wrap: wrap; }
+/* Schlanker Footer: eine Zeile mit Rechtlichem links und den Icons rechts. */
+.site-footer { border-top: 1px solid var(--line); padding: 26px 0; margin-top: 20px; }
+.legal { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.legal a { color: inherit; }
+.legal a:hover { color: var(--accent); }
+.social-link { margin-left: auto; color: #c9c9d0; display: block; padding: 10px; } /* Touch-Ziel */
+.social-link + .social-link { margin-left: 0; }
+.social-link:hover { color: var(--accent); }
+.social-link svg { width: 19px; height: 19px; display: block; fill: currentColor; }
 
-/* ---------- 13b. Chat „Frag RE-THINK SPACE“ (modules/chat.js) ---------- */
+/* ---------- 13b. Chat „Frag RETHINK SPACE“ (modules/chat.js) ---------- */
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .chat-fab {
   position: fixed; right: 20px; bottom: 20px; z-index: 40; /* unter dem Header, damit das offene Menü ihn verdeckt */
@@ -490,16 +472,12 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
 /* ---------- 14. Responsive ----------
    Breakpoints: ≥1600 großer Monitor · ≤1000 Tablet quer / kleines Notebook ·
    ≤820 Tablet hoch & Handy (Burger-Menü) · ≤480 kleines Handy · Handy quer. */
-@media (min-width: 1600px) {
-  .moonscape { --moon-top: 340px; }
-}
 @media (max-width: 1100px) {   /* Menü verdichten, damit es einzeilig bleibt */
   .nav { gap: 16px; }
-  .nav a, .nav .btn-outline { font-size: 11.5px; }
-  .nav .btn-outline { padding: 9px 16px; }
+  .nav a { font-size: 11.5px; }
 }
 @media (max-width: 1000px) {
-  .moonscape { --moon-d: 270cqw; }
+  .moonscape { --moon-d: 290cqw; }
   .hero-copy { grid-template-columns: 1fr minmax(0, 460px); }
   .grid-3, .gallery, .stat-row { grid-template-columns: repeat(2, 1fr); }
   .split, .contact-grid, .author { grid-template-columns: 1fr; }
@@ -519,25 +497,22 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   }
   .nav.open { display: flex; }
   .nav a { width: 100%; padding: 8px 0; font-size: 12px; border-bottom: 1px solid rgba(255, 255, 255, .06); } /* kompakt: 8 Einträge auf einen Blick */
-  .nav .btn-outline { margin-top: 10px; width: auto; padding: 9px 18px; border-bottom: 1px solid rgba(255, 255, 255, .55); }
-  .lang { margin-top: 6px; }
 }
 @media (max-width: 820px) {
   /* Handy: kleinere Überschrift, Lead und Button nebeneinander, alles kompakter */
   .hero-copy { grid-template-columns: 1fr auto; column-gap: 14px; align-items: center; padding: 22px 0 10px; }
-  .hero h1 { grid-column: 1 / -1; white-space: normal; text-wrap: balance; font-size: clamp(22px, 6.6vw, 38px); line-height: 1.12; margin-bottom: 16px; }
+  .hero h1 { grid-column: 1 / -1; white-space: normal; text-wrap: balance; font-size: clamp(18px, 5.3vw, 38px); line-height: 1.12; margin-bottom: 16px; }
   /* Unterseiten-Hero auf dem Handy: Bild komplett oben, Text darunter */
   .hero-sub { display: block; }
   .hero-sub-bg { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: none; }
   .hero-sub::after { display: none; }
   .hero-sub .wrap { padding-top: 28px; padding-bottom: 36px; }
 
-  .hero .btn { grid-column: 1; margin-top: 0; padding: 11px 18px; font-size: 11.5px; }
   /* Schmale Seite: sehr großer Kreis weit links, damit der Rand als schräger
      Horizont abfällt und der Mond bis unter die gestapelten Kacheln reicht */
   /* Handy: kleinere Scheibe, Mittelpunkt links – der Rand läuft als deutlicher Bogen
      von links oben nach rechts unten; darunter füllt der Mond die Breite */
-  .moonscape { --moon-d: 300cqw; --moon-x: -40cqw; --moon-top: 120px; }
+  .moonscape { --moon-d: 240cqw; --moon-x: 78cqw; --moon-top: 129px; min-height: calc(100svh - var(--header-h)); }
   .moonscape::before {
     background:
       linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%),
@@ -575,7 +550,7 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   .wrap { padding: 0 18px; }
   .hero-copy { padding: 18px 0 8px; }
 
-  .moonscape { --moon-top: 115px; }
+  .moonscape { --moon-top: 85px; }
   .pillars { padding: 155px 0 48px; }
   .pillars .wrap { gap: 10px; }
   .pillar-title { padding: 12px 12px 14px; }
@@ -584,12 +559,12 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .hero-copy { padding: 24px 0 12px; }
-  .moonscape { --moon-top: 220px; }
+  .moonscape { --moon-top: 115px; }
   .pillars { padding-top: 110px; }
 }
 @media (min-width: 700px) and (max-width: 940px) {
-  /* Tablet: zwei Spalten, tiefer beginnend, damit der Mondbogen frei bleibt */
-  .moonscape { --moon-top: 150px; }
+  /* Tablet: gleicher Abstand Header→Überschrift wie Überschrift→Mond */
+  .moonscape { --moon-top: 129px; }
   .pillars { padding: 268px 0 72px; }
   .pillars .wrap { grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .pillar-title { padding: 14px 14px 16px; }

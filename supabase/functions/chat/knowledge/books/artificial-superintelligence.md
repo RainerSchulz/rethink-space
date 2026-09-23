@@ -58,7 +58,7 @@ Lierfeld positioniert sich zwischen naivem Optimismus (Kurzweil, Itskov) und pau
 - „it seems possible to have strong or safe AI – not both at the same time.“ (S. 166)
 - „When we ponder the possibilities of the AI control problem, we execute 'intellectual pull-ups' without knowing if we ever need them.“ (S. 315)
 
-## Bezug zu RE-THINK SPACE
+## Bezug zu RETHINK SPACE
 
 Das Buch ist kein Raumfahrtbuch und erwähnt den Mond nicht; Raumfahrt taucht nur am Rand auf. Ehrliche Berührungspunkte:
 

@@ -50,7 +50,7 @@ All quotes are machine-translated and may differ from the German original.
 - "In some ways, BCIs appear to be a realization of Heisenberg's observer effect." (p. 73)
 - "The boundary that separates internal perspective from external observation, may be the most powerful tool for protecting subjectivity from objectification." (p. 85)
 
-## Relevance for RE-THINK SPACE
+## Relevance for RETHINK SPACE
 
 - Space is only a passing motif: Vidal's 1973 question whether brain signals could control "prostheses or spaceships" (p. 18) and "exploring the galaxy using remote-controlled spaceships" as a BCI application (p. 111).
 - BCI-supervised robotics: it traces the line from Nicolelis' robotic arm to BMI-controlled exoskeletons; its exoskeleton thought experiment (who is responsible when a read error causes harm?) applies to any BCI-supervised robot.

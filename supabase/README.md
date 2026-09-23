@@ -1,4 +1,4 @@
-# Chatbot „Frag RE-THINK SPACE“ – Backend (Supabase Edge Function)
+# Chatbot „Frag RETHINK SPACE“ – Backend (Supabase Edge Function)
 
 Stufe 1: Wissensbasis als gecachter Systemprompt, kein Vektorindex.
 Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Funktion.
@@ -49,7 +49,7 @@ Nach jeder Textänderung an der Website oder an `knowledge/`: `npm run knowledge
 ```bash
 curl -N -X POST https://<ref>.supabase.co/functions/v1/chat \
   -H "Origin: http://localhost:3100" -H "Content-Type: application/json" \
-  -d '{"lang":"de","messages":[{"role":"user","content":"Was ist RE-THINK SPACE?"}]}'
+  -d '{"lang":"de","messages":[{"role":"user","content":"Was ist RETHINK SPACE?"}]}'
 ```
 Antwort ist ein SSE-Stream mit `data: {"type":"text","text":"…"}` und abschließend `data: {"type":"done"}`.
 

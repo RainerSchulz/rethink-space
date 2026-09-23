@@ -1,4 +1,4 @@
-# RE-THINK SPACE — Coding Guide
+# RETHINK SPACE — Coding Guide
 
 **Version:** 1.1 · September 2026
 **Gilt für:** das gesamte Repo — alle Seiten, alle Module
@@ -89,7 +89,7 @@ Reihenfolge in `site.css`: Variablen → Reset → Layout → Header → Buttons
 - **Englisch ist die Standardsprache.** Der Text im HTML ist der **englische Fallback** und muss dem EN-Wert exakt entsprechen (Test). Deutsch erscheint nur nach Klick auf DE (gemerkt in localStorage); `<html lang="en">`, `og:locale` en_US.
 - Schlüssel-Format: `namespace.bereich.detail`, nur Kleinbuchstaben, Ziffern, `-` und `.`.
 - Namespaces: `nav`, `footer`, `common`, `home`, `vision`, `design`, `space`, `deployment`, `dual`, `ip`, `news`, `author`, `contact`, `legal`, `imprint`, `privacy`, `notfound`.
-- Nicht übersetzen: Markenname RE-THINK SPACE, Eigennamen, Buchtitel, Zahlen mit Einheit, Daten, E-Mail-Adressen.
+- Nicht übersetzen: Markenname RETHINK SPACE, Eigennamen, Buchtitel, Zahlen mit Einheit, Daten, E-Mail-Adressen.
 - Ein fehlender Schlüssel ist **kein Fehler, sondern ein Text**: `t()` gibt den Schlüssel zurück und er steht blank auf der Seite. Deshalb prüft `tests/unit/i18n.test.js` jeden verwendeten Schlüssel gegen beide Wörterbücher und jeden definierten Schlüssel auf Verwendung.
 
 **Definition of Done für jede Textänderung:** `npm run test:run` grün.
@@ -227,7 +227,7 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 > **Jedes Bild füllt seine Fläche vollständig aus, alle Kacheln einer Reihe sind gleich groß, und die Wortmarke steht nur im Logo.**
 
 ### Warum
-Schwarze Ränder (Letterboxing) und unterschiedlich hohe Kacheln wirken unfertig. Bilder mit eingebranntem „RE-THINK“ doppeln das Logo und stören, seit der Hero die Wortmarke nicht mehr zeigt.
+Schwarze Ränder (Letterboxing) und unterschiedlich hohe Kacheln wirken unfertig. Bilder mit eingebranntem „RETHINK“ doppeln das Logo und stören, seit der Hero die Wortmarke nicht mehr zeigt.
 
 ### Regeln
 

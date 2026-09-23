@@ -1,11 +1,15 @@
 /**
  * Lädt die gebaute Wissensbasis (supabase/functions/chat/knowledge.txt) in die
- * Tabelle public.chat_knowledge hoch. Anmeldung als CMS-Admin (E-Mail/Passwort),
- * kein Service-Role-Key nötig. Aufruf: npm run knowledge:push
+ * Tabelle public.chat_knowledge hoch. Aufruf: npm run knowledge:push
  *
- * Variablen (Umgebung oder .env): SUPABASE_URL, SUPABASE_ANON_KEY,
- * CMS_ADMIN_EMAIL (Standard admin@rethink.space), CMS_ADMIN_PASSWORD.
- * SUPABASE_URL wird sonst aus VITE_CHAT_ENDPOINT abgeleitet.
+ * Zwei Wege, in dieser Reihenfolge:
+ *   1. SUPABASE_SERVICE_ROLE_KEY (Dienstschlüssel, umgeht RLS) — holen mit
+ *      npx supabase projects api-keys --project-ref <ref>
+ *   2. Anmeldung als CMS-Admin: CMS_ADMIN_EMAIL (Standard admin@rethink.space)
+ *      und CMS_ADMIN_PASSWORD
+ *
+ * Werte aus der Umgebung oder aus .env. SUPABASE_URL wird sonst aus
+ * VITE_CHAT_ENDPOINT abgeleitet.
  */
 import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname, join } from 'path';
@@ -23,27 +27,35 @@ function readEnv(file) {
 
 const url = env.SUPABASE_URL || (env.VITE_CHAT_ENDPOINT || '').replace(/\/functions\/v1\/.*$/, '');
 const anon = env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY;
+const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
 const email = env.CMS_ADMIN_EMAIL || 'admin@rethink.space';
 const password = env.CMS_ADMIN_PASSWORD;
 const file = join(ROOT, 'supabase/functions/chat/knowledge.txt');
 
-if (!url || !anon || !password) {
-  console.error('Fehlt: SUPABASE_URL (oder VITE_CHAT_ENDPOINT), SUPABASE_ANON_KEY, CMS_ADMIN_PASSWORD (Umgebung oder .env).');
+if (!url || !anon || (!serviceKey && !password)) {
+  console.error('Fehlt: SUPABASE_URL (oder VITE_CHAT_ENDPOINT), SUPABASE_ANON_KEY und entweder');
+  console.error('SUPABASE_SERVICE_ROLE_KEY oder CMS_ADMIN_PASSWORD (Umgebung oder .env).');
+  console.error('Dienstschlüssel holen: npx supabase projects api-keys --project-ref <ref>');
   process.exit(1);
 }
 if (!existsSync(file)) { console.error('knowledge.txt fehlt – zuerst npm run knowledge'); process.exit(1); }
 
 const text = readFileSync(file, 'utf8');
-const login = await fetch(`${url}/auth/v1/token?grant_type=password`, {
-  method: 'POST', headers: { apikey: anon, 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, password }),
-});
-if (!login.ok) { console.error('Anmeldung fehlgeschlagen:', login.status, await login.text()); process.exit(1); }
-const { access_token } = await login.json();
 
+let token = serviceKey;
+if (!token) {
+  const login = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+    method: 'POST', headers: { apikey: anon, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!login.ok) { console.error('Anmeldung fehlgeschlagen:', login.status, await login.text()); process.exit(1); }
+  token = (await login.json()).access_token;
+}
+
+const key = serviceKey || anon;
 const res = await fetch(`${url}/rest/v1/chat_knowledge?on_conflict=id`, {
   method: 'POST',
-  headers: { apikey: anon, Authorization: `Bearer ${access_token}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=representation' },
+  headers: { apikey: key, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=representation' },
   body: JSON.stringify([{ id: 'current', text, updated_at: new Date().toISOString() }]),
 });
 if (!res.ok) { console.error('Upload fehlgeschlagen:', res.status, await res.text()); process.exit(1); }

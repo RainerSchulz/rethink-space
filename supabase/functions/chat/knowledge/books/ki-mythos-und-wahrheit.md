@@ -64,7 +64,7 @@ Er empfiehlt digitale Kompetenz und kritisches Denken, Transparenz bei automatis
 - "Der Mensch wird nur ersetzt, wenn er sich ersetzen lässt." (Seite 55)
 - "Wir müssen zu den ultimativen Werkzeugbeherrschern werden." (Seite 165)
 
-## Bezug zu RE-THINK SPACE
+## Bezug zu RETHINK SPACE
 
 Das Buch behandelt Raumfahrt und Mond-Habitate nicht als eigenes Thema; die Berührungspunkte sind indirekt, aber vorhanden:
 
@@ -74,7 +74,7 @@ Das Buch behandelt Raumfahrt und Mond-Habitate nicht als eigenes Thema; die Ber�
 - Raumfahrt-Motive: Keplers "Somnium" (1608) als erste Mondreise der Science-Fiction, die Voyager Golden Records, Von-Neumann-Sonden und Dyson-Sphären werden nur beiläufig erwähnt.
 - Autonome Fahrzeuge und Drohnen erscheinen im Ausblick als erwartbare Anwendungsfelder.
 
-Für RE-THINK SPACE ist das Buch vor allem als ethischer Rahmen relevant: menschliche Aufsicht, Transparenz und keine Vermenschlichung technischer Systeme.
+Für RETHINK SPACE ist das Buch vor allem als ethischer Rahmen relevant: menschliche Aufsicht, Transparenz und keine Vermenschlichung technischer Systeme.
 
 ## Über den Autor (aus dem Buch)
 

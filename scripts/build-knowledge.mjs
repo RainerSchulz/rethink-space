@@ -44,7 +44,7 @@ const books = existsSync(booksDir)
   ? readdirSync(booksDir).filter((f) => f.endsWith('.md')).sort().map((f) => read(join(booksDir, f))).join('\n\n---\n\n')
   : '';
 
-const text = `# Wissensbasis RE-THINK SPACE (generiert ${new Date().toISOString().slice(0, 10)})
+const text = `# Wissensbasis RETHINK SPACE (generiert ${new Date().toISOString().slice(0, 10)})
 
 ## Teil 1: Fakten zu Projekt, Website und Kontakt
 ${facts || '(keine Faktendatei)'}

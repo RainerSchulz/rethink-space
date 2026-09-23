@@ -1,5 +1,5 @@
 /**
- * Chat „Frag RE-THINK SPACE“ (Stufe 1).
+ * Chat „Frag RETHINK SPACE“ (Stufe 1).
  * Schwebender Button + <dialog> mit Verlauf. Fragen gehen an die Supabase
  * Edge Function (VITE_CHAT_ENDPOINT), Antworten kommen als SSE-Stream
  * (data: {"type":"text"|"done"|"error"}). Der API-Schlüssel liegt nur in

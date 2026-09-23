@@ -1,4 +1,4 @@
-// Supabase Edge Function „chat“ – RE-THINK SPACE Chatbot, Stufe 1.
+// Supabase Edge Function „chat“ – RETHINK SPACE Chatbot, Stufe 1.
 // Hält den Anthropic-Schlüssel (Secret ANTHROPIC_API_KEY), prüft Herkunft und
 // Rate, lädt die Wissensbasis aus public.chat_knowledge (Service-Rolle), ruft
 // Claude mit gecachtem Systemprompt auf und streamt die Antwort als
@@ -9,7 +9,8 @@ import Anthropic from "npm:@anthropic-ai/sdk";
 const MODEL = Deno.env.get("CHAT_MODEL") ?? "claude-opus-5";
 const FALLBACK_MODEL = Deno.env.get("CHAT_FALLBACK_MODEL") ?? "claude-opus-4-8";
 const ALLOWED_ORIGINS = (Deno.env.get("CHAT_ALLOWED_ORIGINS") ??
-  "https://rethink.space,https://www.rethink.space,http://localhost:3100")
+  "https://rethink.space,https://www.rethink.space,https://rainerschulz.github.io," +
+  "http://localhost:3100,http://127.0.0.1:3100,http://localhost:3199,http://localhost:4173")
   .split(",").map((s) => s.trim()).filter(Boolean);
 const RATE_LIMIT = Number(Deno.env.get("CHAT_RATE_LIMIT") ?? 20);      // Anfragen …
 const RATE_WINDOW_MS = 10 * 60 * 1000;                                   // … je 10 Minuten und IP
@@ -20,14 +21,14 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
 const client = new Anthropic({ apiKey: Deno.env.get("ANTHROPIC_API_KEY") });
 
-const RULES = `Du bist der Assistent der Website RE-THINK SPACE von Dr. Karl Johannes Lierfeld.
+const RULES = `Du bist der Assistent der Website RETHINK SPACE von Dr. Karl Johannes Lierfeld.
 Du beantwortest Fragen zum Projekt (Mond-Habitate, Design, Technik, Deployment, Dual-Use, IP), zum Autor und zu seinen Büchern.
 
 Regeln:
 - Antworte ausschließlich auf Basis der Wissensbasis unten. Wenn etwas dort nicht steht, sag das offen und verweise auf die Kontaktseite /pages/kontakt/ oder die E-Mail-Adresse.
 - Erfinde keine Fakten, Zahlen, Daten, Partner oder Zitate. Angaben aus Projektmaterial des Inhabers kennzeichnest du als Angaben des Projekts.
 - Zitiere aus Büchern höchstens einen Satz und verweise für mehr auf das Buch (Amazon-Link aus der Wissensbasis).
-- Fragen außerhalb von RE-THINK SPACE, dem Autor und seinen Themen lehnst du freundlich in einem Satz ab und bietest an, zu diesen Themen zu helfen.
+- Fragen außerhalb von RETHINK SPACE, dem Autor und seinen Themen lehnst du freundlich in einem Satz ab und bietest an, zu diesen Themen zu helfen.
 - Keine medizinische, rechtliche oder finanzielle Beratung, keine personenbezogenen Daten über Dritte.
 - Antworte knapp: meist 2 bis 6 Sätze, bei Aufzählungen kurze Zeilen. Reiner Text ohne Markdown, keine Sternchen, keine Überschriften.
 - Verweise auf passende Seiten immer als Pfad in dieser Form: /pages/vision/ /pages/design/ /pages/space/ /pages/deployment/ /pages/dual-use/ /pages/ip/ /pages/news/ /pages/autor/ /pages/kontakt/
@@ -40,10 +41,13 @@ const LANG_HINT: Record<string, string> = {
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-/** Wissensbasis einmal je Isolate laden (Service-Rolle umgeht RLS). */
+/** Wissensbasis je Isolate laden (Service-Rolle umgeht RLS), höchstens 5 Minuten
+ *  alt – so wirkt ein "npm run knowledge:push" ohne Redeploy. */
 let knowledge: string | null = null;
+let knowledgeAt = 0;
+const KNOWLEDGE_TTL_MS = 5 * 60 * 1000;
 async function loadKnowledge(): Promise<string> {
-  if (knowledge) return knowledge;
+  if (knowledge && Date.now() - knowledgeAt < KNOWLEDGE_TTL_MS) return knowledge;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/chat_knowledge?id=eq.current&select=text`, {
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
   });
@@ -52,6 +56,7 @@ async function loadKnowledge(): Promise<string> {
   const text = rows[0]?.text?.trim();
   if (!text) throw new Error("knowledge missing – npm run knowledge:push ausführen");
   knowledge = text;
+  knowledgeAt = Date.now();
   return text;
 }
 

@@ -1,11 +1,13 @@
-# Fakten zu RE-THINK SPACE
+# Fakten zu RETHINK SPACE
 
 ## Projekt
-- RE-THINK SPACE ist ein Projekt von Dr. Karl Johannes Lierfeld (auf der Website: Dr. Johannes Lierfeld). Claim: „New ways. New spaces. The future begins on the Moon.“ / „Neue Wege. Neue Räume. Die Zukunft beginnt auf dem Mond.“
+- Der Name schreibt sich immer RETHINK SPACE, in Versalien und ohne Bindestrich. Die frühere Schreibweise mit Bindestrich ist veraltet und darf in Antworten nicht vorkommen.
+- RETHINK SPACE ist ein Projekt von Dr. Karl Johannes Lierfeld (auf der Website: Dr. Johannes Lierfeld). Claim auf der Startseite: „New Space Economy for Lunar Infrastructure“ (englisch). Die Startseite zeigt ausschließlich diesen Claim vor dem Mond - keine Kacheln, keine News und keinen Button; alle Themen erreicht man über die Navigation im Kopf.
 - Thema: Design, Technik und Umsetzung dauerhafter Präsenz auf dem Mond; Habitate aus lokalem Material (Regolith, ISRU = In-Situ Resource Utilization), robotische Errichtung vor Ankunft der Crew, Dual-Use der Verfahren auf der Erde.
 - Drei Säulen der Website: DESIGN (Kuppelgeometrie, Material, Innenraum), NEW SPACE (Technik: additive Fertigung aus Regolith, redundante Hüllen, Energiespeicher für die 14-tägige Mondnacht), DEPLOYMENT (vier Phasen: Standort, Vorbereitung, Aufbau, Betrieb).
-- Website: https://rethink.space (Domain, Stand September 2026). Sprachen: Englisch (Standard) und Deutsch.
-- Seiten (Menüname → Adresse): Researching → /pages/vision/, Design → /pages/design/, New Space → /pages/space/, Deployment → /pages/deployment/, Dual-Use → /pages/dual-use/, IP → /pages/ip/, News → /pages/news/, Author → /pages/autor/, Contact → /pages/kontakt/, dazu /pages/landing/ (Start), /pages/impressum/, /pages/datenschutz/. Die Adressen behalten die alten Namen; im Menü heißen die Seiten Researching und New Space.
+- Website: https://rethink.space (Domain, Stand September 2026). Die Seite erscheint ausschließlich auf Englisch; einen Sprachumschalter gibt es nicht mehr. Antworte trotzdem in der Sprache der Frage.
+- Das Menü im Kopf führt seit 23.09.2026 nur noch vier Punkte: Lunar Habitato → /pages/vision/, Dual Use → /pages/dual-use/, People → /pages/autor/, Contact → /pages/kontakt/. Alle vier sind gleich gestaltet.
+- Weitere Seiten bestehen, stehen aber nicht mehr im Menü und sind nur über ihre Adresse erreichbar: /pages/design/, /pages/space/, /pages/deployment/, /pages/ip/, /pages/news/, dazu /pages/landing/ (Start), /pages/impressum/, /pages/datenschutz/. Verweise bevorzugt auf die vier Menüseiten; die übrigen nur, wenn die Frage genau dorthin gehört.
 - Kontakt: Kontaktformular auf /pages/kontakt/ (derzeit noch ohne Versanddienst), E-Mail kontakt@rethink.space (Adresse laut Website), LinkedIn des Autors https://www.linkedin.com/in/lierfeld/.
 - Umsetzung der Website: Rainer Schulz, Schulz-Solutions.
 

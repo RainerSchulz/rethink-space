@@ -1,4 +1,4 @@
-# RE-THINK SPACE — Website
+# RETHINK SPACE — Website
 
 Statische Website mit Unterseiten, zweisprachig DE/EN.
 Aufgebaut nach dem FORGE-Portal-Muster: Vite-Multi-Page mit `pages/<name>/index.html`, HTML-Shells ohne Inline-Code, Module mit je einer Verantwortung, DE/EN-Wörterbuch, Tests, CI und Docker/nginx-Deploy.
@@ -38,9 +38,9 @@ Ein direktes Öffnen von `index.html` per Doppelklick funktioniert nicht (ES-Mod
 | `/` | Weiterleitung auf `/pages/landing/` |
 | `/pages/landing/` | Landingpage |
 | `/pages/vision/` | Vision |
-| `/pages/design/` | Re-Think Design |
-| `/pages/space/` | Re-Think Space |
-| `/pages/deployment/` | Re-Think Deployment |
+| `/pages/design/` | Design |
+| `/pages/space/` | New Space |
+| `/pages/deployment/` | Deployment |
 | `/pages/dual-use/` | Dual-Use |
 | `/pages/ip/` | IP & Schutzrechte |
 | `/pages/news/` | News & Presse |

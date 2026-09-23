@@ -17,7 +17,7 @@ async function loadI18n() {
 
 beforeEach(() => setNavigatorLanguage('de-DE'));
 
-describe('Feature: Startsprache — Englisch ist immer der Standard', () => {
+describe('Feature: Startsprache — die Website ist einsprachig Englisch', () => {
   it('Scenario: deutscher Browser ohne gespeicherte Wahl → en', async () => {
     const { getLang } = await loadI18n();
     expect(getLang()).toBe('en');
@@ -29,14 +29,8 @@ describe('Feature: Startsprache — Englisch ist immer der Standard', () => {
     expect(getLang()).toBe('en');
   });
 
-  it('Scenario: einmal gewähltes Deutsch bleibt gespeichert', async () => {
+  it('Scenario: eine früher gespeicherte Wahl wird ignoriert (kein Schalter mehr)', async () => {
     localStorage.setItem('rethink_lang', 'de');
-    const { getLang } = await loadI18n();
-    expect(getLang()).toBe('de');
-  });
-
-  it('Scenario: ungültiger gespeicherter Wert wird ignoriert', async () => {
-    localStorage.setItem('rethink_lang', 'fr');
     const { getLang } = await loadI18n();
     expect(getLang()).toBe('en');
   });
@@ -71,26 +65,20 @@ describe('Feature: applyLang() aktualisiert das DOM', () => {
     const { applyLang, setLang } = await loadI18n();
     applyLang();
     expect(document.documentElement.lang).toBe('en');
-    expect(document.title).toBe('RE-THINK SPACE – New ways. New spaces.');
-    expect(document.querySelector('a').textContent).toBe('Author');
+    expect(document.title).toBe('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
+    expect(document.querySelector('a').textContent).toBe('People');
 
     setLang('de');
     expect(document.documentElement.lang).toBe('de');
-    expect(document.title).toBe('RE-THINK SPACE – Neue Wege. Neue Räume.');
-    expect(document.querySelector('meta').getAttribute('content')).toMatch(/^RE-THINK SPACE – Neue Wege/);
+    expect(document.title).toBe('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
+    expect(document.querySelector('meta').getAttribute('content')).toMatch(/Design, Technologie und Umsetzung/);
     expect(document.querySelector('button').getAttribute('aria-label')).toBe('Menü');
-    expect(document.querySelector('a').textContent).toBe('Autor');
+    expect(document.querySelector('a').textContent).toBe('Menschen');
     expect(document.querySelector('input').getAttribute('placeholder')).toBe('Name');
   });
 });
 
-describe('Feature: setLang() speichert und benachrichtigt', () => {
-  it('speichert die Wahl in localStorage', async () => {
-    const { setLang } = await loadI18n();
-    setLang('de');
-    expect(localStorage.getItem('rethink_lang')).toBe('de');
-  });
-
+describe('Feature: setLang() — das Wörterbuch bleibt für eine spätere zweite Sprache nutzbar', () => {
   it('löst das Ereignis rethink:langchange aus', async () => {
     const { setLang, LANG_EVENT } = await loadI18n();
     const handler = vi.fn();
@@ -104,6 +92,5 @@ describe('Feature: setLang() speichert und benachrichtigt', () => {
     const { setLang, getLang } = await loadI18n();
     setLang('fr');
     expect(getLang()).toBe('en');
-    expect(localStorage.getItem('rethink_lang')).toBeNull();
   });
 });

@@ -107,7 +107,6 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) 
     expect(headHtml).toContain('<a class="skip-link" href="#main" data-i18n="common.skip">');
     expect(html).toContain('<main id="main" tabindex="-1">');
     expect(html).toMatch(/<nav class="nav" id="site-nav" aria-label="[^"]+" data-i18n-aria-label="nav\.main">/);
-    expect(html).toMatch(/<nav class="footer-nav" aria-label="[^"]+" data-i18n-aria-label="footer\.nav">/);
     expect(html).not.toMatch(/<hr class="rule">/); // Trennlinien sind Dekoration
   });
 
