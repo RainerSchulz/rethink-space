@@ -2,7 +2,7 @@
 
 ## Projekt-Übersicht
 **RETHINK SPACE** — statische Website, einsprachig Englisch (DE-Wörterbuch bleibt gepflegt), 14 Seiten unter `pages/`
-- **Inhaber:** Dr. Johannes Lierfeld · **Umsetzung:** Rainer Schulz · Schulz-Solutions
+- **Träger:** RETHINK SPACE Inc. (C-Corporation in Formation), Delaware/USA · **Inhaber:** Dr. Johannes Lierfeld · **Umsetzung:** Rainer Schulz · Schulz-Solutions
 - **Repo:** github.com/RainerSchulz/rethink-space · **Domain:** rethink.space (Stand 16.09.2026)
 - **Dev-Server:** `npm install` → `npm run dev` → http://localhost:3100/pages/landing/
 - **Stack:** Vite 8 · Vanilla JS (ES-Module) · Vitest · Playwright · ESLint · gitleaks · Docker/nginx
@@ -127,7 +127,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 
 ## Offen vor Livegang (Stand 15.09.2026)
 - Domain in Canonical/OG (`pages/*/index.html`), `public/sitemap.xml`, `public/robots.txt` prüfen
-- Impressum und Datenschutz ausfüllen (Platzhalter)
+- Impressum und Datenschutz: Firmenangabe steht (RETHINK SPACE Inc., C-Corporation in Formation, Delaware/USA, vertreten durch Dr. Karl Johannes Lierfeld). Offen: Telefonnummer (kommt später), Registered Agent, Registernummer, Steuernummer — und die **anwaltliche Prüfung**: die Texte sind auf deutsches und EU-Recht geschrieben (§ 5 DDG, § 18 MStV, deutsches Urheberrecht, EU-Streitschlichtung), der Träger ist aber eine US-Gesellschaft
 - Kontaktformular an einen Versanddienst anbinden (`src/site/modules/contact.js`)
 - E-Mail-Postfach `contact@rethink.space` einrichten (Footer, Kontaktseite, JSON-LD verweisen darauf)
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
