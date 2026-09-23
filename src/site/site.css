@@ -284,6 +284,9 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 /* Hochformatige Motive im sehr breiten Band: Ausschnitt nach oben ziehen,
    damit nicht der Kopf abgeschnitten wird. */
 .band-media--top { object-position: center 18%; }
+/* Alle Baender sind gleich gross. Passt ein Motiv nicht ins 64:15-Fenster,
+   entscheidet der Ausschnitt (object-position), nie ein Sonderformat. */
+.band-media--partnership { object-position: center 58%; }
 /* Ueberschrift steht links unten im Bild, der Knopf dicht darunter. */
 .band-title {
   position: relative; z-index: 1; height: 100%;

@@ -200,7 +200,7 @@ describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
 describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
   // Seiten mit Bändern und der erwarteten Anzahl. Die Fläche ist hier
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
-  const BAND_PAGES = [['lunar-habitato', 4], ['dual-use', 2], ['people', 2]];
+  const BAND_PAGES = [['lunar-habitato', 5], ['dual-use', 2], ['people', 2]];
 
   for (const [slug, count] of BAND_PAGES) {
     describe(`/pages/${slug}/`, () => {
