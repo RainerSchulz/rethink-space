@@ -81,8 +81,13 @@ describe('Feature: i18n-Parität (de.js / en.js)', () => {
 });
 
 describe('Feature: Schlüssel-Abdeckung (HTML + src)', () => {
-  it('HTML-Seiten gefunden', () => {
-    expect(htmlFiles.length).toBeGreaterThanOrEqual(12);
+  it('die Seiten der Website sind gefunden', () => {
+    // Aussage statt Zahl: die Wurzel und die vier Menueseiten muessen dabei
+    // sein. Eine blosse Mindestzahl haette nach dem Aufraeumen nur gemeckert.
+    for (const f of ['index.html', 'pages/lunar-habitato/index.html', 'pages/dual-use/index.html',
+      'pages/people/index.html', 'pages/contact/index.html']) {
+      expect(htmlFiles, f).toContain(f);
+    }
   });
 
   it('jeder data-i18n*-Schlüssel im HTML ist in DE und EN definiert', () => {

@@ -7,13 +7,7 @@ import { resolve } from 'node:path';
 export const PAGES = {
   root:        'index.html',                    // Startseite, liegt in der Wurzel
   'lunar-habitato': 'pages/lunar-habitato/index.html',
-  design:      'pages/design/index.html',
-  space:       'pages/space/index.html',
-  deployment:  'pages/deployment/index.html',
   'dual-use':  'pages/dual-use/index.html',
-  ip:          'pages/ip/index.html',
-  news:        'pages/news/index.html',
-  history:     'pages/history/index.html',
   people:      'pages/people/index.html',
   contact:     'pages/contact/index.html',
   'legal-notice': 'pages/legal-notice/index.html',

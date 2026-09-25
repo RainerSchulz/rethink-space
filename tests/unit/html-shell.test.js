@@ -19,8 +19,8 @@ const SITE = 'https://rethink.space';
 // index.html in der Wurzel, damit die Adresse rethink.space/ und nicht
 // rethink.space/pages/landing/ lautet.
 const EXPECTED_PAGES = [
-  'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
-  'ip', 'news', 'history', 'people', 'contact', 'legal-notice', 'privacy', '404',
+  'lunar-habitato', 'dual-use', 'people', 'contact',
+  'legal-notice', 'privacy', '404',
 ];
 
 const pageDirs = readdirSync(join(ROOT, 'pages')).filter((d) => statSync(join(ROOT, 'pages', d)).isDirectory());

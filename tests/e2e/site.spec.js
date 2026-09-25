@@ -11,8 +11,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 const PAGES = [
-  'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
-  'ip', 'news', 'history', 'people', 'contact', 'legal-notice', 'privacy', '404',
+  'lunar-habitato', 'dual-use', 'people', 'contact',
+  'legal-notice', 'privacy', '404',
 ];
 
 test.describe('Feature: Alle Seiten laden fehlerfrei', () => {
@@ -96,8 +96,18 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     await page.locator('#site-nav a[href="/pages/contact/"]').click();
     await expect(page).toHaveURL(/\/pages\/contact\/$/);
 
-    // Der Honigtopf darf für Menschen nicht sichtbar sein
-    await expect(page.locator('input[name="website"]')).toBeHidden();
+    // Der Honigtopf steht absichtlich MIT Ausdehnung außerhalb des Bildes —
+    // display:none wuerde von vielen Maschinen uebersprungen, und genau die
+    // sollen hineintappen. Playwright nennt so ein Feld "visible", deshalb
+    // pruefen wir, worauf es wirklich ankommt.
+    const honig = page.locator('input[name="website"]');
+    const lage = await honig.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return { rechterRand: r.x + r.width, tabindex: el.tabIndex, versteckt: !!el.closest('[aria-hidden="true"]') };
+    });
+    expect(lage.rechterRand, 'Honigtopf muss links aus dem Bild stehen').toBeLessThanOrEqual(0);
+    expect(lage.tabindex, 'Honigtopf darf kein Tab-Stopp sein').toBe(-1);
+    expect(lage.versteckt, 'Honigtopf muss aria-hidden sein').toBe(true);
 
     await page.fill('input[name="name"]', 'Test');
     await page.fill('input[name="email"]', 'test@example.com');
@@ -190,21 +200,6 @@ test.describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
       await expect(page.locator('.band-panel').first()).toBeHidden();
     });
   }
-});
-
-test.describe('Feature: Galerie-Lightbox', () => {
-  test('Klick auf ein Galerie-Bild öffnet es vergrößert, Escape schließt', async ({ page }) => {
-    await page.goto('/pages/design/');
-    const item = page.locator('.gallery-item').first();
-    await item.scrollIntoViewIfNeeded();
-    await item.click();
-    const dlg = page.locator('dialog.lightbox');
-    await expect(dlg).toBeVisible();
-    await expect(dlg.locator('img')).toBeVisible();
-    await expect(page).toHaveURL(/\/pages\/design\/$/); // kein Sprung zur Bilddatei
-    await page.keyboard.press('Escape');
-    await expect(dlg).toBeHidden();
-  });
 });
 
 test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {

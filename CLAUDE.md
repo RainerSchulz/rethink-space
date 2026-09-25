@@ -1,7 +1,7 @@
 # RETHINK SPACE — Claude Code Context
 
 ## Projekt-Übersicht
-**RETHINK SPACE** — statische Website, einsprachig Englisch (DE-Wörterbuch bleibt gepflegt), 14 Seiten unter `pages/`
+**RETHINK SPACE** — statische Website, einsprachig Englisch (DE-Wörterbuch bleibt gepflegt), Startseite in der Wurzel plus 7 Seiten unter `pages/`
 - **Träger:** RETHINK SPACE Inc. (C-Corporation in Formation), Delaware/USA · **Inhaber:** Dr. Johannes Lierfeld · **Umsetzung:** Rainer Schulz · Schulz-Solutions
 - **Repo:** github.com/RainerSchulz/rethink-space · **Domain:** rethink.space (Stand 16.09.2026)
 - **Dev-Server:** `npm install` → `npm run dev` → http://localhost:3100/
@@ -112,7 +112,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | Pfad | Inhalt |
 |---|---|
 | `index.html` | **Die Startseite selbst**, in der Wurzel — damit die Adresse `rethink.space/` lautet und nicht `/pages/landing/`. Keine Weiterleitung mehr. |
-| `pages/<name>/index.html` | 14 Seiten-Shells (inkl. `404`). **Alle Adressen sind englisch** — `lunar-habitato` (früher `vision`), `people` (`autor`), `contact` (`kontakt`), `legal-notice` (`impressum`), `privacy` (`datenschutz`) |
+| `pages/<name>/index.html` | 7 Seiten-Shells: `lunar-habitato`, `dual-use`, `people`, `contact`, `legal-notice`, `privacy`, `404`. **Alle Adressen sind englisch** — `lunar-habitato` (früher `vision`), `people` (`autor`), `contact` (`kontakt`), `legal-notice` (`impressum`), `privacy` (`datenschutz`) |
 | `vite.pages.js` | Seitenliste für den Build (`RETHINK_PAGES` wählt Teilmengen) |
 | `public/` | `Bilder/`, `favicon.svg`, Icons, `og-image.jpg`, `robots.txt`, `sitemap.xml`, `site.webmanifest` |
 | `public/Bilder/moon-full.jpg` | Vollmond der Landingpage (Mondscheibe in `.moonscape`). Quelle: NASA SVS „Full Moon“ (LRO/LOLA-Daten, nasa_id GSFC_20171208_Archive_e001861), gemeinfrei, auf die Scheibe zugeschnitten |
@@ -148,6 +148,6 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
 - Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
-- Seiten ohne Weg hinein: seit dem Umbau auf Bänder (23.09.2026) verlinkt nichts mehr auf `design`, `space`, `deployment`, `ip`, `news` und `history`. Ihre Inhalte stehen teils schon in den aufklappbaren Bereichen. Entscheiden, ob diese Seiten verlinkt, eingearbeitet oder gelöscht werden.
+- Aufgeräumt am 25.09.2026: `design`, `space`, `deployment`, `ip`, `news` und `history` sind gelöscht — sie waren von der Website aus nicht mehr erreichbar. Ihre Inhalte liegen in der Git-Historie und teils in den aufklappbaren Bereichen der Bandseiten. **Neue Kachel oder neuer Link braucht erst ein Ziel**, das es noch gibt.
 - CMS: Rückweg, Supabase-Betrieb und Veröffentlichen-Knopf stehen (25.09.2026). Offen: GitHub-Token anlegen und als Secret hinterlegen (`GITHUB_TOKEN` in Supabase, `CONTENT_PUSH_TOKEN` in GitHub), `VITE_PUBLISH_WEBHOOK` im CMS setzen, CMS für Dr. Lierfeld hosten
 - Chatbot: Funktion `chat` ist im Projekt Re-Think-Space deployt, Wissensbasis und CMS-Tabellen befüllt (16.09.2026). Offen: Secret `ANTHROPIC_API_KEY` im Dashboard setzen, `VITE_CHAT_ENDPOINT` als GitHub-Variable, Datenschutzerklärung um den KI-Dienst (Anthropic) ergänzen

@@ -138,7 +138,7 @@ Kommentare erklären das **Warum**, nicht das Was. Datei-Kopf mit einem Satz zur
 
 1. Gibt es die Klasse / das Modul / den Schlüssel schon? (`grep` in `site.css`, `de.js`)
 2. Passt die Änderung in ein bestehendes Modul, oder braucht sie ein neues?
-3. Betrifft sie Header oder Footer? Dann **alle 14 Seiten** identisch ändern (Test vergleicht sie).
+3. Betrifft sie Header oder Footer? Dann **alle Seiten** identisch ändern, die Wurzel eingeschlossen (Test vergleicht sie).
 
 ---
 
@@ -220,7 +220,7 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 
 - Gilt für `.card` und `.card-media` (News). Ziel ist immer `/pages/<name>/` (Test prüft, dass die Seite existiert).
 - **Ausnahme — die Bänder auf `lunar-habitato`, `dual-use` und `people`:** dort ist die Fläche ausdrücklich *kein* Link. Nur der Knopf `.band-toggle` („Learn more") klappt den Bereich `.band-panel` direkt darunter auf, ohne Seitenwechsel (`modules/bands.js`, `aria-expanded` + `aria-controls`). Alle Bereiche tragen `hidden` **schon im Markup**, damit beim Laden nichts aufgeklappt aufblitzt. Deshalb heißen die Klassen `.band*` und nicht `.card`/`.pillar` — so bleibt die Kachelregel für echte Kacheln scharf. Neue Bandseite → `BAND_PAGES` in `html-shell.test.js` und die Schleife im E2E-Block ergänzen.
-- Ziel wählen: die Seite, die das Thema am tiefsten behandelt (Technik → `space`, Struktur/Material → `design`, Umsetzung → `deployment`, Schutzrechte → `ip`). Gibt es später eigene Detailseiten, Ziel dorthin umhängen.
+- Ziel wählen: die Seite, die das Thema am tiefsten behandelt. Seit dem Aufräumen am 25.09.2026 gibt es nur noch die vier Menüseiten plus Impressum, Datenschutz und 404 — eine Kachel braucht also erst ein Ziel, bevor sie entsteht.
 - Kein `onclick`, kein `<div>` — die Kachel selbst ist das `<a>` (Tastatur, Screenreader, Router funktionieren dann von allein).
 - CSS: `.card:hover` hebt an und färbt den Rand, `.card:hover .arrow-link::after` schiebt den Pfeil, `:focus-visible` zeigt den Fokusring.
 - Galerie-Bilder ohne eigene Seite: `<figure><a class="gallery-item" href="/Bilder/…" data-lightbox><img …></a><figcaption>…</figcaption></figure>` — `modules/lightbox.js` öffnet das Bild vergrößert in einem `<dialog>` (Escape, Schließen-Button, Klick daneben). Ohne JS führt der Link zur Bilddatei.
