@@ -119,7 +119,6 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
     expect(headHtml).toContain('<a class="skip-link" href="#main" data-i18n="common.skip">');
     expect(html).toContain('<main id="main" tabindex="-1">');
     expect(html).toMatch(/<nav class="nav" id="site-nav" aria-label="[^"]+" data-i18n-aria-label="nav\.main">/);
-    expect(html).not.toMatch(/<hr class="rule">/); // Trennlinien sind Dekoration
   });
 
   it('jede Kachel ist ein Link mit Ziel und Pfeil-Label (wie FORGE: Kacheln immer klickbar)', () => {
@@ -128,16 +127,6 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
     for (const [tag, cls, inner] of tiles) {
       expect(tag, cls).toMatch(/href="\/pages\/[a-z0-9-]+\/"/);
       expect(inner, `${cls} ohne Pfeil-Label`).toMatch(/class="arrow-link"|class="body"/);
-    }
-    // Galerie-Bilder: Link auf die Bilddatei, Lightbox öffnet sie vergrößert
-    for (const [figure] of html.matchAll(/<figure>[\s\S]*?<\/figure>/g)) {
-      expect(figure).toMatch(/^<figure><a class="gallery-item" href="\/Bilder\/[^"]+" data-lightbox><img /);
-    }
-  });
-
-  it('Lightbox zeigt genau das angezeigte Bild (href = src)', () => {
-    for (const [, href, src] of html.matchAll(/<a class="gallery-item" href="([^"]+)" data-lightbox><img src="([^"]+)"/g)) {
-      expect(src, `${file}: Lightbox öffnet ${href}, gezeigt wird ${src}`).toBe(href);
     }
   });
 

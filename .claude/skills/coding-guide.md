@@ -41,7 +41,7 @@ Das CSS wird bewusst **nicht** aus `main.js` importiert: im Dev-Server käme es 
 │   ├── fonts.css                ← Schrift-Imports
 │   ├── i18n/                    ← index.js (t, setLang, applyLang), de.js, en.js
 │   └── modules/                 ← router.js, nav.js, contact.js, portrait.js,
-│                                   lightbox.js, bands.js, chat.js, gate.js
+│                                   bands.js, chat.js, gate.js
 ├── scripts/                     ← apply-content.mjs (CMS-Rückweg), lib/apply.mjs,
 │                                   build-knowledge.mjs, push-knowledge.mjs
 ├── deploy/nginx.conf, Dockerfile
@@ -92,7 +92,7 @@ Reihenfolge in `site.css`: Variablen → Reset → Layout → Header → Buttons
 - **Die Seite ist einsprachig Englisch.** Es gibt keinen DE/EN-Schalter mehr; `detectInitialLang()` liefert fest `'en'` und ignoriert eine früher gespeicherte Wahl — sonst hinge ein Besucher ohne Schalter dauerhaft auf Deutsch fest. Der Text im HTML ist der **englische Fallback** und muss dem EN-Wert exakt entsprechen (Test). `<html lang="en">`, `og:locale` en_US.
 - **`de.js` bleibt trotzdem gepflegt**, damit die zweite Sprache ohne Umbau zurückkommen kann (Schalter ins Markup, `detectInitialLang()` zurücksetzen). Der Paritätstest hält beide Wörterbücher in Deckung; fehlt ein deutscher Text, schreibt `content:apply` den englischen hinein.
 - Schlüssel-Format: `namespace.bereich.detail`, nur Kleinbuchstaben, Ziffern, `-` und `.`.
-- Namespaces: `nav`, `footer`, `common`, `home`, `habitat` (Lunar Habitato), `people` (Bänder der People-Seite), `history`, `design`, `space`, `deployment`, `dual`, `ip`, `news`, `author`, `contact`, `legal`, `imprint`, `privacy`, `notfound`.
+- Namespaces (Stand 25.09.2026): `nav`, `footer`, `common`, `home`, `habitat` (Lunar Habitato), `dual` (Dual Use), `people` (Bänder der People-Seite), `contact`, `legal`, `imprint`, `privacy`, `notfound`, `chat`, `gate`.
 - Nicht übersetzen: Markenname RETHINK SPACE, Eigennamen, Buchtitel, Zahlen mit Einheit, Daten, E-Mail-Adressen.
 - Ein fehlender Schlüssel ist **kein Fehler, sondern ein Text**: `t()` gibt den Schlüssel zurück und er steht blank auf der Seite. Deshalb prüft `tests/unit/i18n.test.js` jeden verwendeten Schlüssel gegen beide Wörterbücher und jeden definierten Schlüssel auf Verwendung.
 
@@ -205,9 +205,9 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 
 ```html
 <!-- ✓ Korrekt — Link mit Ziel und Pfeil-Label -->
-<a class="card" href="/pages/space/">
-  <h3 data-i18n="design.cards.material.title">Material</h3><hr class="rule" aria-hidden="true">
-  <p data-i18n="design.cards.material.text">…</p>
+<a class="card" href="/pages/lunar-habitato/">
+  <h3 data-i18n="habitat.cards.material.title">Material</h3>
+  <p data-i18n="habitat.cards.material.text">…</p>
   <span class="arrow-link" data-i18n="common.more">Learn more</span>
 </a>
 
@@ -218,12 +218,11 @@ Eine Kachel signalisiert „hier geht es weiter“. Eine Kachel ohne Ziel ist ei
 </div>
 ```
 
-- Gilt für `.card` und `.card-media` (News). Ziel ist immer `/pages/<name>/` (Test prüft, dass die Seite existiert).
+- Ziel ist immer `/pages/<name>/` (Test prüft, dass die Seite existiert). **Stand 25.09.2026 gibt es keine Kachel mehr** — die Stile `.card`/`.card-media`/`.pillar` sind mit den gelöschten Seiten entfallen. Eine neue Kachel bringt ihr CSS also selbst mit.
 - **Ausnahme — die Bänder auf `lunar-habitato`, `dual-use` und `people`:** dort ist die Fläche ausdrücklich *kein* Link. Nur der Knopf `.band-toggle` („Learn more") klappt den Bereich `.band-panel` direkt darunter auf, ohne Seitenwechsel (`modules/bands.js`, `aria-expanded` + `aria-controls`). Alle Bereiche tragen `hidden` **schon im Markup**, damit beim Laden nichts aufgeklappt aufblitzt. Deshalb heißen die Klassen `.band*` und nicht `.card`/`.pillar` — so bleibt die Kachelregel für echte Kacheln scharf. Neue Bandseite → `BAND_PAGES` in `html-shell.test.js` und die Schleife im E2E-Block ergänzen.
 - Ziel wählen: die Seite, die das Thema am tiefsten behandelt. Seit dem Aufräumen am 25.09.2026 gibt es nur noch die vier Menüseiten plus Impressum, Datenschutz und 404 — eine Kachel braucht also erst ein Ziel, bevor sie entsteht.
 - Kein `onclick`, kein `<div>` — die Kachel selbst ist das `<a>` (Tastatur, Screenreader, Router funktionieren dann von allein).
-- CSS: `.card:hover` hebt an und färbt den Rand, `.card:hover .arrow-link::after` schiebt den Pfeil, `:focus-visible` zeigt den Fokusring.
-- Galerie-Bilder ohne eigene Seite: `<figure><a class="gallery-item" href="/Bilder/…" data-lightbox><img …></a><figcaption>…</figcaption></figure>` — `modules/lightbox.js` öffnet das Bild vergrößert in einem `<dialog>` (Escape, Schließen-Button, Klick daneben). Ohne JS führt der Link zur Bilddatei.
+- CSS für eine neue Kachel: `.card:hover` hebt an und färbt den Rand, `.card:hover .arrow-link::after` schiebt den Pfeil, `:focus-visible` zeigt den Fokusring.
 - Ohne Ziel keine Kachel-Optik: Listen (z. B. Bücher auf der Autorenseite) sind schlichte Listen mit Trennlinien.
 - `tests/unit/html-shell.test.js`: „jede Kachel ist ein Link mit Ziel und Pfeil-Label“.
 
@@ -247,15 +246,14 @@ Schwarze Ränder (Letterboxing) und unterschiedlich hohe Kacheln wirken unfertig
 .band-media { object-fit: contain; background: #000; }
 ```
 
-- Betroffen: `.band-media`, `.card-media`, `.gallery img`, `.split .media img`, `.hero-sub-bg`, `.portrait img`. Ausnahme ist nur die Lightbox selbst (dort zeigt `contain` das ganze Bild).
+- Betroffen: `.band-media`, `.hero-sub-bg`, `.portrait img`.
 - Hochformatige Motive, deren Kopf wichtig ist, bekommen `.band-media--top` bzw. `object-position: top` — im sehr breiten Band schneidet der mittige Ausschnitt sonst den Kopf ab.
 - **Motive, die im Rahmen nicht aufgehen, brauchen eine zweite Fassung.** Das Partner-Logoband ist 5:2, die Kachel auf dem Handy 3:2 — der schmale Rahmen schnitt ein Logo ganz und zwei halb weg. Lösung: hochformatige Fassung (`…-hoch.jpg`, Logos im 2×2-Raster, per Canvas im Playwright-Chromium erzeugt), eingebunden per `<picture><source media="(max-width: 820px)">`. Weder `contain` noch ein anderes Seitenverhältnis für eine einzelne Kachel.
-- **Bilder ohne Schriftzug:** `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` tragen die eingebrannte Wortmarke und sind in `pages/` gesperrt (`html-shell.test.js`). Neue Varianten ohne Schriftzug als `…-clean.jpg` (zugeschnitten) oder `…-wide.jpg` (Querformat-Ausschnitt) ablegen; Zuschnitt per Canvas im Playwright-Chromium, kein zusätzliches Werkzeug nötig.
-- **Galerie:** `href` und `src` zeigen auf dieselbe Datei, sonst öffnet die Lightbox ein anderes Bild (Test).
+- **Bilder ohne Schriftzug:** `2026-09-Re-Think-*` und `2026-09-Re-Dual-Use.jpeg` tragen die eingebrannte Wortmarke und sind in `pages/` gesperrt (`html-shell.test.js`). Die Dateien selbst sind seit dem 25.09.2026 gelöscht (Git-Historie), die Namenssperre bleibt. Neue Varianten ohne Schriftzug als `…-clean.jpg` (zugeschnitten) oder `…-wide.jpg` (Querformat-Ausschnitt) ablegen; Zuschnitt per Canvas im Playwright-Chromium, kein zusätzliches Werkzeug nötig.
 - **Unterseiten-Hero:** Inhaltsbreite wie die Überschrift (`min(100% - 48px, var(--maxw) - 48px)`), `aspect-ratio: 16/9`, `object-fit: cover`; `.hero-sub + section` hat verkürztes `padding-top`.
 - **Landing-Hero:** nur der Claim (zwei Leitsätze, beide weiß) vor dem Mond — kein Button, keine Kacheln, keine News. Abstand Header → Überschrift und Überschrift → Mondbogen sind **gleich groß** (56 px Desktop, 22 px Tablet, 18 px Handy); wird die Schriftgröße geändert, muss `--moon-top` in allen Breakpoints nachgezogen werden.
 - **Bänder:** Überschrift links **unten** im Bild in Schrift und Größe der Startseiten-Überschrift (`.band-h` = `.hero h1`), „Learn more" dicht darunter (2 px). Das erste Band trägt das `<h1>` der Seite, die übrigen `<h2>`. Jedes Band bekommt ein eigenes Motiv — keine zwei Bänder mit demselben Bild.
-- **Farbe:** der Akzent ist `#00d9ff` (`--accent`), auf Schwarz 12,4:1. Auf farbigen Flächen ist die Schrift **schwarz** (`--accent-on: #001014`, 12,4:1) — Weiß käme dort nur auf 1,7:1 und fiele durch. Betrifft `.btn`, Skip-Link, `.chat-fab`, die Nutzer-Blase im Chat und das Kreuz der Lightbox beim Überfahren. Fokusring `#9beaff` (sichtbar auf Schwarz **und** auf der hellen Mondfläche). Kein Orange mehr im Projekt.
+- **Farbe:** der Akzent ist `#00d9ff` (`--accent`), auf Schwarz 12,4:1. Auf farbigen Flächen ist die Schrift **schwarz** (`--accent-on: #001014`, 12,4:1) — Weiß käme dort nur auf 1,7:1 und fiele durch. Betrifft `.btn`, Skip-Link, `.chat-fab` und die Nutzer-Blase im Chat. Fokusring `#9beaff` (sichtbar auf Schwarz **und** auf der hellen Mondfläche). Kein Orange mehr im Projekt.
 - **Wortmarke:** `SPACE` ist per `letter-spacing: .2784em` auf die Breite von `RETHINK` gesperrt — gleiche Schrift, gleiche Größe. Der Wert ist gemessen ((83,9 − 62,8) px auf vier Zwischenräume bei 19 px), nicht geschätzt; `margin-right: -.2784em` nimmt die Sperrung hinter dem letzten Buchstaben zurück, damit der Logo-Block nicht breiter wird als die Schrift.
 - **Schmale Geräte:** kein verschenkter Platz — Bänder im Format 3:2 mit Text unten auf der dunklen Hälfte, News-Karten Bild links, Burger-Menü eng.
 
@@ -274,7 +272,7 @@ npm run lint && npm run test:run && npm run build     # danach immer
 - `scripts/apply-content.mjs` schreibt die Werte nach `en.js`/`de.js`, den englischen Text an **jedes** `data-i18n`-Element und die Bildpfade in den Shells. Die Umformungen stehen in `scripts/lib/apply.mjs` und sind in `tests/unit/apply-content.test.js` geprüft.
 - **Titel und Beschreibung stehen je Seite zweimal** (`name="description"` und `og:description`) unter demselben Schlüssel. Wer nur die erste Fundstelle ersetzt, lässt die Open-Graph-Angaben still veralten — deshalb ersetzt der Generator jede Fundstelle, und ein Test hält das fest.
 - Das Skript **legt nie neue Schlüssel an**: unbekannte meldet es und geht weiter. Neue Texte entstehen weiter im Code, danach im CMS `npm run import`.
-- Bei Galerie-Bildern wandern `href` und `src` gemeinsam; passt die Bildanzahl nicht zur Seite, bleibt die Seite unangetastet — lieber nichts tun als Bilder verschieben.
+- Passt die Bildanzahl nicht zur Seite, bleibt die Seite unangetastet — lieber nichts tun als Bilder verschieben. (Die Regel, dass `href` und `src` bei Galerie-Bildern gemeinsam wandern, steht weiter im Generator, greift aber erst wieder, wenn es Galerien gibt.)
 - Zweimal anwenden ändert nichts mehr (idempotent). Der Generator gegen einen frischen `npm run import` muss **null** Änderungen ergeben; das ist der schnellste Test, ob Import und Rückweg noch zusammenpassen.
 
 ---

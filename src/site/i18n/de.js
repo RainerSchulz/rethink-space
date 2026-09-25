@@ -17,7 +17,6 @@ export const DE = {
   'common.more':     'Mehr erfahren',
   'common.skip':     'Zum Inhalt springen',
   'nav.main':        'Hauptnavigation',
-  'lightbox.close':  'Bild schließen',
   'chat.label':      'Fragen?',
   'chat.open':       'Chat öffnen',
   'chat.close':      'Chat schließen',

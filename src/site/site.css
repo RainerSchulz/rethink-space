@@ -58,19 +58,17 @@ a { color: inherit; text-decoration: none; }
 }
 .skip-link:focus { transform: none; opacity: 1; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-.card-media:focus-visible, .card:focus-visible { outline-offset: 5px; border-radius: var(--radius); }
 main:focus, .form-status:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after { transition-duration: 0s !important; animation-duration: 0s !important; }
 }
 @media (prefers-contrast: more) {
   :root { --line: #7a7a84; --line-hover: #fff; --muted: #c4c4cc; --text-soft: #f0f0f4; --focus: #fff; }
-  .band-title, .band-panel, .card, .card-media, .cta, .books li, .split { background: #000; border-color: #fff; backdrop-filter: none; }
+  .band-title, .band-panel, .books li { background: #000; border-color: #fff; backdrop-filter: none; }
   .hero-copy { text-shadow: none; }
 }
 @media (forced-colors: active) {
   .moonscape::before, .moonscape::after, .hero::after { display: none; }
-  .rule { border-top: 3px solid CanvasText; }
 }
 
 /* ---------- 2b. Seitenwechsel (router.js) ---------- */
@@ -86,7 +84,6 @@ main.is-leaving, main.is-entering { opacity: 0; }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 .wrap.narrow { max-width: 820px; }
 section { padding: 88px 0; }
-section.tight { padding: 56px 0; }
 section.legal-page { padding-top: 120px; }
 
 .eyebrow {
@@ -103,12 +100,8 @@ h2 { font-size: clamp(28px, 4vw, 46px); font-weight: 700; letter-spacing: -.025e
 h3 { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
 p { margin: 0 0 18px; color: var(--text-soft); }
 .lead { font-size: clamp(17px, 2vw, 21px); color: #e2e2e6; max-width: 62ch; }
-.muted { color: var(--muted); }
 .note { font-size: 13px; color: var(--muted); margin-top: 18px; }
-.rule { width: 56px; height: 3px; background: var(--accent); border: 0; margin: 0 0 22px; }
 
-.section-head { display: flex; align-items: baseline; gap: 24px; flex-wrap: wrap; }
-.section-head h2 { flex: 1 1 auto; }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
 
 /* ---------- 4. Header ---------- */
@@ -223,45 +216,6 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .hero-sub .wrap { grid-area: 1 / 1; align-self: end; position: relative; z-index: 2; width: 100%; padding-top: 90px; padding-bottom: 52px; }
 .hero-sub h1 { font-size: clamp(34px, 5.5vw, 64px); }
 
-/* ---------- 7. Karten & Raster ---------- */
-.grid { display: grid; gap: 22px; }
-.grid-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-2 { grid-template-columns: repeat(2, 1fr); }
-.grid.wide { gap: 56px; }
-.grid.spaced { margin-top: 26px; }
-.grid.tight { gap: 14px; margin-top: 8px; }
-.card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 34px 30px; display: flex; flex-direction: column; min-height: 270px;
-  transition: border-color .18s ease, transform .18s ease;
-}
-.card:hover { border-color: var(--line-hover); transform: translateY(-2px); }
-.card:hover .arrow-link::after { transform: translateX(5px); }
-.card h3 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
-.card p { font-size: 15px; color: #c3c3ca; }
-.card .arrow-link { margin-top: auto; padding-top: 22px; }
-.card-media {
-  display: flex; flex-direction: column;
-  border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line);
-  background: var(--surface); transition: border-color .18s ease, transform .18s ease;
-}
-.card-media:hover { border-color: var(--line-hover); transform: translateY(-2px); }
-.card-media:hover .arrow-link::after { transform: translateX(5px); }
-.card-media .body { display: flex; flex-direction: column; flex: 1; }
-.card-media .arrow-link { margin-top: auto; padding-top: 16px; }
-/* Inhaltsbilder werden vollständig gezeigt (contain), nicht beschnitten:
-   viele Motive tragen Schriftzüge oder sind Hochformat. Ränder bleiben schwarz. */
-.card-media img { width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; background: #000; } /* füllt die Kachel; Motive sind schriftfrei */
-.card-media--portrait img { object-position: top; } /* Hochformat (Titelbilder): Kopf und Schlagzeile zeigen */
-.card-media .body { padding: 22px 24px 26px; }
-.card-media h3 { font-size: 19px; margin-bottom: 8px; }
-.card-media p { font-size: 14.5px; margin: 0; }
-.card-media .date { margin-top: 10px; }
-.tag {
-  color: var(--accent); font-size: 11px; font-weight: 700;
-  letter-spacing: .13em; text-transform: uppercase; margin-bottom: 10px;
-}
-
 /* ---------- 7b. Bänder: vier gleich große Flächen untereinander ----------
    Anders als die Kacheln der Unterseiten ist das Band selbst KEIN Link: nur
    „Learn more“ (.band-toggle) klappt den Bereich direkt darunter auf, ohne
@@ -326,17 +280,6 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .band-group, .band-toggle::after { transition: none; }
 }
 
-/* ---------- 8. Split (Text + Bild) ---------- */
-.split {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: stretch;
-  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
-  background: var(--surface);
-}
-.split .text { padding: 56px 48px; }
-.split .media { position: relative; background: #000; min-height: 340px; }
-.split .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.split.reverse .text { order: 2; }
-
 .feature-list { list-style: none; margin: 0; padding: 0; }
 .feature-list.spaced { margin-top: 26px; }
 .feature-list li {
@@ -345,34 +288,6 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 .feature-list li:last-child { border-bottom: 1px solid var(--line); }
 .feature-list .num { color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: .08em; }
-
-.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.stat { border-top: 2px solid var(--accent); padding-top: 18px; }
-.stat .n { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
-.stat .l { font-size: 13px; color: var(--muted); }
-
-.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.gallery img { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: cover; background: #000; border-radius: 10px; border: 1px solid var(--line); }
-.gallery figure { margin: 0; }
-/* Galerie-Kacheln sind Links: Klick öffnet das Bild vergrößert (lightbox.js) */
-.gallery-item { display: block; border-radius: 10px; cursor: zoom-in; transition: transform .18s ease; }
-.gallery-item:hover { transform: translateY(-2px); }
-.gallery-item:hover img { border-color: var(--line-hover); }
-.lightbox {
-  border: 0; padding: 0; background: #000; color: var(--text);
-  border-radius: 12px; max-width: min(94vw, 1400px); max-height: 92vh; overflow: hidden;
-}
-.lightbox::backdrop { background: rgba(0, 0, 0, .9); }
-.lightbox-figure { margin: 0; }
-.lightbox img { display: block; width: auto; height: auto; max-width: min(94vw, 1400px); max-height: calc(92vh - 52px); object-fit: contain; }
-.lightbox figcaption { color: var(--muted); font-size: 13px; padding: 14px 64px 14px 16px; text-align: center; }
-.lightbox-close {
-  position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border: 0; border-radius: 50%;
-  background: rgba(0, 0, 0, .6); color: #fff; cursor: pointer; display: grid; place-items: center;
-}
-.lightbox-close:hover { background: var(--accent-btn); color: var(--accent-on); }
-.lightbox-close svg { width: 22px; height: 22px; }
-.gallery figcaption { font-size: 12.5px; color: var(--muted); padding-top: 8px; }
 
 /* ---------- 9. Autorenseite ---------- */
 .author { display: grid; grid-template-columns: 340px 1fr; gap: 48px; align-items: start; }
@@ -418,14 +333,6 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .field textarea { min-height: 150px; resize: vertical; }
 .contact-note { font-size: 13px; color: var(--muted); }
 .form-status { margin-top: 16px; }
-
-/* ---------- 11. CTA ---------- */
-.cta {
-  border: 1px solid var(--line); border-radius: var(--radius);
-  background: var(--surface); padding: 56px 48px; text-align: center;
-}
-.cta h2 { margin-bottom: 12px; }
-.cta .lead { margin: 0 auto 26px; }
 
 /* ---------- 12. Rechtliches ---------- */
 .legal-page h1 { font-size: clamp(32px, 5vw, 54px); }
@@ -535,11 +442,7 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
 @media (max-width: 1000px) {
   .moonscape { --moon-d: 290cqw; }
   .hero-copy { grid-template-columns: 1fr minmax(0, 460px); }
-  .grid-3, .gallery, .stat-row { grid-template-columns: repeat(2, 1fr); }
-  .split, .contact-grid, .author { grid-template-columns: 1fr; }
-  .split.reverse .text { order: 0; }
-  .split .text { padding: 40px 28px; }
-  .split .media { min-height: 0; aspect-ratio: 16 / 10; } /* untereinander: Bild im eigenen Format */
+  .contact-grid, .author { grid-template-columns: 1fr; }
   .author { gap: 32px; }
   .portrait { max-width: 320px; }
 }
@@ -582,24 +485,8 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
   .band-title { gap: 2px; justify-content: flex-end; padding-bottom: 12px; background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .8) 100%); }
   .band-h { font-size: clamp(18px, 5.3vw, 38px); }
   .band-panel { padding: 20px clamp(20px, 4vw, 56px) 24px; }
-  /* News-Karten kompakt: Bild links (40 %), Text rechts; Abschnittskopf enger */
-  .card-media { display: grid; grid-template-columns: 40% 1fr; align-items: stretch; }
-  .card-media img { aspect-ratio: auto; height: 100%; min-height: 110px; max-height: 170px; object-fit: cover; }
-  .card-media .body { padding: 12px 14px; }
-  .card-media h3 { font-size: 15px; margin-bottom: 4px; }
-  .card-media p { font-size: 13px; }
-  .card-media .tag { font-size: 10px; margin-bottom: 4px; }
-  .card-media .date { margin-top: 4px; font-size: 12px; }
-  .card-media .arrow-link { padding-top: 8px; font-size: 11px; }
-  section.tight { padding: 40px 0; }
   .eyebrow { margin-bottom: 10px; }
-  .section-head { gap: 4px 16px; }
-  .section-head h2 { margin-bottom: 6px; }
-  .grid.spaced { margin-top: 14px; }
-  .grid { gap: 12px; }
   section { padding: 64px 0; }
-  .grid-3, .grid-2, .gallery, .stat-row { grid-template-columns: 1fr; }
-  .cta { padding: 40px 26px; }
 }
 @media (max-width: 480px) {
   .wrap { padding: 0 18px; }
@@ -607,7 +494,6 @@ html.is-locked body > *:not(.site-gate) { display: none !important; }
 
   .moonscape { --moon-top: 85px; }
   .bands .wrap { gap: 10px; }
-  .split .text, .cta { padding: 32px 20px; }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .hero-copy { padding: 24px 0 12px; }

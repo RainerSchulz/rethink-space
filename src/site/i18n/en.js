@@ -17,7 +17,6 @@ export const EN = {
   'common.more':     'Learn more',
   'common.skip':     'Skip to content',
   'nav.main':        'Main navigation',
-  'lightbox.close':  'Close image',
   'chat.label':      'Ask us',
   'chat.open':       'Open chat',
   'chat.close':      'Close chat',
