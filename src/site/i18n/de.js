@@ -115,7 +115,6 @@ export const DE = {
   'contact.intro.eyebrow':    'Kontakt',
   'contact.intro.title':      'Direkt und ohne Umweg.',
   'contact.intro.text':       'Für Kooperationen, Studienanfragen, Vorträge oder Presseanfragen genügt eine kurze Nachricht mit Ihrem Anliegen und dem gewünschten Zeitrahmen.',
-  'contact.note':             'Hinweis: E-Mail-Adresse und Formularziel müssen vor dem Livegang gesetzt werden.',
   'contact.form.name':        'Name',
   'contact.form.email':       'E-Mail',
   'contact.form.message':     'Nachricht',

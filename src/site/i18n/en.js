@@ -115,7 +115,6 @@ export const EN = {
   'contact.intro.eyebrow':    'Contact',
   'contact.intro.title':      'Direct, no detours.',
   'contact.intro.text':       'For cooperations, study requests, talks or press enquiries a short message with your request and preferred timeframe is enough.',
-  'contact.note':             'Note: e-mail address and form endpoint must be set before going live.',
   'contact.form.name':        'Name',
   'contact.form.email':       'E-mail',
   'contact.form.message':     'Message',

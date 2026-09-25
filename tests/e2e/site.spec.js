@@ -205,7 +205,7 @@ test.describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
 test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {
   const ENDPOINT = 'https://test.supabase.co/functions/v1/chat';
   const SSE = 'data: {"type":"text","text":"ISRU means using local resources. "}\n\n'
-    + 'data: {"type":"text","text":"See /pages/space/"}\n\ndata: {"type":"done"}\n\n';
+    + 'data: {"type":"text","text":"See /pages/lunar-habitato/"}\n\ndata: {"type":"done"}\n\n';
 
   test('Frage senden, gestreamte Antwort mit Seitenlink, Escape schließt', async ({ page }) => {
     await page.addInitScript((url) => { window.RETHINK_CHAT_ENDPOINT = url; }, ENDPOINT);
@@ -222,11 +222,43 @@ test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {
     await expect(dlg).toBeVisible();
     await page.fill('#chat-input', 'What is ISRU?');
     await page.locator('.chat-send').click();
-    await expect(page.locator('.chat-msg--assistant .chat-text').last()).toContainText('ISRU means using local resources. See /pages/space/');
-    await expect(page.locator('.chat-msg--assistant a[href="/pages/space/"]')).toBeVisible();
+    await expect(page.locator('.chat-msg--assistant .chat-text').last()).toContainText('ISRU means using local resources. See /pages/lunar-habitato/');
+    await expect(page.locator('.chat-msg--assistant a[href="/pages/lunar-habitato/"]')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(dlg).toBeHidden();
     await expect(page.locator('.chat-fab')).toBeFocused();
+  });
+
+  test('lange Antwort: der Anfang steht oben, man muss nicht zuruecksrollen', async ({ page }) => {
+    // Eine Antwort, die deutlich hoeher ist als das Fenster des Verlaufs.
+    const stuecke = Array.from({ length: 40 }, (_, i) => `Line ${i + 1} of a very long answer about lunar regolith. `);
+    const lang = stuecke.map((tx) => `data: ${JSON.stringify({ type: 'text', text: tx })}\n\n`).join('')
+      + 'data: {"type":"done"}\n\n';
+    await page.addInitScript((url) => { window.RETHINK_CHAT_ENDPOINT = url; }, ENDPOINT);
+    await page.route(ENDPOINT, async (route) => {
+      const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type' };
+      if (route.request().method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
+      return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/event-stream' }, body: lang });
+    });
+    await page.goto('/');
+    await page.locator('.chat-fab').click();
+    await page.fill('#chat-input', 'Tell me everything about regolith');
+    await page.locator('.chat-send').click();
+    const antwort = page.locator('.chat-msg--assistant').last();
+    await expect(antwort).toContainText('Line 40 of a very long answer');
+
+    const mass = await page.evaluate(() => {
+      const log = document.querySelector('.chat-log');
+      const msg = [...document.querySelectorAll('.chat-msg--assistant')].at(-1);
+      return {
+        versatz: msg.getBoundingClientRect().top - log.getBoundingClientRect().top,
+        gescrollt: log.scrollTop,
+        hoeher: msg.getBoundingClientRect().height > log.clientHeight,
+      };
+    });
+    expect(mass.hoeher, 'Testaufbau: die Antwort muss hoeher sein als das Fenster').toBe(true);
+    expect(mass.gescrollt, 'der Verlauf ist gescrollt, sonst sagt der Test nichts').toBeGreaterThan(0);
+    expect(Math.abs(mass.versatz), 'der Anfang der Antwort steht oben im Fenster').toBeLessThan(4);
   });
 
   test('ohne Endpoint gibt es kein Widget', async ({ page }) => {

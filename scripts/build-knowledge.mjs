@@ -20,7 +20,9 @@ const read = (p) => (existsSync(p) ? readFileSync(p, 'utf8').trim() : '');
 
 // 1. Website-Texte: Schlüssel nach Seite gruppiert, EN und DE nebeneinander.
 //    Meta-Texte und Navigation sind für Antworten unerheblich.
-const skip = /^(nav\.|footer\.|common\.|lightbox\.|chat\.|.*\.meta\.)/;
+// Bedienelemente statt Inhalt: der Chatbot soll ueber die Website reden,
+// nicht ueber ihre Knoepfe. gate = Anmeldemaske der Testphase.
+const skip = /^(nav\.|footer\.|common\.|chat\.|gate\.|.*\.meta\.)/;
 const groups = new Map();
 for (const key of Object.keys(EN)) {
   if (skip.test(key)) continue;
@@ -28,10 +30,12 @@ for (const key of Object.keys(EN)) {
   if (!groups.has(page)) groups.set(page, []);
   groups.get(page).push(`- ${key}: EN „${EN[key]}“ | DE „${DE[key] ?? ''}“`);
 }
+// Namensraum -> Adresse. Nur Seiten, die es wirklich gibt: ein erfundener
+// Pfad in der Wissensbasis wird vom Chatbot weitergereicht und endet im 404.
 const PAGE_URL = {
-  home: '/pages/landing/', vision: '/pages/vision/', design: '/pages/design/', space: '/pages/space/',
-  deployment: '/pages/deployment/', dual: '/pages/dual-use/', ip: '/pages/ip/', news: '/pages/news/',
-  author: '/pages/autor/', contact: '/pages/kontakt/', legal: '/pages/impressum/', privacy: '/pages/datenschutz/',
+  home: '/', habitat: '/pages/lunar-habitato/', dual: '/pages/dual-use/', people: '/pages/people/',
+  contact: '/pages/contact/', imprint: '/pages/legal-notice/', legal: '/pages/legal-notice/',
+  privacy: '/pages/privacy/', notfound: '/pages/404/',
 };
 const siteText = [...groups].map(([page, lines]) =>
   `### Seite „${page}“ (${PAGE_URL[page] ?? 'siehe Navigation'})\n${lines.join('\n')}`).join('\n\n');

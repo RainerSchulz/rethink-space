@@ -151,6 +151,19 @@ function addMessage(role, text) {
   return body;
 }
 
+/**
+ * Steht die Antwort ganz da, den Anfang nach oben holen.
+ * Waehrend des Streamens haengt die Ansicht am Ende, damit man den Text
+ * kommen sieht. Ist er fertig, will man ihn von vorn lesen und nicht erst
+ * zurueckscrollen. Bei einer kurzen Antwort begrenzt der Browser den Wert
+ * von allein, dann bleibt alles sichtbar.
+ */
+function zeigeAntwortanfang(body) {
+  const msg = body.closest('.chat-msg');
+  if (!msg) return;
+  ui.log.scrollTop += msg.getBoundingClientRect().top - ui.log.getBoundingClientRect().top;
+}
+
 async function ask(question) {
   addMessage('user', question);
   history.push({ role: 'user', content: question });
@@ -177,6 +190,7 @@ async function ask(question) {
     }
     if (!answer) throw new Error('empty');
     history.push({ role: 'assistant', content: answer });
+    zeigeAntwortanfang(pending);
   } catch {
     history.pop(); // Frage wieder entfernen, damit der Verlauf abwechselnd bleibt
     pending.classList.remove('is-pending');

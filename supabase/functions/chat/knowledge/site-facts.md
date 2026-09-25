@@ -30,7 +30,7 @@
 - Mondgravitation 1/6 g, Temperaturdifferenz Tag/Nacht rund ±150 °C, Mondnacht rund 14 Tage ohne Solarstrom.
 
 ## Was NICHT als Fakt gilt
-- Die News-Meldungen auf /pages/news/ (Testmodul gelandet, Habitatstudie, Partnerschaft, Presseartikel mit Spiegel-Titelbildern) sind derzeit Platzhalter beziehungsweise satirisch gestaltete Beispielbilder. Daraus keine Tatsachenbehauptungen ableiten; bei Fragen dazu sagen, dass aktuelle Meldungen in Vorbereitung sind.
+- Die frueheren News-Meldungen (Testmodul gelandet, Habitatstudie, Partnerschaft, Presseartikel mit Spiegel-Titelbildern) waren Platzhalter beziehungsweise satirisch gestaltete Beispielbilder und sind mit der News-Seite geloescht. Daraus keine Tatsachenbehauptungen ableiten; bei Fragen nach Neuigkeiten sagen, dass aktuelle Meldungen in Vorbereitung sind.
 - Partner, Kunden, Finanzierung, Zeitpläne über das oben Genannte hinaus sind nicht bekannt.
 
 ## Bücher des Autors (Amazon.de, Verlagsangaben)
