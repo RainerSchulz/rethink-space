@@ -136,18 +136,83 @@ describe('Feature: Bänder (modules/bands.js)', () => {
 });
 
 describe('Feature: Kontaktformular (modules/contact.js)', () => {
-  it('Scenario: Absenden zeigt den Hinweis und lädt die Seite nicht neu', async () => {
-    document.body.innerHTML =
-      '<form data-contact novalidate><button type="submit">x</button><p class="form-status" hidden>Hinweis</p></form>';
-    const { initContact } = await fresh('../../src/site/modules/contact.js');
-    initContact();
+  const FORM = '<form data-contact novalidate>'
+    + '<input name="name" value="Ada">'
+    + '<input name="email" value="ada@example.com">'
+    + '<textarea name="message">Hallo</textarea>'
+    + '<input name="website" value="">'
+    + '<button type="submit">x</button>'
+    + '<p class="form-status" hidden tabindex="-1">Hinweis</p></form>';
+
+  const absenden = () => {
     const ev = new Event('submit', { cancelable: true, bubbles: true });
     document.querySelector('form').dispatchEvent(ev);
+    return ev;
+  };
+  const warte = () => new Promise((r) => setTimeout(r, 0));
+
+  beforeEach(() => { delete window.RETHINK_CONTACT_ENDPOINT; vi.unstubAllGlobals(); });
+
+  it('Scenario: ohne Endpoint bleibt es beim ehrlichen Hinweis', async () => {
+    document.body.innerHTML = FORM;
+    const { initContact } = await fresh('../../src/site/modules/contact.js');
+    initContact();
+    const ev = absenden();
     expect(ev.defaultPrevented).toBe(true);
-    expect(document.querySelector('.form-status').hidden).toBe(false);
+    const note = document.querySelector('.form-status');
+    expect(note.hidden).toBe(false);
+    expect(note.textContent).toMatch(/not yet connected/i);
+  });
+
+  it('Scenario: mit Endpoint wird gesendet, das Formular geleert und gedankt', async () => {
+    document.body.innerHTML = FORM;
+    window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
+    const gesendet = [];
+    vi.stubGlobal('fetch', (url, opts) => {
+      gesendet.push({ url, body: JSON.parse(opts.body) });
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+    });
+    const { initContact } = await fresh('../../src/site/modules/contact.js');
+    initContact();
+    absenden();
+    await warte();
+    expect(gesendet).toHaveLength(1);
+    expect(gesendet[0].body).toMatchObject({ name: 'Ada', email: 'ada@example.com', message: 'Hallo' });
+    expect(gesendet[0].body).toHaveProperty('website', ''); // Honigtopf wird mitgeschickt
+    // form.reset() stellt die Vorgabewerte wieder her, es leert nicht.
+    expect(document.querySelector('[name="message"]').value).toBe('Hallo');
+    expect(document.querySelector('.form-status').dataset.art).toBe('erfolg');
+  });
+
+  it('Scenario: Fehlercodes der Funktion werden übersetzt, nicht roh gezeigt', async () => {
+    document.body.innerHTML = FORM;
+    window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
+    vi.stubGlobal('fetch', () => Promise.resolve({ ok: false, json: () => Promise.resolve({ error: 'rate_limited' }) }));
+    const { initContact } = await fresh('../../src/site/modules/contact.js');
+    initContact();
+    absenden();
+    await warte();
+    const note = document.querySelector('.form-status');
+    expect(note.dataset.art).toBe('fehler');
+    expect(note.textContent).toMatch(/Too many/i);
+    expect(note.textContent).not.toMatch(/rate_limited/);
+  });
+
+  it('Scenario: bricht die Verbindung ab, wird auf die E-Mail-Adresse verwiesen', async () => {
+    document.body.innerHTML = FORM;
+    window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
+    vi.stubGlobal('fetch', () => Promise.reject(new Error('offline')));
+    const { initContact } = await fresh('../../src/site/modules/contact.js');
+    initContact();
+    absenden();
+    await warte();
+    const note = document.querySelector('.form-status');
+    expect(note.dataset.art).toBe('fehler');
+    expect(note.textContent).toMatch(/contact@rethink\.space/);
   });
 
   it('Scenario: ohne Formular passiert nichts', async () => {
+    document.body.innerHTML = '';
     const { initContact } = await fresh('../../src/site/modules/contact.js');
     expect(() => initContact()).not.toThrow();
   });

@@ -81,17 +81,53 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
   });
 
   test('Formular funktioniert auch nach einem Seitenwechsel', async ({ page, isMobile }) => {
+    const ENDPOINT = 'https://test.supabase.co/functions/v1/contact';
+    await page.addInitScript((u) => { window.RETHINK_CONTACT_ENDPOINT = u; }, ENDPOINT);
+    const gesendet = [];
+    await page.route(ENDPOINT, async (route) => {
+      const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type' };
+      if (route.request().method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
+      gesendet.push(JSON.parse(route.request().postData()));
+      return route.fulfill({ status: 202, headers: { ...cors, 'content-type': 'application/json' }, body: '{"ok":true}' });
+    });
+
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
     await page.locator('#site-nav a[href="/pages/contact/"]').click();
     await expect(page).toHaveURL(/\/pages\/contact\/$/);
+
+    // Der Honigtopf darf für Menschen nicht sichtbar sein
+    await expect(page.locator('input[name="website"]')).toBeHidden();
+
     await page.fill('input[name="name"]', 'Test');
     await page.fill('input[name="email"]', 'test@example.com');
     await page.fill('textarea[name="message"]', 'Hello');
     await expect(page.locator('.form-status')).toBeHidden();
     await page.locator('form[data-contact] button[type="submit"]').click();
-    await expect(page.locator('.form-status')).toBeVisible();
-    await expect(page).toHaveURL(/\/pages\/contact\/$/);
+
+    const status = page.locator('.form-status');
+    await expect(status).toBeVisible();
+    await expect(status).toHaveAttribute('data-art', 'erfolg');
+    await expect(page).toHaveURL(/\/pages\/contact\/$/); // kein Neuladen
+    expect(gesendet).toHaveLength(1);
+    expect(gesendet[0]).toMatchObject({ name: 'Test', email: 'test@example.com', message: 'Hello', website: '' });
+  });
+
+  test('Bricht das Senden ab, verweist das Formular auf die E-Mail-Adresse', async ({ page }) => {
+    const ENDPOINT = 'https://test.supabase.co/functions/v1/contact';
+    await page.addInitScript((u) => { window.RETHINK_CONTACT_ENDPOINT = u; }, ENDPOINT);
+    await page.route(ENDPOINT, (route) => route.abort());
+
+    await page.goto('/pages/contact/');
+    await page.fill('input[name="name"]', 'Test');
+    await page.fill('input[name="email"]', 'test@example.com');
+    await page.fill('textarea[name="message"]', 'Hello');
+    await page.locator('form[data-contact] button[type="submit"]').click();
+
+    const status = page.locator('.form-status');
+    await expect(status).toBeVisible();
+    await expect(status).toHaveAttribute('data-art', 'fehler');
+    await expect(status).toContainText('contact@rethink.space');
   });
 });
 

@@ -13,7 +13,7 @@
 - Die drei Themenseiten bestehen aus großen Bändern, die NICHT auf andere Seiten führen: ein Klick auf „Learn more" klappt den Text direkt darunter auf. /pages/lunar-habitato/: New Space Economy, Design & IP, Researching, History, Partnership. /pages/dual-use/: Defense Options, Down Streaming. /pages/people/: Founder & CEO (mit Porträt, Kurzbiografie und der Bücherliste), Team.
 - Die Startseite liegt seit 25.09.2026 direkt unter https://rethink.space/ — nicht mehr unter /pages/landing/. Diese alte Adresse gibt es nicht mehr; nenne ausschliesslich die Wurzel.
 - Diese Seiten gibt es weiter, aber nichts verlinkt sie mehr; man erreicht sie nur über ihre Adresse: /pages/space/, /pages/design/, /pages/deployment/, /pages/ip/, /pages/news/, /pages/history/. Nenne diese Adressen nur, wenn die Frage genau dorthin gehört; sonst verweise auf die vier Menüseiten.
-- Kontakt: Kontaktformular auf /pages/contact/ (derzeit noch ohne Versanddienst), E-Mail contact@rethink.space (Adresse laut Website), LinkedIn des Autors https://www.linkedin.com/in/lierfeld/.
+- Kontakt: Kontaktformular auf /pages/contact/ — es funktioniert und speichert die Anfrage; wir melden uns. E-Mail contact@rethink.space, LinkedIn des Autors https://www.linkedin.com/in/lierfeld/. Verweise bei Kontaktwünschen zuerst auf das Formular.
 - Umsetzung der Website: Rainer Schulz, Schulz-Solutions.
 
 ## Angaben aus Projektmaterial des Inhabers (Poster und Bildtexte auf der Website; als Angaben des Projekts kennzeichnen)

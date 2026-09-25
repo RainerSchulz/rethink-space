@@ -209,6 +209,19 @@ describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
   });
 });
 
+describe('Feature: Kontaktformular', () => {
+  const html = readFileSync(join(ROOT, 'pages/contact/index.html'), 'utf8');
+
+  it('hat einen Honigtopf, der für Menschen unsichtbar und nicht anspringbar ist', () => {
+    expect(html).toMatch(/<p class="trap" aria-hidden="true">/);
+    expect(html).toMatch(/<input type="text" name="website" tabindex="-1" autocomplete="off">/);
+  });
+
+  it('meldet Zustände über role="status", damit sie vorgelesen werden', () => {
+    expect(html).toMatch(/<p class="form-status[^"]*" hidden role="status" tabindex="-1"/);
+  });
+});
+
 describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
   // Seiten mit Bändern und der erwarteten Anzahl. Die Fläche ist hier
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.

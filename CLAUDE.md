@@ -84,7 +84,11 @@ npm run test:e2e   # bei HTML/Nav/Sprache/Formular
 Nach Textänderungen zusätzlich: `npm run knowledge && npm run knowledge:push` (Chatbot) und im CMS `npm run import`.
 Committen und pushen nur auf ausdrückliche Aufforderung.
 
-### 13. Inhalte aus dem CMS kommen nur über `content:apply` zurück
+### 13. Kontaktformular: die Website schreibt nie direkt in die Datenbank
+`contact.js` schickt an die Edge Function `contact` (`VITE_CONTACT_ENDPOINT`), nie per anon-Key in die Tabelle. Der anon-Key steht im ausgelieferten JavaScript; ein Insert-Recht für ihn wäre eine offene Einladung, `contact_messages` vollzuschreiben. Die Funktion schreibt mit dem Service-Role-Key und prüft vorher: Pflichtfelder, E-Mail-Form, Längen, 5 Anfragen je 10 Minuten und Herkunft, dazu ein Honigtopf-Feld (`name="website"`, für Menschen unsichtbar). Die IP wird **nur gehasht** abgelegt.
+**Ohne Endpoint meldet das Formular ehrlich**, dass gerade nichts ankommt, und verweist auf die E-Mail-Adresse — kein „Danke", hinter dem nichts passiert.
+
+### 14. Inhalte aus dem CMS kommen nur über `content:apply` zurück
 Redaktionelle Änderungen macht der Inhaber im CMS (`../rethink-cms`, eigenes Repo), nicht von Hand in `en.js`. Zwei Wege:
 
 **Knopf im CMS (der übliche Weg).** „Veröffentlichen“ ruft die Edge Function `publish` auf, die ein `repository_dispatch` an GitHub schickt. `content.yml` holt den Stand aus Supabase, prüft ihn mit Lint, Tests und Build und committet nur, wenn sich etwas geändert hat. Der Push startet `ci.yml` und damit den Deploy.
@@ -125,6 +129,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `.github/workflows/ci.yml` | Lint · Test · gitleaks · Build · Deploy (GitHub Pages) |
 | `.github/workflows/content.yml` | Nimmt den Inhaltsstand aus Supabase, prüft ihn und committet — ausgelöst vom „Veröffentlichen“-Knopf im CMS |
 | `supabase/functions/publish/` | Edge Function, die den Knopf im CMS mit GitHub verbindet; hält das GitHub-Token als Secret |
+| `supabase/functions/contact/` | Edge Function hinter dem Kontaktformular: prüft, begrenzt die Rate, speichert in `contact_messages` und benachrichtigt per E-Mail, sobald ein Versanddienst hinterlegt ist |
 
 ---
 
@@ -137,7 +142,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 ## Offen vor Livegang (Stand 15.09.2026)
 - Domain in Canonical/OG (`pages/*/index.html`), `public/sitemap.xml`, `public/robots.txt` prüfen
 - Impressum und Datenschutz sind auf **US-Recht** umgeschrieben (Delaware als anwendbares Recht, US-Urheberrecht und DMCA, Haftungsausschluss statt deutscher Paragrafen). Die Datenschutzerklärung führt beide Seiten: DSGVO für Besucher aus Europa, dazu die Rechte nach US-Bundesstaatenrecht. Offen: Telefonnummer, Registered Agent, State File Number, Steuernummer; ob eine EU-Vertretung nach Art. 27 DSGVO nötig ist; und die **anwaltliche Prüfung auf beiden Seiten** — beides sind Entwürfe.
-- Kontaktformular an einen Versanddienst anbinden (`src/site/modules/contact.js`)
+- Kontaktformular läuft (25.09.2026): Die Anfrage geht an die Edge Function `contact` und landet in `public.contact_messages`. **Offen: die Benachrichtigung per E-Mail** — dafür `RESEND_API_KEY` und `CONTACT_TO` als Supabase-Secrets setzen und `VITE_CONTACT_ENDPOINT` als GitHub-Variable, sonst sendet die gebaute Seite nichts. Ohne Versanddienst geht nichts verloren, die Anfragen stehen in der Tabelle — nur merkt es niemand von allein.
 - E-Mail-Postfach `contact@rethink.space` einrichten (Footer, Kontaktseite, JSON-LD verweisen darauf)
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
