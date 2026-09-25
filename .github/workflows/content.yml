@@ -1,0 +1,66 @@
+name: Inhalte aus dem CMS übernehmen
+
+# Ausgelöst vom Knopf „Veröffentlichen“ im CMS (über die Edge Function
+# „publish“, die ein repository_dispatch schickt) oder von Hand.
+#
+# Der Lauf holt den Inhaltsstand aus den CMS-Tabellen, schreibt ihn in die
+# Wörterbücher und Seiten-Shells, prüft das Ergebnis und committet nur, wenn
+# sich wirklich etwas geändert hat. Der Push löst dann den normalen CI/CD-Lauf
+# aus, der baut und deployt.
+#
+# Wichtig: Gepusht wird mit CONTENT_PUSH_TOKEN, nicht mit GITHUB_TOKEN. Ein
+# Push mit dem eingebauten GITHUB_TOKEN startet absichtlich keine weiteren
+# Workflows — der Deploy bliebe sonst aus.
+
+on:
+  repository_dispatch:
+    types: [cms-publish]
+  workflow_dispatch:
+
+concurrency:
+  group: cms-content
+  cancel-in-progress: false
+
+jobs:
+  uebernehmen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.CONTENT_PUSH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Inhalte aus Supabase übernehmen
+        run: npm run content:apply -- --from-supabase
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      # Gegenprüfung vor dem Commit: ein kaputter Inhalt darf nicht live gehen.
+      - run: npm run lint
+      - run: npm run test:run
+      - run: npm run build
+        env:
+          VITE_CHAT_ENDPOINT: ${{ vars.VITE_CHAT_ENDPOINT }}
+          VITE_GATE_HASH: ${{ vars.VITE_GATE_HASH }}
+
+      - name: Committen und pushen, falls sich etwas geändert hat
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Keine Änderungen — der Inhalt der Website entspricht schon dem CMS."
+            exit 0
+          fi
+          git config user.name  "rethink-cms"
+          git config user.email "contact@rethink.space"
+          git add -A
+          git commit -m "Inhalte aus dem CMS übernommen
+
+          Erzeugt von .github/workflows/content.yml aus den CMS-Tabellen in
+          Supabase. Texte und Bildpfade stammen aus dem Editor, nicht von Hand."
+          git push

@@ -85,7 +85,13 @@ Nach Textänderungen zusätzlich: `npm run knowledge && npm run knowledge:push` 
 Committen und pushen nur auf ausdrückliche Aufforderung.
 
 ### 13. Inhalte aus dem CMS kommen nur über `content:apply` zurück
-Redaktionelle Änderungen macht der Inhaber im CMS (`../rethink-cms`, eigenes Repo), nicht von Hand in `en.js`:
+Redaktionelle Änderungen macht der Inhaber im CMS (`../rethink-cms`, eigenes Repo), nicht von Hand in `en.js`. Zwei Wege:
+
+**Knopf im CMS (der übliche Weg).** „Veröffentlichen“ ruft die Edge Function `publish` auf, die ein `repository_dispatch` an GitHub schickt. `content.yml` holt den Stand aus Supabase, prüft ihn mit Lint, Tests und Build und committet nur, wenn sich etwas geändert hat. Der Push startet `ci.yml` und damit den Deploy.
+Dafür nötig: Supabase-Secret `GITHUB_TOKEN` (Fine-grained PAT auf dieses Repo, Contents: Read and write), GitHub-Secret `CONTENT_PUSH_TOKEN` (dasselbe Token), GitHub-Secret `SUPABASE_SERVICE_ROLE_KEY`, GitHub-Variable `SUPABASE_URL`, CMS-Variable `VITE_PUBLISH_WEBHOOK`.
+**Gepusht wird mit `CONTENT_PUSH_TOKEN`, nicht mit `GITHUB_TOKEN`** — ein Push mit dem eingebauten Token startet absichtlich keine weiteren Workflows, der Deploy bliebe aus.
+
+**Von Hand (ohne Backend).**
 ```bash
 # im CMS: Veröffentlichen → Export herunterladen (site-content.json)
 npm run content:apply -- "C:/Users/<du>/Downloads/site-content.json"
@@ -112,11 +118,13 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `src/site/i18n/` | `index.js` (Runtime), `de.js`, `en.js` |
 | `src/site/modules/` | `router.js`, `nav.js`, `contact.js`, `portrait.js`, `lightbox.js`, `bands.js`, `chat.js`, `gate.js` |
 | `supabase/` | Chatbot-Backend: Edge Function `functions/chat/` (Claude-Aufruf, Streaming), `knowledge/` (Fakten, Autor, Buchzusammenfassungen), Migration `chat_log`; Anleitung in `supabase/README.md` |
-| `scripts/apply-content.mjs`, `lib/apply.mjs` | `npm run content:apply -- <export.json>` schreibt einen CMS-Export zurück: Werte nach `en.js`/`de.js`, englischer Text an jedes `data-i18n`-Element, Bildpfade in den Shells. Umformungen in `lib/apply.mjs`, geprüft von `tests/unit/apply-content.test.js` |
+| `scripts/apply-content.mjs`, `lib/apply.mjs`, `lib/cms-fetch.mjs` | `npm run content:apply -- <export.json>` schreibt einen CMS-Export zurück: Werte nach `en.js`/`de.js`, englischer Text an jedes `data-i18n`-Element, Bildpfade in den Shells. Mit `--from-supabase` liest es statt aus der Datei direkt aus den CMS-Tabellen (so läuft es in GitHub Actions). Umformungen in `lib/apply.mjs`, geprüft von `tests/unit/apply-content.test.js` |
 | `scripts/build-knowledge.mjs`, `push-knowledge.mjs` | `npm run knowledge` baut `knowledge.txt` aus Wörterbüchern + `knowledge/`; `npm run knowledge:push` lädt sie nach `public.chat_knowledge` |
 | `deploy/nginx.conf`, `Dockerfile` | Auslieferung wie FORGE (nginx:alpine) |
 | `tests/unit/`, `tests/e2e/` | Vitest, Playwright |
 | `.github/workflows/ci.yml` | Lint · Test · gitleaks · Build · Deploy (GitHub Pages) |
+| `.github/workflows/content.yml` | Nimmt den Inhaltsstand aus Supabase, prüft ihn und committet — ausgelöst vom „Veröffentlichen“-Knopf im CMS |
+| `supabase/functions/publish/` | Edge Function, die den Knopf im CMS mit GitHub verbindet; hält das GitHub-Token als Secret |
 
 ---
 
@@ -136,5 +144,5 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
 - Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
 - Seiten ohne Weg hinein: seit dem Umbau auf Bänder (23.09.2026) verlinkt nichts mehr auf `design`, `space`, `deployment`, `ip`, `news` und `history`. Ihre Inhalte stehen teils schon in den aufklappbaren Bereichen. Entscheiden, ob diese Seiten verlinkt, eingearbeitet oder gelöscht werden.
-- CMS: der Rückweg Export → Website steht (`npm run content:apply`). Offen: Publish-Knopf im CMS an GitHub Actions hängen (`repository_dispatch`), damit ohne Terminal veröffentlicht werden kann; CMS für Dr. Lierfeld deployen; Supabase-Adapter gegen das echte Projekt testen; Admin-Passwort zurücksetzen (`admin1234` greift nicht mehr)
+- CMS: Rückweg, Supabase-Betrieb und Veröffentlichen-Knopf stehen (25.09.2026). Offen: GitHub-Token anlegen und als Secret hinterlegen (`GITHUB_TOKEN` in Supabase, `CONTENT_PUSH_TOKEN` in GitHub), `VITE_PUBLISH_WEBHOOK` im CMS setzen, CMS für Dr. Lierfeld hosten
 - Chatbot: Funktion `chat` ist im Projekt Re-Think-Space deployt, Wissensbasis und CMS-Tabellen befüllt (16.09.2026). Offen: Secret `ANTHROPIC_API_KEY` im Dashboard setzen, `VITE_CHAT_ENDPOINT` als GitHub-Variable, Datenschutzerklärung um den KI-Dienst (Anthropic) ergänzen

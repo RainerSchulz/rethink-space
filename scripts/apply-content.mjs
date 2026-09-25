@@ -1,6 +1,12 @@
 /**
- * Schreibt einen CMS-Export zurück in die Website. Aufruf:
+ * Schreibt den Inhaltsstand des CMS zurück in die Website. Aufruf:
  *   npm run content:apply -- [pfad/zu/site-content.json] [--dry]
+ *   npm run content:apply -- --from-supabase            (für den GitHub-Lauf)
+ *
+ * Mit --from-supabase wird nicht aus einer Datei gelesen, sondern direkt aus
+ * den CMS-Tabellen (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY). So kann der
+ * Veröffentlichen-Knopf im CMS den Build auslösen, ohne dass jemand eine
+ * Datei herunterlädt und weiterreicht.
  *
  * Ohne Pfad sucht das Skript der Reihe nach: ./site-content.json,
  * ../rethink-cms/site-content.json und die neueste Datei dieses Namens im
@@ -26,10 +32,12 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from '
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { setDictValue, hasDictKey, applyKeyToHtml, setImages } from './lib/apply.mjs';
+import { ladeInhalt } from './lib/cms-fetch.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const DRY = args.includes('--dry');
+const AUS_SUPABASE = args.includes('--from-supabase');
 const given = args.find((a) => !a.startsWith('--'));
 
 /* ---------- Export finden ---------- */
@@ -44,20 +52,37 @@ function newestInDownloads() {
   return hits[0]?.file ?? null;
 }
 
-const source = given
-  ? resolve(given)
-  : [join(ROOT, 'site-content.json'), resolve(ROOT, '../rethink-cms/site-content.json')]
-    .find(existsSync) ?? newestInDownloads();
+let content;
+let source;
+if (AUS_SUPABASE) {
+  source = 'Supabase (cms_pages, cms_texts, cms_images)';
+  try {
+    content = await ladeInhalt({
+      url: process.env.SUPABASE_URL,
+      key: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    });
+  } catch (err) {
+    console.error('Inhalt aus Supabase holen fehlgeschlagen:', err.message);
+    process.exit(1);
+  }
+} else {
+  source = given
+    ? resolve(given)
+    : [join(ROOT, 'site-content.json'), resolve(ROOT, '../rethink-cms/site-content.json')]
+      .find(existsSync) ?? newestInDownloads();
 
-if (!source || !existsSync(source)) {
-  console.error('Kein Export gefunden. Im CMS unter „Veröffentlichen“ herunterladen und den Pfad angeben:');
-  console.error('  npm run content:apply -- "C:/Users/<du>/Downloads/site-content.json"');
-  process.exit(1);
+  if (!source || !existsSync(source)) {
+    console.error('Kein Export gefunden. Im CMS unter „Veröffentlichen“ herunterladen und den Pfad angeben:');
+    console.error('  npm run content:apply -- "C:/Users/<du>/Downloads/site-content.json"');
+    console.error('Oder direkt aus der Datenbank lesen:');
+    console.error('  npm run content:apply -- --from-supabase');
+    process.exit(1);
+  }
+  content = JSON.parse(readFileSync(source, 'utf8'));
 }
 
-const content = JSON.parse(readFileSync(source, 'utf8'));
 if (!Array.isArray(content.pages)) {
-  console.error(`${source}: kein CMS-Export (Feld "pages" fehlt).`);
+  console.error(`${source}: kein CMS-Inhalt (Feld "pages" fehlt).`);
   process.exit(1);
 }
 
