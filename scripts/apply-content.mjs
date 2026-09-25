@@ -121,7 +121,8 @@ for (const page of content.pages) {
 /* ---------- Seiten ---------- */
 for (const page of content.pages) {
   if (page.slug === 'global') continue;
-  const file = join(ROOT, `pages/${page.slug}/index.html`);
+  // Die Startseite liegt in der Wurzel, alle anderen unter pages/<slug>/.
+  const file = page.slug === 'landing' ? join(ROOT, 'index.html') : join(ROOT, `pages/${page.slug}/index.html`);
   if (!existsSync(file)) { notes.push(`Seite ${page.slug} gibt es nicht mehr — übersprungen`); continue; }
   let html = readFileSync(file, 'utf8');
   const before = html;

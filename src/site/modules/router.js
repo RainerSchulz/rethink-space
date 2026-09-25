@@ -17,7 +17,9 @@ const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)
 export function internalUrl(a) {
   if (!a || a.target || a.hasAttribute('download')) return null;
   const url = new URL(a.getAttribute('href'), location.href);
-  if (url.origin !== location.origin || !url.pathname.startsWith('/pages/')) return null;
+  // Die Startseite liegt in der Wurzel, alle anderen Seiten unter /pages/.
+  const istSeite = url.pathname === '/' || url.pathname === '/index.html' || url.pathname.startsWith('/pages/');
+  if (url.origin !== location.origin || !istSeite) return null;
   return url;
 }
 

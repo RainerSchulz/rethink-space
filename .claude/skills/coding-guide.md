@@ -28,7 +28,7 @@ Das CSS wird bewusst **nicht** aus `main.js` importiert: im Dev-Server käme es 
 
 ```
 /
-├── index.html                   ← NUR Weiterleitung auf /pages/landing/
+├── index.html                   ← DIE STARTSEITE (Wurzel, Adresse rethink.space/)
 ├── vite.pages.js                ← Seitenliste für den Build
 ├── pages/<name>/index.html      ← eine Shell je Seite (< 300 Zeilen)
 ├── public/
@@ -181,7 +181,7 @@ Die Pipeline (`.github/workflows/ci.yml`) scannt mit **gitleaks** die gesamte Hi
 
 ## ⚡ REGEL #13 — Logo ist IMMER ein Home-Link
 
-`<a class="logo" href="/pages/landing/">` im Header und Footer jeder Seite (Test).
+`<a class="logo" href="/">` im Header und Footer jeder Seite (Test).
 
 ---
 

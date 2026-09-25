@@ -1,12 +1,11 @@
 // Welche Seiten ein Build erzeugt (Muster: FORGE-Portal vite.pages.js).
 //
-// Ohne RETHINK_PAGES entsteht alles. Mit RETHINK_PAGES=landing,impressum
+// Ohne RETHINK_PAGES entsteht alles. Mit RETHINK_PAGES=root,contact
 // nur die genannten Seiten — z. B. für ein Coming-Soon-Image.
 import { resolve } from 'node:path';
 
 export const PAGES = {
-  root:        'index.html',                    // Weiterleitung auf /pages/landing/
-  landing:     'pages/landing/index.html',
+  root:        'index.html',                    // Startseite, liegt in der Wurzel
   'lunar-habitato': 'pages/lunar-habitato/index.html',
   design:      'pages/design/index.html',
   space:       'pages/space/index.html',

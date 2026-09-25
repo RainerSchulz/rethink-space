@@ -15,17 +15,26 @@ import { PAGES } from '../../vite.pages.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SITE = 'https://rethink.space';
+// Seiten unter pages/. Die Startseite steht nicht dabei: sie liegt als
+// index.html in der Wurzel, damit die Adresse rethink.space/ und nicht
+// rethink.space/pages/landing/ lautet.
 const EXPECTED_PAGES = [
-  'landing', 'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
+  'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
   'ip', 'news', 'history', 'people', 'contact', 'legal-notice', 'privacy', '404',
 ];
 
 const pageDirs = readdirSync(join(ROOT, 'pages')).filter((d) => statSync(join(ROOT, 'pages', d)).isDirectory());
-const pages = pageDirs.map((slug) => ({
-  slug,
-  file: `pages/${slug}/index.html`,
-  html: readFileSync(join(ROOT, 'pages', slug, 'index.html'), 'utf8'),
-}));
+// Die Startseite wird mitgeprüft: für sie gelten dieselben Shell-Regeln,
+// nur ihre Adresse ist die Wurzel.
+const pages = [
+  { slug: 'landing', file: 'index.html', url: `${SITE}/`, html: readFileSync(join(ROOT, 'index.html'), 'utf8') },
+  ...pageDirs.map((slug) => ({
+    slug,
+    file: `pages/${slug}/index.html`,
+    url: `${SITE}/pages/${slug}/`,
+    html: readFileSync(join(ROOT, 'pages', slug, 'index.html'), 'utf8'),
+  })),
+];
 
 const between = (html, tag) => {
   const m = html.match(new RegExp(`<${tag}[\\s>][\\s\\S]*?</${tag}>`));
@@ -38,10 +47,12 @@ describe('Feature: Seitenbestand (Muster FORGE: pages/<name>/index.html)', () =>
     expect(rootHtml).toEqual(['index.html']);
   });
 
-  it('root index.html leitet auf /pages/landing/ weiter', () => {
+  it('root index.html IST die Startseite (keine Weiterleitung mehr)', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
-    expect(html).toMatch(/http-equiv="refresh" content="0; url=\/pages\/landing\/"/);
-    expect(html).toMatch(/<meta name="robots" content="noindex">/);
+    expect(html, 'die Wurzel darf nicht weiterleiten').not.toMatch(/http-equiv="refresh"/);
+    expect(html, 'die Startseite muss indexierbar sein').not.toMatch(/<meta name="robots" content="noindex">/);
+    expect(html).toContain('<link rel="canonical" href="https://rethink.space/">');
+    expect(html).toContain('<div class="moonscape">');
   });
 
   it('genau die erwarteten Seiten liegen unter pages/', () => {
@@ -56,11 +67,12 @@ describe('Feature: Seitenbestand (Muster FORGE: pages/<name>/index.html)', () =>
     const inputs = Object.values(PAGES);
     expect(inputs).toContain('index.html');
     for (const slug of pageDirs) expect(inputs, slug).toContain(`pages/${slug}/index.html`);
+    expect(inputs, 'die Startseite fehlt').toContain('index.html');
     for (const p of inputs) expect(existsSync(join(ROOT, p)), p).toBe(true);
   });
 });
 
-describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) => {
+describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, url }) => {
   it('enthält kein <style> und keine style-Attribute', () => {
     expect(html).not.toMatch(/<style[\s>]/i);
     expect(html).not.toMatch(/\sstyle="/i);
@@ -93,8 +105,8 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) 
     expect(html).toContain('<meta property="og:locale" content="en_US">');
     expect(html).toMatch(/<title data-i18n="[a-z.-]+">/);
     expect(html).toMatch(/<meta name="description" data-i18n-content="[a-z.-]+" content="[^"]+">/);
-    expect(html).toContain(`<link rel="canonical" href="${SITE}/pages/${slug}/">`);
-    expect(html).toContain(`<meta property="og:url" content="${SITE}/pages/${slug}/">`);
+    expect(html).toContain(`<link rel="canonical" href="${url}">`);
+    expect(html).toContain(`<meta property="og:url" content="${url}">`);
     expect(html).toMatch(/<meta property="og:title" data-i18n-content="[a-z.-]+" content="[^"]+">/);
     expect(html).toMatch(/<meta property="og:image" content="[^"]+">/);
     expect(html).toMatch(/<meta http-equiv="Content-Security-Policy"/);
@@ -178,7 +190,7 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html }) 
 });
 
 describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
-  const ref = pages.find((p) => p.slug === 'landing');
+  const ref = pages.find((p) => p.slug === 'landing'); // die Startseite in der Wurzel
 
   it('Header identisch', () => {
     const refHeader = between(ref.html, 'header');
@@ -193,7 +205,7 @@ describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
   });
 
   it('Logo ist immer ein Home-Link', () => {
-    for (const p of pages) expect(p.html, p.file).toMatch(/<a class="logo" href="\/pages\/landing\/"/);
+    for (const p of pages) expect(p.html, p.file).toMatch(/<a class="logo" href="\/"/);
   });
 });
 
@@ -241,7 +253,7 @@ describe('Feature: Suchmaschinen-Dateien in public/', () => {
   it('sitemap.xml listet jede indexierbare Seite genau einmal', () => {
     const xml = readFileSync(join(ROOT, 'public/sitemap.xml'), 'utf8');
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    const expected = EXPECTED_PAGES.filter((s) => s !== '404').map((s) => `${SITE}/pages/${s}/`);
+    const expected = [`${SITE}/`, ...EXPECTED_PAGES.filter((s) => s !== '404').map((s) => `${SITE}/pages/${s}/`)];
     expect([...locs].sort()).toEqual([...expected].sort());
   });
 

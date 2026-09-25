@@ -4,10 +4,10 @@
 **RETHINK SPACE** — statische Website, einsprachig Englisch (DE-Wörterbuch bleibt gepflegt), 14 Seiten unter `pages/`
 - **Träger:** RETHINK SPACE Inc. (C-Corporation in Formation), Delaware/USA · **Inhaber:** Dr. Johannes Lierfeld · **Umsetzung:** Rainer Schulz · Schulz-Solutions
 - **Repo:** github.com/RainerSchulz/rethink-space · **Domain:** rethink.space (Stand 16.09.2026)
-- **Dev-Server:** `npm install` → `npm run dev` → http://localhost:3100/pages/landing/
+- **Dev-Server:** `npm install` → `npm run dev` → http://localhost:3100/
 - **Stack:** Vite 8 · Vanilla JS (ES-Module) · Vitest · Playwright · ESLint · gitleaks · Docker/nginx
 
-Aufgebaut nach dem FORGE-Portal-Muster (forge-portal-vite): Root-`index.html` leitet auf `/pages/landing/` weiter, jede Seite liegt als `pages/<name>/index.html` (nur Markup + Kopfdaten), ein Entry `src/site/main.js`, Module mit je einer Verantwortung, DE/EN-Wörterbuch mit `t()`, Seitenliste in `vite.pages.js`.
+Aufgebaut nach dem FORGE-Portal-Muster (forge-portal-vite): Root-`index.html` leitet auf `/` weiter, jede Seite liegt als `pages/<name>/index.html` (nur Markup + Kopfdaten), ein Entry `src/site/main.js`, Module mit je einer Verantwortung, DE/EN-Wörterbuch mit `t()`, Seitenliste in `vite.pages.js`.
 
 ---
 
@@ -30,7 +30,7 @@ Kein `<style>`, kein `style="…"`, kein `<script>` außer dem Vite-Entry und JS
 ### 2a. Seitenwechsel läuft über den Router
 `src/site/modules/router.js` tauscht bei internen Links nur `<main>` und die Kopfdaten (kein Reload, Überblendung). Module, die den Seiteninhalt brauchen (Formular, Portrait), werden in `main.js` in `initPage()` gestartet und nach jedem `rethink:pagechange` erneut ausgeführt.
 
-### 3. Nur `index.html` im Root; jede Seite ist `pages/<name>/index.html`
+### 3. Die Startseite ist `index.html` im Root; jede weitere Seite ist `pages/<name>/index.html`
 Links sind absolut: `/pages/<name>/`. Neue Seite → `vite.pages.js`, `public/sitemap.xml`, Header- und Footer-Nav auf **allen** Seiten, `EXPECTED_PAGES` in den Tests.
 
 ### 4. Header und Footer sind auf allen Seiten identisch
@@ -107,7 +107,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 ## Struktur
 | Pfad | Inhalt |
 |---|---|
-| `index.html` | Weiterleitung auf `/pages/landing/` |
+| `index.html` | **Die Startseite selbst**, in der Wurzel — damit die Adresse `rethink.space/` lautet und nicht `/pages/landing/`. Keine Weiterleitung mehr. |
 | `pages/<name>/index.html` | 14 Seiten-Shells (inkl. `404`). **Alle Adressen sind englisch** — `lunar-habitato` (früher `vision`), `people` (`autor`), `contact` (`kontakt`), `legal-notice` (`impressum`), `privacy` (`datenschutz`) |
 | `vite.pages.js` | Seitenliste für den Build (`RETHINK_PAGES` wählt Teilmengen) |
 | `public/` | `Bilder/`, `favicon.svg`, Icons, `og-image.jpg`, `robots.txt`, `sitemap.xml`, `site.webmanifest` |

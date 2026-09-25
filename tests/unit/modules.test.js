@@ -41,8 +41,8 @@ describe('Feature: Navigation (modules/nav.js)', () => {
     }
   });
 
-  it('Scenario: Landing markiert keinen Nav-Link', async () => {
-    window.history.pushState({}, '', '/pages/landing/');
+  it('Scenario: Startseite markiert keinen Nav-Link', async () => {
+    window.history.pushState({}, '', '/');
     const { initNav } = await fresh('../../src/site/modules/nav.js');
     initNav();
     expect(document.querySelectorAll('[aria-current]')).toHaveLength(0);

@@ -37,9 +37,9 @@ function click(el, init = {}) {
 }
 
 beforeEach(() => {
-  window.history.replaceState({}, '', '/pages/landing/');
+  window.history.replaceState({}, '', '/');
   document.head.innerHTML =
-    '<title>Landing</title><meta name="description" content="landing"><link rel="canonical" href="https://rethink.space/pages/landing/">';
+    '<title>Landing</title><meta name="description" content="landing"><link rel="canonical" href="https://rethink.space/">';
   document.body.innerHTML = `
     <header class="site-header"><nav class="nav"><a id="to-habitat" href="/pages/lunar-habitato/">Lunar Habitato</a><a id="ext" href="https://example.com/">Ext</a></nav></header>
     <main><h1>Landing</h1></main>
@@ -106,7 +106,7 @@ describe('Feature: Router greift nur ein, wo es sinnvoll ist', () => {
   it('Scenario: Link auf die aktuelle Seite scrollt nur nach oben', async () => {
     const { initRouter } = await fresh();
     initRouter();
-    document.querySelector('#to-habitat').setAttribute('href', '/pages/landing/');
+    document.querySelector('#to-habitat').setAttribute('href', '/');
     const ev = click(document.getElementById('to-habitat'));
     expect(ev.defaultPrevented).toBe(true);
     expect(fetch).not.toHaveBeenCalled();
@@ -120,7 +120,7 @@ describe('Feature: Router greift nur ein, wo es sinnvoll ist', () => {
     await vi.waitFor(() => expect(location.pathname).toBe('/pages/lunar-habitato/'));
 
     globalThis.fetch = vi.fn(async () => ({ ok: true, status: 200, text: async () => PAGE('Landing again', 'Back home') }));
-    window.history.replaceState({ scroll: 120 }, '', '/pages/landing/');
+    window.history.replaceState({ scroll: 120 }, '', '/');
     window.dispatchEvent(new PopStateEvent('popstate', { state: { scroll: 120 } }));
     await vi.waitFor(() => expect(document.querySelector('main h1').textContent).toBe('Back home'));
     expect(window.scrollTo).toHaveBeenLastCalledWith(0, 120);

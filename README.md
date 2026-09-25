@@ -7,7 +7,7 @@ Aufgebaut nach dem FORGE-Portal-Muster: Vite-Multi-Page mit `pages/<name>/index.
 
 ```bash
 npm install
-npm run dev        # öffnet http://localhost:3100/pages/landing/
+npm run dev        # öffnet http://localhost:3100/
 ```
 
 ## Prüfen
@@ -35,8 +35,8 @@ Ein direktes Öffnen von `index.html` per Doppelklick funktioniert nicht (ES-Mod
 
 | URL | Inhalt |
 |---|---|
-| `/` | Weiterleitung auf `/pages/landing/` |
-| `/pages/landing/` | Landingpage |
+| `/` | Weiterleitung auf `/` |
+| `/` | Landingpage |
 | `/pages/lunar-habitato/` | Vision |
 | `/pages/design/` | Design |
 | `/pages/space/` | New Space |
@@ -55,7 +55,7 @@ Welche Seiten ein Build erzeugt, steht in `vite.pages.js` (`RETHINK_PAGES=landin
 ## Struktur
 
 ```
-index.html              Weiterleitung auf /pages/landing/
+index.html              Weiterleitung auf /
 pages/<name>/index.html Seiten-Shells (nur Markup + Kopfdaten)
 public/                 Bilder/, favicon.svg, Icons, og-image.jpg, robots.txt, sitemap.xml, site.webmanifest
 src/site/main.js        Vite-Entry

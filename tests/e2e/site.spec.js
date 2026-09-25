@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 const PAGES = [
-  'landing', 'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
+  'lunar-habitato', 'design', 'space', 'deployment', 'dual-use',
   'ip', 'news', 'history', 'people', 'contact', 'legal-notice', 'privacy', '404',
 ];
 
@@ -28,16 +28,18 @@ test.describe('Feature: Alle Seiten laden fehlerfrei', () => {
     });
   }
 
-  test('Root / leitet auf /pages/landing/ weiter', async ({ page }) => {
-    await page.goto('/');
-    await expect(page).toHaveURL(/\/pages\/landing\/$/);
+  test('Root / IST die Startseite — keine Weiterleitung mehr', async ({ page }) => {
+    const res = await page.goto('/');
+    expect(res.status()).toBe(200);
+    await expect(page).not.toHaveURL(/\/pages\//);
     await expect(page.locator('.hero h1')).toBeVisible();
+    await expect(page.locator('.moonscape')).toBeVisible();
   });
 });
 
 test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () => {
   test('Seite startet auf Englisch, auch im deutschen Browser; kein Sprachschalter', async ({ page }) => {
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page).toHaveTitle('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
     await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText('New Space Economy for');
@@ -46,7 +48,7 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
   });
 
   test('Kopfnavigation führt genau vier Punkte', async ({ page, isMobile }) => {
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
     await expect(page.locator('#site-nav a')).toHaveText(['Lunar Habitato', 'Dual Use', 'People', 'Contact']);
   });
@@ -54,7 +56,7 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
 
 test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
   test('Nav-Link tauscht nur den Inhalt; Header, Footer und JS-Zustand bleiben', async ({ page, isMobile }) => {
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     await page.evaluate(() => { window.__keep = 42; });
 
     if (isMobile) {
@@ -73,13 +75,13 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     if (isMobile) await expect(page.locator('#site-nav')).toBeHidden(); // Menü schließt nach Wechsel
 
     await page.goBack();
-    await expect(page).toHaveURL(/\/pages\/landing\/$/);
+    await expect(page).not.toHaveURL(/\/pages\//);
     await expect(page.locator('.hero h1')).toBeVisible();
     expect(await page.evaluate(() => window.__keep)).toBe(42);
   });
 
   test('Formular funktioniert auch nach einem Seitenwechsel', async ({ page, isMobile }) => {
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
     await page.locator('#site-nav a[href="/pages/contact/"]').click();
     await expect(page).toHaveURL(/\/pages\/contact\/$/);
@@ -107,7 +109,7 @@ test.describe('Feature: People-Seite', () => {
 
 test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
   test('Tab zeigt den Skip-Link, Enter springt in den Inhalt', async ({ page }) => {
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     await page.keyboard.press('Tab');
     const skip = page.locator('.skip-link');
     await expect(skip).toBeFocused();
@@ -117,7 +119,7 @@ test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
   });
 
   test('nach einem Seitenwechsel liegt der Fokus auf dem neuen Inhalt', async ({ page, isMobile }) => {
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
     await page.locator('#site-nav a[href="/pages/dual-use/"]').click();
     await expect(page).toHaveURL(/\/pages\/dual-use\/$/);
@@ -183,7 +185,7 @@ test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {
       expect(body.messages.at(-1)).toEqual({ role: 'user', content: 'What is ISRU?' });
       return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/event-stream' }, body: SSE });
     });
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     await page.locator('.chat-fab').click();
     const dlg = page.locator('dialog.chat');
     await expect(dlg).toBeVisible();
@@ -198,7 +200,7 @@ test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {
 
   test('ohne Endpoint gibt es kein Widget', async ({ page }) => {
     await page.addInitScript(() => { window.RETHINK_CHAT_ENDPOINT = ''; });
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     // Nur aussagekräftig, wenn lokal kein VITE_CHAT_ENDPOINT gesetzt ist; sonst ist der Button erlaubt.
     const count = await page.locator('.chat-fab').count();
     expect(count).toBeLessThanOrEqual(1);
@@ -210,7 +212,7 @@ test.describe('Feature: Zugangsschutz der Testphase', () => {
 
   test('Maske sperrt die Seite, richtige Daten schalten frei und bleiben gespeichert', async ({ page }) => {
     await page.addInitScript((h) => { window.RETHINK_GATE_HASH = h; }, HASH);
-    await page.goto('/pages/landing/');
+    await page.goto('/');
     const gate = page.locator('.site-gate');
     await expect(gate).toBeVisible();
     await expect(page.locator('main')).toBeHidden();

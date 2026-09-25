@@ -18,7 +18,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const deKeys = Object.keys(DE);
 const enKeys = Object.keys(EN);
 
-const htmlFiles = readdirSync(join(ROOT, 'pages')).map((d) => `pages/${d}/index.html`);
+// Die Startseite liegt als index.html in der Wurzel, alle anderen unter pages/.
+const htmlFiles = ['index.html', ...readdirSync(join(ROOT, 'pages')).map((d) => `pages/${d}/index.html`)];
 const htmlDocs = htmlFiles.map((f) => ({
   file: f,
   html: readFileSync(join(ROOT, f), 'utf8'),
