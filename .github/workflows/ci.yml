@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  # Vom CMS-Repo nach jedem grünen Lauf auf main: CMS-Änderungen gehen live,
+  # ohne dass sich hier etwas ändert (siehe Schritt „CMS unter /cms/“).
+  repository_dispatch:
+    types: [cms-updated]
 
 jobs:
   # ─── Quality Gate 1: ESLint ────────────────────────────────────────
@@ -51,6 +55,8 @@ jobs:
   build:
     needs: [lint, test, secret-scan]
     runs-on: ubuntu-latest
+    env:
+      HAS_CMS_KEY: ${{ secrets.CMS_DEPLOY_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -62,6 +68,49 @@ jobs:
         env:
           VITE_CHAT_ENDPOINT: ${{ vars.VITE_CHAT_ENDPOINT }}
           VITE_GATE_HASH: ${{ vars.VITE_GATE_HASH }}
+
+      # ─── CMS unter /cms/ ─────────────────────────────────────────────
+      # Das Redaktionssystem liegt im privaten Repo rethink-cms und wird hier
+      # mitgebaut. Gelesen wird mit einem Deploy-Key (nur lesen, nur dieses
+      # Repo) im Secret CMS_DEPLOY_KEY. Scheitert ein Schritt, geht die Website
+      # trotzdem raus — dann nur ohne /cms/, bis der nächste Lauf klappt.
+      # Supabase-Adresse und Anon-Key sind öffentlich (Rechte regelt RLS) und
+      # liegen deshalb als Variablen, nicht als Secrets.
+      - name: CMS auschecken
+        id: cms_checkout
+        if: env.HAS_CMS_KEY == 'true'
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: RainerSchulz/rethink-cms
+          ssh-key: ${{ secrets.CMS_DEPLOY_KEY }}
+          path: cms-src
+      - name: CMS prüfen und bauen
+        id: cms_build
+        if: steps.cms_checkout.outcome == 'success'
+        continue-on-error: true
+        working-directory: cms-src
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_PUBLISH_WEBHOOK: ${{ vars.VITE_PUBLISH_WEBHOOK }}
+          VITE_SITE_BASE: https://rethink.space
+        run: |
+          # Ohne Supabase liefe das CMS öffentlich im Demo-Modus — lieber gar nicht.
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "::error::Variablen VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY fehlen — CMS wird nicht ausgeliefert."
+            exit 1
+          fi
+          npm ci
+          npm run test:run
+          npm run build:site
+      - name: CMS nach dist/cms/
+        if: steps.cms_build.outcome == 'success'
+        run: cp -r cms-src/dist dist/cms
+      - name: Hinweis, falls das CMS fehlt
+        if: steps.cms_build.outcome != 'success'
+        run: echo "::warning::Diese Auslieferung enthält kein CMS unter /cms/ (Deploy-Key, Variablen oder CMS-Build prüfen)."
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

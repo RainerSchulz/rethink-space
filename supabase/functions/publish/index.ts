@@ -18,7 +18,7 @@ const GITHUB_REPO = Deno.env.get("GITHUB_REPO") ?? "RainerSchulz/rethink-space";
 const GITHUB_TOKEN = Deno.env.get("GITHUB_TOKEN") ?? "";
 const EVENT_TYPE = "cms-publish";
 const ALLOWED_ORIGINS = (Deno.env.get("PUBLISH_ALLOWED_ORIGINS") ??
-  "http://localhost:3200,http://127.0.0.1:3200")
+  "https://rethink.space,http://localhost:3200,http://127.0.0.1:3200")
   .split(",").map((s) => s.trim()).filter(Boolean);
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";

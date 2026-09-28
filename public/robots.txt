@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /404.html
 Disallow: /pages/404/
+Disallow: /cms/
 
 Sitemap: https://rethink.space/sitemap.xml
