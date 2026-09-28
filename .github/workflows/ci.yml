@@ -48,8 +48,18 @@ jobs:
         with:
           fetch-depth: 0 # gesamte Historie scannen
       - uses: gitleaks/gitleaks-action@v2
+        if: github.event_name != 'repository_dispatch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Die Action kennt repository_dispatch nicht („event is not yet supported“)
+      # — genau das schickt das CMS-Repo nach jeder Änderung (cms-updated). Dann
+      # prüft dieselbe gitleaks-Version direkt, über die ganze Historie und mit
+      # .gitleaks.toml; ein Fund bricht wie oben alles ab.
+      - name: gitleaks (CLI) bei repository_dispatch
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
+          ./gitleaks git . --redact --no-banner
 
   # ─── Build ─────────────────────────────────────────────────────────
   build:
