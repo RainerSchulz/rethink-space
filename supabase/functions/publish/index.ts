@@ -21,6 +21,16 @@ const ALLOWED_ORIGINS = (Deno.env.get("PUBLISH_ALLOWED_ORIGINS") ??
   "https://rethink.space,http://localhost:3200,http://127.0.0.1:3200")
   .split(",").map((s) => s.trim()).filter(Boolean);
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+
+/** Payload eines JWT lesen. Nur nach der Prüfung über /auth/v1/user verwenden. */
+function tokenClaims(token: string): Record<string, unknown> {
+  try {
+    const part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(part.padEnd(part.length + ((4 - (part.length % 4)) % 4), "=")));
+  } catch {
+    return {};
+  }
+}
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
 function json(body: unknown, status: number, headers: Record<string, string>): Response {
@@ -53,7 +63,11 @@ Deno.serve(async (req) => {
   });
   if (!userRes.ok) return json({ error: "not_authenticated" }, 401, cors);
   const user = await userRes.json();
-  if (user?.app_metadata?.role !== "admin") return json({ error: "not_allowed" }, 403, cors);
+  // Nur Admins mit zweitem Faktor (JWT-Claim aal = aal2), dieselbe Bedingung wie
+  // cms_is_admin() in der Datenbank — ein gestohlenes Passwort allein genügt nicht.
+  if (user?.app_metadata?.role !== "admin" || tokenClaims(token).aal !== "aal2") {
+    return json({ error: "not_allowed" }, 403, cors);
+  }
 
   if (!GITHUB_TOKEN) return json({ error: "github_token_missing" }, 503, cors);
 
