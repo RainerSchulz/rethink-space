@@ -21,6 +21,7 @@ const ALLOWED_ORIGINS = (Deno.env.get("PUBLISH_ALLOWED_ORIGINS") ??
   "https://rethink.space,http://localhost:3200,http://127.0.0.1:3200")
   .split(",").map((s) => s.trim()).filter(Boolean);
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
 /** Payload eines JWT lesen. Nur nach der Prüfung über /auth/v1/user verwenden. */
 function tokenClaims(token: string): Record<string, unknown> {
@@ -31,7 +32,6 @@ function tokenClaims(token: string): Record<string, unknown> {
     return {};
   }
 }
-const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
 function json(body: unknown, status: number, headers: Record<string, string>): Response {
   return new Response(JSON.stringify(body), {
