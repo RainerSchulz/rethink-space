@@ -212,16 +212,32 @@ describe('Feature: Kontaktformular', () => {
 });
 
 describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
-  // Seiten mit Bändern und der erwarteten Anzahl. Die Fläche ist hier
+  // Seiten mit Bändern und ihrer Mindestzahl. Die Anzahl selbst legt seit
+  // 29.09.2026 das CMS fest (Kacheln hinzufügen/löschen), deshalb zählt der Test
+  // sie aus dem Markup — mit Untergrenze, damit ein versehentlich geleerter
+  // Bereich <!-- cms:bands --> nicht still durchgeht. Die Fläche ist
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
-  const BAND_PAGES = [['lunar-habitato', 5], ['dual-use', 2], ['people', 2]];
+  const BAND_PAGES = [['lunar-habitato', 2], ['dual-use', 1], ['people', 2]];
 
-  for (const [slug, count] of BAND_PAGES) {
+  for (const [slug, min] of BAND_PAGES) {
     describe(`/pages/${slug}/`, () => {
       const html = readFileSync(join(ROOT, `pages/${slug}/index.html`), 'utf8');
+      const count = [...html.matchAll(/<div class="band-group">/g)].length;
 
-      it(`${count} Bänder, jedes mit Bild und Überschrift`, () => {
-        expect([...html.matchAll(/<div class="band-group">/g)]).toHaveLength(count);
+      it('hat den vom CMS verwalteten Bereich genau einmal', () => {
+        expect(html.split('<!-- cms:bands -->')).toHaveLength(2);
+        expect(html.split('<!-- /cms:bands -->')).toHaveLength(2);
+        expect(html.indexOf('<!-- cms:bands -->')).toBeLessThan(html.indexOf('<!-- /cms:bands -->'));
+      });
+
+      it(`mindestens ${min} Bänder, jedes mit eigenem Bild (Regel 10: keine zwei gleichen Motive)`, () => {
+        expect(count).toBeGreaterThanOrEqual(min);
+        const srcs = [...html.matchAll(/<img class="band-media[^"]*" src="([^"]+)"/g)].map((m) => m[1]);
+        expect(srcs).toHaveLength(count);
+        expect(new Set(srcs).size, `doppelte Bilder: ${srcs.join(', ')}`).toBe(count);
+      });
+
+      it('Bänder mit Bild und Überschrift', () => {
         // Zusatzklassen erlaubt (z. B. band-media--top für hochformatige Motive)
         expect([...html.matchAll(/<img class="band-media[^"]*" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count);
         expect([...html.matchAll(/class="band-h"/g)]).toHaveLength(count);

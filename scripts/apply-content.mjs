@@ -21,18 +21,29 @@
  *                         der englische Text an jedem data-i18n-Element (der
  *                         Test vergleicht ihn mit en.js) und die Bildpfade
  *
+ *   public/Bilder/cms/    Bilder aus der CMS-Medienbibliothek (Bucket „media“),
+ *                         die eine Seite oder Kachel jetzt nutzt
+ *
+ * Kacheln (page.bands, Tabelle cms_bands): der Bereich <!-- cms:bands --> wird
+ * nach der Liste des CMS neu zusammengesetzt — hinzufügen, löschen, verschieben
+ * (scripts/lib/bands.mjs). Nur dafür werden Schlüssel angelegt bzw. entfernt,
+ * und nur mit dem Muster <präfix>.band.<id> / <präfix>.panel.<id>.text.
+ *
  * Grundsätze:
  *   - Nur was im Export steht wird angefasst. Unbekannte Schlüssel werden
- *     gemeldet, nicht angelegt — neue Schlüssel gehören in den Code.
+ *     gemeldet, nicht angelegt — neue Schlüssel gehören in den Code
+ *     (Ausnahme: Schlüssel neuer Kacheln, siehe oben).
  *   - Zweimal laufen lassen ändert nichts mehr (idempotent).
  *
  * Die Umformungen stehen in scripts/lib/apply.mjs und sind dort getestet.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { setDictValue, hasDictKey, applyKeyToHtml, setImages } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
+import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
+import { resolveImage } from './lib/cms-images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -55,7 +66,7 @@ function newestInDownloads() {
 let content;
 let source;
 if (AUS_SUPABASE) {
-  source = 'Supabase (cms_pages, cms_texts, cms_images)';
+  source = 'Supabase (cms_pages, cms_texts, cms_images, cms_bands)';
   try {
     content = await ladeInhalt({
       url: process.env.SUPABASE_URL,
@@ -90,6 +101,28 @@ const notes = [];
 let dictChanges = 0;
 let htmlChanges = 0;
 let imageChanges = 0;
+let bandChanges = 0;
+let dictKeysAdded = 0;
+let dictKeysRemoved = 0;
+let downloads = 0;
+
+const pageFile = (slug) => (slug === 'landing' ? join(ROOT, 'index.html') : join(ROOT, `pages/${slug}/index.html`));
+const KEY_RE = /^[a-z][a-z0-9-]*(\.[a-z0-9-]+)+$/; // wie tests/unit/i18n.test.js
+const BILDER_CMS = join(ROOT, 'public/Bilder/cms');
+
+/** Bildpfad aus dem CMS → Website-Pfad; Bucket-Bilder werden heruntergeladen. */
+async function imagePath(src) {
+  const r = await resolveImage(src, {
+    supabaseUrl: process.env.SUPABASE_URL,
+    dir: BILDER_CMS,
+    dry: DRY,
+    exists: existsSync,
+    write: (file, data) => { mkdirSync(BILDER_CMS, { recursive: true }); writeFileSync(file, data); },
+  });
+  if (r.note) notes.push(r.note);
+  if (r.downloaded) downloads++;
+  return r.src;
+}
 
 /* ---------- Wörterbücher ---------- */
 const dicts = {
@@ -97,6 +130,48 @@ const dicts = {
   de: { file: join(ROOT, 'src/site/i18n/de.js'), lines: null },
 };
 for (const d of Object.values(dicts)) d.lines = readFileSync(d.file, 'utf8').split('\n');
+
+/* ---------- Kacheln: Schlüssel neuer Kacheln anlegen, gelöschter entfernen ---------- */
+for (const page of content.pages) {
+  if (!Array.isArray(page.bands)) continue;
+  const file = pageFile(page.slug);
+  if (!existsSync(file)) continue;
+  const parts = splitRegion(readFileSync(file, 'utf8'));
+  if (!parts) { notes.push(`${page.slug}: Kacheln im Export, aber kein Bereich <!-- cms:bands --> in der Seite`); page.bands = undefined; continue; }
+  const existing = parseBands(parts.region);
+  const keys = new Map((page.keys ?? []).map((k) => [k.key, k]));
+  const prefix = prefixOf(existing[0]?.titleKey ?? page.bands[0]?.titleKey);
+
+  page.bands = page.bands.filter((b) => {
+    const ok = /^[a-z0-9-]+$/.test(b.id ?? '')
+      && b.titleKey === `${prefix}.band.${b.id}` && b.textKey === `${prefix}.panel.${b.id}.text`
+      && KEY_RE.test(b.titleKey) && KEY_RE.test(b.textKey);
+    if (!ok) notes.push(`${page.slug}: Kachel „${b.id}“ hat ungültige Schlüssel — übersprungen`);
+    return ok;
+  });
+
+  for (const b of page.bands) {
+    if (existing.some((e) => e.id === b.id)) continue;
+    const title = keys.get(b.titleKey);
+    const text = keys.get(b.textKey);
+    const en = (k, fallback) => (k?.en?.trim() ? k.en : fallback);
+    const de = (k, fallback) => (k?.de?.trim() ? k.de : en(k, fallback));
+    // Leere Texte verbietet das CMS schon; hier nur das Netz, damit der Paritätstest hält.
+    dictKeysAdded += insertDictKeys(dicts.en.lines, [
+      { key: b.titleKey, value: en(title, b.id) }, { key: b.textKey, value: en(text, en(title, b.id)) },
+    ], `${prefix}.`);
+    insertDictKeys(dicts.de.lines, [
+      { key: b.titleKey, value: de(title, b.id) }, { key: b.textKey, value: de(text, en(title, b.id)) },
+    ], `${prefix}.`);
+  }
+  for (const e of existing) {
+    if (page.bands.some((b) => b.id === e.id)) continue;
+    for (const key of [e.titleKey, e.textKey]) {
+      if (removeDictKey(dicts.en.lines, key)) dictKeysRemoved++;
+      removeDictKey(dicts.de.lines, key);
+    }
+  }
+}
 
 const enByKey = new Map();
 for (const page of content.pages) {
@@ -122,10 +197,24 @@ for (const page of content.pages) {
 for (const page of content.pages) {
   if (page.slug === 'global') continue;
   // Die Startseite liegt in der Wurzel, alle anderen unter pages/<slug>/.
-  const file = page.slug === 'landing' ? join(ROOT, 'index.html') : join(ROOT, `pages/${page.slug}/index.html`);
+  const file = pageFile(page.slug);
   if (!existsSync(file)) { notes.push(`Seite ${page.slug} gibt es nicht mehr — übersprungen`); continue; }
   let html = readFileSync(file, 'utf8');
   const before = html;
+
+  // Kacheln zuerst: danach stehen alle Elemente da, deren Texte unten gesetzt werden.
+  if (Array.isArray(page.bands)) {
+    const bands = [];
+    for (const b of page.bands) {
+      const src = await imagePath(b.image?.src);
+      if (!src) { notes.push(`${page.slug}: Kachel „${b.id}“ ohne gültiges Bild — übersprungen`); continue; }
+      bands.push({ ...b, image: { ...b.image, src } });
+    }
+    const r = applyBands(html, bands, (key) => enByKey.get(key));
+    if (r.skipped) notes.push(`${page.slug}: ${r.skipped}`);
+    html = r.html;
+    if (r.changed) bandChanges++;
+  }
 
   for (const k of page.keys ?? []) {
     const en = enByKey.get(k.key);
@@ -135,9 +224,13 @@ for (const page of content.pages) {
     htmlChanges += r.changed;
   }
 
-  const img = setImages(html, page.images ?? []);
+  // Bilder nach Position — ohne die Kachel-Bilder, die gehören zu page.bands.
+  const images = [];
+  for (const i of page.images ?? []) images.push({ ...i, src: (await imagePath(i.src)) ?? i.src });
+  const { masked, restore } = maskRegion(html);
+  const img = setImages(masked, images);
   if (img.skipped) notes.push(`${page.slug}: ${img.skipped} — Bilder übersprungen`);
-  html = img.html;
+  html = restore(img.html);
   imageChanges += img.changed;
 
   if (html !== before && !DRY) writeFileSync(file, html);
@@ -151,6 +244,8 @@ console.log(`Seiten im Export: ${content.pages.length}`);
 console.log(`Wörterbuch-Werte geändert: ${dictChanges}`);
 console.log(`Texte in Shells geändert:  ${htmlChanges}`);
 console.log(`Bildpfade geändert:        ${imageChanges}`);
+console.log(`Seiten mit geänderten Kacheln: ${bandChanges} (Schlüssel neu: ${dictKeysAdded}, entfernt: ${dictKeysRemoved})`);
+console.log(`Bilder aus dem CMS geladen: ${downloads}`);
 if (notes.length > 0) {
   console.log(`\nHinweise (${notes.length}):`);
   for (const n of notes) console.log(`  - ${n}`);
