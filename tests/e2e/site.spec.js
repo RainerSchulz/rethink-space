@@ -3,6 +3,7 @@
  * Mobilmenü, Kontaktformular. Läuft gegen den Vite-Dev-Server.
  */
 import { test, expect } from '@playwright/test';
+import { EN } from '../../src/site/i18n/en.js';
 
 // In der Testphase liegt ein Zugangsschutz vor der Seite (VITE_GATE_HASH).
 // Für alle Tests außer dem Gate-Test wird er abgeschaltet.
@@ -41,16 +42,20 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
   test('Seite startet auf Englisch, auch im deutschen Browser; kein Sprachschalter', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(page).toHaveTitle('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
-    await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText('New Space Economy for');
-    await expect(page.locator('[data-i18n="footer.project"]')).toHaveText('A project by Dr. Johannes Lierfeld');
+    // Wortlaut aus dem Woerterbuch, nicht abgeschrieben: der Inhaber aendert
+    // diese Texte im CMS, und ein Zitat hier wuerde bei jeder Aenderung brechen.
+    await expect(page).toHaveTitle(EN['home.meta.title']);
+    await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText(EN['home.hero.lead1']);
+    await expect(page.locator('[data-i18n="footer.project"]')).toHaveText(EN['footer.project']);
     await expect(page.locator('.lang')).toHaveCount(0);
   });
 
   test('Kopfnavigation führt genau vier Punkte', async ({ page, isMobile }) => {
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
-    await expect(page.locator('#site-nav a')).toHaveText(['Lunar Habitato', 'Dual Use', 'People', 'Contact']);
+    await expect(page.locator('#site-nav a')).toHaveText(
+      ['nav.habitat', 'nav.dual-use', 'nav.people', 'nav.contact'].map((k) => EN[k]),
+    );
   });
 });
 
