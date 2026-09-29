@@ -12,6 +12,13 @@ import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { describe, it, expect } from 'vitest';
 import { PAGES } from '../../vite.pages.js';
+import { splitRegion } from '../../scripts/lib/bands.mjs';
+
+/** Zeilen einer Seite ohne den vom CMS verwalteten Kachel-Bereich. */
+function handLines(html) {
+  const parts = splitRegion(html);
+  return (parts ? parts.before + parts.after : html).split('\n').length;
+}
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SITE = 'https://rethink.space';
@@ -156,8 +163,11 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
     expect(html).not.toMatch(/class="(de|en)"/);
   });
 
-  it('bleibt unter 300 Zeilen', () => {
-    expect(html.split('\n').length).toBeLessThan(300);
+  // Gezählt wird das von Hand gepflegte Markup. Den Kachel-Bereich
+  // (<!-- cms:bands -->) schreibt das CMS; er wächst mit jeder Kachel und würde
+  // sonst ab einer bestimmten Anzahl das Veröffentlichen blockieren.
+  it('bleibt unter 300 Zeilen (ohne den Kachel-Bereich des CMS)', () => {
+    expect(handLines(html)).toBeLessThan(300);
   });
 
   it('alle internen Links zeigen auf vorhandene Seiten', () => {
@@ -218,6 +228,11 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
   // Bereich <!-- cms:bands --> nicht still durchgeht. Die Fläche ist
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
   const BAND_PAGES = [['lunar-habitato', 2], ['dual-use', 1], ['people', 2]];
+  // Obergrenze: redaktionell großzügig, fängt aber einen Fehler, der Kacheln
+  // vervielfacht. Seit der Kachel-Bereich nicht mehr in die 300-Zeilen-Regel
+  // zählt, ist sie die einzige Bremse. Das CMS prüft dieselbe Zahl beim Anlegen
+  // (rethink-cms src/bands.js MAX_BANDS) — wer sie ändert, ändert beide.
+  const MAX_BANDS = 12;
 
   for (const [slug, min] of BAND_PAGES) {
     describe(`/pages/${slug}/`, () => {
@@ -230,8 +245,9 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
         expect(html.indexOf('<!-- cms:bands -->')).toBeLessThan(html.indexOf('<!-- /cms:bands -->'));
       });
 
-      it(`mindestens ${min} Bänder, jedes mit eigenem Bild (Regel 10: keine zwei gleichen Motive)`, () => {
+      it(`${min} bis ${MAX_BANDS} Bänder, jedes mit eigenem Bild (Regel 10: keine zwei gleichen Motive)`, () => {
         expect(count).toBeGreaterThanOrEqual(min);
+        expect(count).toBeLessThanOrEqual(MAX_BANDS);
         const srcs = [...html.matchAll(/<img class="band-media[^"]*" src="([^"]+)"/g)].map((m) => m[1]);
         expect(srcs).toHaveLength(count);
         expect(new Set(srcs).size, `doppelte Bilder: ${srcs.join(', ')}`).toBe(count);
@@ -285,5 +301,15 @@ describe('Feature: Suchmaschinen-Dateien in public/', () => {
     for (const f of ['favicon.svg', 'site.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'og-image.jpg']) {
       expect(existsSync(join(ROOT, 'public', f)), f).toBe(true);
     }
+  });
+});
+
+describe('Feature: Zeilengrenze zählt nur das von Hand gepflegte Markup', () => {
+  it('Kacheln aus dem CMS zählen nicht mit, der Rest schon', () => {
+    const hand = Array.from({ length: 10 }, (_, i) => `<p>${i}</p>`).join('\n');
+    const bands = Array.from({ length: 500 }, (_, i) => `<div>${i}</div>`).join('\n');
+    const page = `${hand}\n<!-- cms:bands -->\n${bands}\n<!-- /cms:bands -->\n${hand}`;
+    expect(handLines(page)).toBeLessThan(30);
+    expect(handLines(`${hand}\n${bands}`)).toBeGreaterThan(500);
   });
 });
