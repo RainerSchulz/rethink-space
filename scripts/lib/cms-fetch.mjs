@@ -37,7 +37,7 @@ export async function ladeInhalt({ url, key }) {
   const texteJeSeite = new Map();
   for (const t of texte) {
     if (!texteJeSeite.has(t.page_slug)) texteJeSeite.set(t.page_slug, []);
-    texteJeSeite.get(t.page_slug).push({ key: t.key, tag: t.tag ?? '', attr: 'text', en: t.en ?? '', de: t.de ?? '' });
+    texteJeSeite.get(t.page_slug).push({ key: t.key, tag: t.tag ?? '', attr: 'text', en: t.en ?? '', de: t.de ?? '', position: t.position });
   }
   const bilderJeSeite = new Map();
   for (const i of bilder) {

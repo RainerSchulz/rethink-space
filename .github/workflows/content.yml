@@ -41,6 +41,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CMS_SNAPSHOT_FILE: ${{ runner.temp }}/cms-snapshot.json
 
       # Gegenprüfung vor dem Commit: ein kaputter Inhalt darf nicht live gehen.
       - run: npm run lint
@@ -64,3 +65,12 @@ jobs:
           Erzeugt von .github/workflows/content.yml aus den CMS-Tabellen in
           Supabase. Texte und Bildpfade stammen aus dem Editor, nicht von Hand."
           git push
+
+      # Erst jetzt — nach Prüfung und Push — gilt der Stand als veröffentlicht.
+      # Das CMS nimmt damit die Markierung „noch nicht online“ von allem, was
+      # übernommen wurde (Tabelle cms_publishes).
+      - name: Stand im CMS als veröffentlicht vermerken
+        run: node scripts/record-publish.mjs "${{ runner.temp }}/cms-snapshot.json"
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

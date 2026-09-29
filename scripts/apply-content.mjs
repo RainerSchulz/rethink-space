@@ -44,6 +44,7 @@ import { setDictValue, hasDictKey, applyKeyToHtml, setImages } from './lib/apply
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { resolveImage } from './lib/cms-images.mjs';
+import { toSnapshot } from './lib/snapshot.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -242,6 +243,12 @@ for (const page of content.pages) {
 }
 
 if (!DRY) for (const d of Object.values(dicts)) writeFileSync(d.file, d.lines.join('\n'));
+
+// Stand für das CMS: genau das, was übernommen wurde. content.yml legt ihn erst
+// nach Prüfung und Push in cms_publishes ab (scripts/record-publish.mjs).
+if (!DRY && process.env.CMS_SNAPSHOT_FILE) {
+  writeFileSync(process.env.CMS_SNAPSHOT_FILE, JSON.stringify(toSnapshot(content, (key) => enByKey.has(key))));
+}
 
 /* ---------- Bericht ---------- */
 console.log(`Export: ${source}`);
