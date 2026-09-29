@@ -13,17 +13,32 @@ import { listImages, setImages } from '../../scripts/lib/apply.mjs';
 
 const ROOT = join(import.meta.dirname, '../..');
 const page = (slug) => readFileSync(join(ROOT, `pages/${slug}/index.html`), 'utf8');
+// Feste Vorlagen (Stand 29.09.2026): die echten Seiten ändert künftig das CMS —
+// Tests auf konkrete Kacheln dürfen das Veröffentlichen nicht blockieren.
+const fixture = (name) => readFileSync(join(ROOT, `tests/fixtures/${name}`), 'utf8');
 const asData = (bands) => bands.map(({ id, titleKey, textKey, image }) => ({ id, titleKey, textKey, image: { ...image } }));
 
 describe('Feature: Kacheln aus dem CMS', () => {
-  const html = page('lunar-habitato');
+  const html = fixture('bands-lunar.html');
   const bands = asData(parseBands(splitRegion(html).region));
   const ids = (h) => parseBands(splitRegion(h).region).map((b) => b.id);
 
-  it('erkennt die verwalteten Kacheln aller Kachel-Seiten', () => {
+  it('erkennt die verwalteten Kacheln', () => {
     expect(ids(html)).toEqual(['space', 'design', 'research', 'history', 'partnership']);
-    expect(ids(page('dual-use'))).toEqual(['defense', 'downstream']);
-    expect(ids(page('people'))).toEqual(['team']); // Founder mit Porträt bleibt Code
+    expect(ids(fixture('bands-people.html'))).toEqual(['team']); // Founder mit Porträt bleibt Code
+  });
+
+  it('jede echte Kachel-Seite hat einen sauber lesbaren Bereich (unabhängig vom Inhalt)', () => {
+    for (const slug of ['lunar-habitato', 'dual-use', 'people']) {
+      const bands = parseBands(splitRegion(page(slug)).region);
+      const found = bands.map((b) => b.id);
+      expect(new Set(found).size, `${slug}: doppelte Kachel-IDs`).toBe(found.length);
+      for (const b of bands) {
+        expect(b.titleKey, slug).toMatch(/^[a-z][a-z0-9-]*\.band\.[a-z0-9-]+$/);
+        expect(b.textKey, slug).toBe(`${b.titleKey.split('.')[0]}.panel.${b.id}.text`);
+        expect(b.image.src, slug).toMatch(/^\/Bilder\//);
+      }
+    }
   });
 
   it('lässt jede Seite unverändert, wenn das CMS nichts geändert hat', () => {
@@ -73,7 +88,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('gibt die h1 nicht ab, wenn die Seite davor schon eine hat (People: Founder)', () => {
-    const h = page('people');
+    const h = fixture('bands-people.html');
     const team = asData(parseBands(splitRegion(h).region));
     const neu = { id: 'network', titleKey: 'people.band.network', textKey: 'people.panel.network.text', image: { src: '/Bilder/cms/n.jpg' } };
     const r = applyBands(h, [neu, ...team], () => 'x');
@@ -96,7 +111,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('Kachel-Bilder zählen nicht bei der Bildzuordnung nach Position mit', () => {
-    const h = page('people');
+    const h = fixture('bands-people.html');
     const { masked, restore } = maskRegion(h);
     const outside = listImages(masked);
     expect(outside).not.toContain('/Bilder/2026-09-Habitat-living.jpg'); // Team-Kachel
