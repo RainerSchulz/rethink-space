@@ -3,6 +3,8 @@
  * Ohne Dateizugriff, damit tests/unit/apply-content.test.js sie prüfen kann.
  */
 
+import { isRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
+
 const rx = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 export const escapeAttr = (s) => escapeHtml(s).replace(/"/g, '&quot;');
@@ -30,15 +32,23 @@ export function hasDictKey(lines, key) {
 /**
  * Text zwischen <tag …data-i18n="key"…> und </tag> setzen — an JEDER Fundstelle.
  * Ein Schlüssel steht oft mehrfach in einer Seite (z. B. „Learn more“).
+ *
+ * Kacheltexte (*.panel.*.text) sind formatiert (rich-text.js): sie werden als
+ * HTML aus p/ul/li/strong/em/a/br geschrieben, das Element ist ein <div>
+ * (ein <p> darf keine Absätze und Listen enthalten). Die Suche endet am ersten
+ * passenden Schlusstag — deshalb erzeugt rich-text.js nie ein <div>
+ * (tests/unit/rich-text.test.js hält das fest).
  */
 export function setElementText(html, key, value) {
   const re = new RegExp(`(<([a-zA-Z][a-zA-Z0-9]*)\\b[^>]*\\sdata-i18n="${rx(key)}"[^>]*>)([\\s\\S]*?)(</\\2>)`, 'g');
-  const next = escapeHtml(value);
+  const rich = isRichKey(key);
+  const next = rich ? renderRichHtml(value) : escapeHtml(value);
   let changed = false;
-  const out = html.replace(re, (all, open, _tag, text, close) => {
-    if (text === next) return all;
+  const out = html.replace(re, (all, open, tag, text, close) => {
+    const asDiv = rich && tag.toLowerCase() === 'p';
+    if (text === next && !asDiv) return all;
     changed = true;
-    return open + next + close;
+    return asDiv ? `${open.replace(/^<p\b/i, '<div')}${next}</div>` : open + next + close;
   });
   return { html: out, changed };
 }

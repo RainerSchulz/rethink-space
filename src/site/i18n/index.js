@@ -7,6 +7,7 @@
  */
 import { DE } from './de.js';
 import { EN } from './en.js';
+import { isRichKey, renderRichInto } from './rich-text.js';
 
 const DICT = { de: DE, en: EN };
 export const LANG_EVENT = 'rethink:langchange';
@@ -29,7 +30,7 @@ export function getLang() {
 
 /**
  * Alle übersetzbaren Elemente im DOM aktualisieren:
- *   data-i18n             → textContent
+ *   data-i18n             → textContent (Kacheltexte *.panel.*.text formatiert, rich-text.js)
  *   data-i18n-content     → content-Attribut (meta)
  *   data-i18n-aria-label  → aria-label
  *   data-i18n-placeholder → placeholder
@@ -38,7 +39,9 @@ export function applyLang(root = document) {
   root.documentElement.setAttribute('lang', _lang);
 
   root.querySelectorAll('[data-i18n]').forEach((el) => {
-    el.textContent = t(el.getAttribute('data-i18n'));
+    const key = el.getAttribute('data-i18n');
+    if (isRichKey(key)) renderRichInto(el, t(key));
+    else el.textContent = t(key);
   });
   root.querySelectorAll('[data-i18n-content]').forEach((el) => {
     el.setAttribute('content', t(el.getAttribute('data-i18n-content')));

@@ -11,6 +11,7 @@ import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { EN } from '../src/site/i18n/en.js';
 import { DE } from '../src/site/i18n/de.js';
+import { isRichKey, richToPlain } from '../src/site/i18n/rich-text.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const KDIR = join(ROOT, 'supabase/functions/chat/knowledge');
@@ -28,7 +29,8 @@ for (const key of Object.keys(EN)) {
   if (skip.test(key)) continue;
   const page = key.split('.')[0];
   if (!groups.has(page)) groups.set(page, []);
-  groups.get(page).push(`- ${key}: EN „${EN[key]}“ | DE „${DE[key] ?? ''}“`);
+  const plain = (v) => (isRichKey(key) ? richToPlain(v ?? '') : v ?? '');
+  groups.get(page).push(`- ${key}: EN „${plain(EN[key])}“ | DE „${plain(DE[key])}“`);
 }
 // Namensraum -> Adresse. Nur Seiten, die es wirklich gibt: ein erfundener
 // Pfad in der Wissensbasis wird vom Chatbot weitergereicht und endet im 404.

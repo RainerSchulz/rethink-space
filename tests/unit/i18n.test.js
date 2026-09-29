@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url';
 import { describe, it, expect } from 'vitest';
 import { DE } from '../../src/site/i18n/de.js';
 import { EN } from '../../src/site/i18n/en.js';
+import { isRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const deKeys = Object.keys(DE);
@@ -115,7 +116,14 @@ describe('Feature: Schlüssel-Abdeckung (HTML + src)', () => {
         // CSS white-space: pre-line), im HTML zählt dagegen nur der Wortlaut.
         const norm = (s) => String(s ?? '').trim().replace(/\s+/g, ' ');
         const text = norm(el.textContent);
-        if (text !== norm(EN[key])) mismatches.push(`${file}: ${key} → "${text}"`);
+        // Formatierte Kacheltexte: gegen den textContent derselben Ausgabe
+        // vergleichen (dieselbe Umformung auf beiden Seiten). Leerraum zählt
+        // dabei nicht — zwischen <p>-Absätzen gibt es keinen.
+        if (isRichKey(key)) {
+          const want = new DOMParser().parseFromString(`<div>${renderRichHtml(EN[key] ?? '')}</div>`, 'text/html').body.textContent;
+          const squash = (s) => String(s ?? '').replace(/\s+/g, '');
+          if (squash(el.textContent) !== squash(want)) mismatches.push(`${file}: ${key} → "${text}"`);
+        } else if (text !== norm(EN[key])) mismatches.push(`${file}: ${key} → "${text}"`);
       });
       doc.querySelectorAll('[data-i18n-content]').forEach((el) => {
         const key = el.getAttribute('data-i18n-content');

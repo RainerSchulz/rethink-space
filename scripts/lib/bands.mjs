@@ -15,6 +15,7 @@
  *
  * Reine Umformungen ohne Dateizugriff, getestet in tests/unit/bands.test.js.
  */
+import { renderRichHtml } from '../../src/site/i18n/rich-text.js';
 import { escapeHtml } from './apply.mjs';
 
 export const REGION_START = '<!-- cms:bands -->';
@@ -73,7 +74,7 @@ export function renderBand({ id, titleKey, textKey, title = '', text = '', image
     '            </div>',
     '          </div>',
     `          <div class="band-panel" id="band-${id}" hidden>`,
-    `            <p class="panel-text" data-i18n="${textKey}">${escapeHtml(text)}</p>`,
+    `            <div class="panel-text" data-i18n="${textKey}">${renderRichHtml(text)}</div>`,
     '          </div>',
     GROUP_CLOSE,
   ].join('\n');

@@ -73,7 +73,8 @@ describe('Feature: Kacheln aus dem CMS', () => {
     expect(r.html).toContain('<h2 class="band-h" data-i18n="habitat.band.roehren">Röhren &amp; Tunnel</h2>');
     expect(r.html).toContain('aria-controls="band-roehren" data-i18n="common.more">Learn more</button>');
     expect(r.html).toContain('<div class="band-panel" id="band-roehren" hidden>');
-    expect(r.html).toContain('data-i18n="habitat.panel.roehren.text">Absatz eins.\n\nAbsatz zwei.</p>');
+    // Kacheltexte sind formatiert (rich-text.js): <div> mit echten Absätzen
+    expect(r.html).toContain('<div class="panel-text" data-i18n="habitat.panel.roehren.text"><p>Absatz eins.</p><p>Absatz zwei.</p></div>');
     expect(r.html).not.toContain('band-history');
   });
 
