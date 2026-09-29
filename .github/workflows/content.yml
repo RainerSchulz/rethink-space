@@ -46,6 +46,12 @@ jobs:
       # Gegenprüfung vor dem Commit: ein kaputter Inhalt darf nicht live gehen.
       - run: npm run lint
       - run: npm run test:run
+      # Browser-Tests: fangen, was nur im Browser bricht (Laufzeit wendet das
+      # Wörterbuch an, Navigation, Mobilansicht). Beide Projekte laufen auf Chromium.
+      # Schrittnamen enthalten „playwright“/„test:e2e“ — daran erkennt die
+      # Fortschrittsanzeige im CMS den Schritt (rethink-cms src/publish-progress.js).
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
       - run: npm run build
         env:
           VITE_CHAT_ENDPOINT: ${{ vars.VITE_CHAT_ENDPOINT }}
