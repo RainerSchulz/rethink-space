@@ -137,7 +137,12 @@ for (const page of content.pages) {
   const file = pageFile(page.slug);
   if (!existsSync(file)) continue;
   const parts = splitRegion(readFileSync(file, 'utf8'));
-  if (!parts) { notes.push(`${page.slug}: Kacheln im Export, aber kein Bereich <!-- cms:bands --> in der Seite`); page.bands = undefined; continue; }
+  if (!parts) {
+    // Das CMS liefert für jede Seite eine (meist leere) Liste; nur echte Kacheln ohne Bereich sind ein Problem.
+    if (page.bands.length) notes.push(`${page.slug}: Kacheln im Export, aber kein Bereich <!-- cms:bands --> in der Seite`);
+    page.bands = undefined;
+    continue;
+  }
   const existing = parseBands(parts.region);
   const keys = new Map((page.keys ?? []).map((k) => [k.key, k]));
   const prefix = prefixOf(existing[0]?.titleKey ?? page.bands[0]?.titleKey);
@@ -249,6 +254,9 @@ console.log(`Bilder aus dem CMS geladen: ${downloads}`);
 if (notes.length > 0) {
   console.log(`\nHinweise (${notes.length}):`);
   for (const n of notes) console.log(`  - ${n}`);
+  // Im GitHub-Lauf zusätzlich als Warnung: dann steht sie in der Zusammenfassung des Laufs,
+  // nicht nur im Log — eine übersprungene Kachel ist kein Fehler, soll aber auffallen.
+  if (process.env.GITHUB_ACTIONS) for (const n of notes) console.log(`::warning title=CMS-Übernahme::${n.replace(/\s+/g, ' ')}`);
 }
 if (DRY) console.log('\n--dry: nichts geschrieben.');
 else console.log('\nJetzt prüfen: npm run lint && npm run test:run && npm run build');
