@@ -111,8 +111,11 @@ describe('Feature: Schlüssel-Abdeckung (HTML + src)', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       doc.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
-        const text = el.textContent.trim().replace(/\s+/g, ' ');
-        if (text !== EN[key]) mismatches.push(`${file}: ${key} → "${text}"`);
+        // Beide Seiten gleich normalisieren: Kachel-Texte tragen Absätze (\n\n,
+        // CSS white-space: pre-line), im HTML zählt dagegen nur der Wortlaut.
+        const norm = (s) => String(s ?? '').trim().replace(/\s+/g, ' ');
+        const text = norm(el.textContent);
+        if (text !== norm(EN[key])) mismatches.push(`${file}: ${key} → "${text}"`);
       });
       doc.querySelectorAll('[data-i18n-content]').forEach((el) => {
         const key = el.getAttribute('data-i18n-content');

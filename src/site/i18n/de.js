@@ -53,17 +53,12 @@ export const DE = {
   'habitat.band.design':    'Design & IP',
   'habitat.band.research':  'Researching',
   'habitat.band.partnership': 'Partnership',
-  'habitat.panel.partnership.p1': 'Mondinfrastruktur baut keine Organisation allein. Agenturen, Forschungsinstitute und Industrie halten je ein Stück des Problems — Werkstoffe, Robotik, Lebenserhaltung, Missionsentwurf — und die Stücke passen nur zusammen, wenn sie von Anfang an gemeinsam entwickelt werden.',
-  'habitat.panel.partnership.p2': 'Wir arbeiten deshalb im offenen Netzwerk statt hinter verschlossenen Türen: gemeinsame Studien, geteilte Testkampagnen, Ergebnisse, die jede Seite auch für sich nutzen kann. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
+  'habitat.panel.partnership.text': 'Mondinfrastruktur baut keine Organisation allein. Agenturen, Forschungsinstitute und Industrie halten je ein Stück des Problems — Werkstoffe, Robotik, Lebenserhaltung, Missionsentwurf — und die Stücke passen nur zusammen, wenn sie von Anfang an gemeinsam entwickelt werden.\n\nWir arbeiten deshalb im offenen Netzwerk statt hinter verschlossenen Türen: gemeinsame Studien, geteilte Testkampagnen, Ergebnisse, die jede Seite auch für sich nutzen kann. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
   'habitat.band.history':   'History',
-  'habitat.panel.space.p1': 'Regolith bedeckt die Mondoberfläche meterdick. Er ist Abschirmung, Baustoff und Rohstoffquelle zugleich – wenn man ihn verarbeiten kann.',
-  'habitat.panel.space.p2': 'Genau dort beginnt unsere Arbeit: Verfahren, die aus örtlichem Material tragende Strukturen machen, mit wenig Energie und ohne Handarbeit vor Ort.',
-  'habitat.panel.design.p1': 'Die Kuppel verteilt Lasten gleichmäßig und lässt sich aus vielen kleinen, gleichen Elementen fügen – ideal für robotische Fertigung vor Ort.',
-  'habitat.panel.design.p2': 'Jeder Schritt ist durch eigene Schutzrechte gesichert: Geometrie, Fügeverfahren und der Innenraum, der aus einem Schutzbau einen Ort zum Leben macht.',
-  'habitat.panel.research.p1': 'Wir arbeiten in Etappen: Konzeptstudie, Materialqualifizierung, Demonstrator, Missionsintegration. Jede Etappe liefert Ergebnisse, die auch für sich stehen.',
-  'habitat.panel.research.p2': 'Die Wahl des Standorts nach Sonneneinstrahlung, Untergrund und Nähe zu Rohstoffen entscheidet die halbe Missionsrechnung – lange vor dem ersten Bauwerk.',
-  'habitat.panel.history.p1': 'Am Anfang stand eine Frage: Wie sieht ein Ort aus, an dem Menschen jenseits der Erde nicht nur überleben, sondern arbeiten, forschen und sich erholen?',
-  'habitat.panel.history.p2': 'Aus der ersten Skizze wurden Studien, Demonstratoren und Partnerschaften. Die Meilensteine dieses Weges entstehen hier.',
+  'habitat.panel.space.text': 'Regolith bedeckt die Mondoberfläche meterdick. Er ist Abschirmung, Baustoff und Rohstoffquelle zugleich – wenn man ihn verarbeiten kann.\n\nGenau dort beginnt unsere Arbeit: Verfahren, die aus örtlichem Material tragende Strukturen machen, mit wenig Energie und ohne Handarbeit vor Ort.',
+  'habitat.panel.design.text': 'Die Kuppel verteilt Lasten gleichmäßig und lässt sich aus vielen kleinen, gleichen Elementen fügen – ideal für robotische Fertigung vor Ort.\n\nJeder Schritt ist durch eigene Schutzrechte gesichert: Geometrie, Fügeverfahren und der Innenraum, der aus einem Schutzbau einen Ort zum Leben macht.',
+  'habitat.panel.research.text': 'Wir arbeiten in Etappen: Konzeptstudie, Materialqualifizierung, Demonstrator, Missionsintegration. Jede Etappe liefert Ergebnisse, die auch für sich stehen.\n\nDie Wahl des Standorts nach Sonneneinstrahlung, Untergrund und Nähe zu Rohstoffen entscheidet die halbe Missionsrechnung – lange vor dem ersten Bauwerk.',
+  'habitat.panel.history.text': 'Am Anfang stand eine Frage: Wie sieht ein Ort aus, an dem Menschen jenseits der Erde nicht nur überleben, sondern arbeiten, forschen und sich erholen?\n\nAus der ersten Skizze wurden Studien, Demonstratoren und Partnerschaften. Die Meilensteine dieses Weges entstehen hier.',
 
   // ── Design ────────────────────────────────────────────────────────
 
@@ -76,10 +71,8 @@ export const DE = {
   'dual.meta.description':        'Was extreme Umgebungen aushält, hilft auch dort, wo auf der Erde konventionelles Bauen an Grenzen stößt.',
   'dual.band.defense': 'Defense Options',
   'dual.band.downstream': 'Down Streaming',
-  'dual.panel.defense.p1': 'Was auf dem Mond Strahlung, Temperatursprüngen und Einschlägen standhält, trägt auch dort, wo herkömmliches Bauen auf der Erde an Grenzen stößt: geschützte Unterkunft, dichte Strukturen, Versorgung ohne Lieferkette dahinter.',
-  'dual.panel.defense.p2': 'Wir prüfen jede Entwicklung auch auf ihren sicherheitsrelevanten Einsatz – und legen offen, wohin diese Prüfung führt. Exportkontrolle und Endverwendung gehören zur Entwurfsentscheidung, nicht ans Ende.',
-  'dual.panel.downstream.p1': 'Weltraumprojekte rechtfertigen sich selten allein über ihr Ziel. Ist eine Entwicklung zugleich terrestrisch nutzbar, ändert das Finanzierung, Zeitplan und Risiko.',
-  'dual.panel.downstream.p2': 'Bauen ohne Zement, Aushub vor Ort als Rohstoff, autarke Energie: die Verfahren, die wir für den Mond qualifizieren, senken auch im gewöhnlichen Bau Emissionen und Abhängigkeiten. Unsere Schutzrechte decken beide Wege ab.',
+  'dual.panel.defense.text': 'Was auf dem Mond Strahlung, Temperatursprüngen und Einschlägen standhält, trägt auch dort, wo herkömmliches Bauen auf der Erde an Grenzen stößt: geschützte Unterkunft, dichte Strukturen, Versorgung ohne Lieferkette dahinter.\n\nWir prüfen jede Entwicklung auch auf ihren sicherheitsrelevanten Einsatz – und legen offen, wohin diese Prüfung führt. Exportkontrolle und Endverwendung gehören zur Entwurfsentscheidung, nicht ans Ende.',
+  'dual.panel.downstream.text': 'Weltraumprojekte rechtfertigen sich selten allein über ihr Ziel. Ist eine Entwicklung zugleich terrestrisch nutzbar, ändert das Finanzierung, Zeitplan und Risiko.\n\nBauen ohne Zement, Aushub vor Ort als Rohstoff, autarke Energie: die Verfahren, die wir für den Mond qualifizieren, senken auch im gewöhnlichen Bau Emissionen und Abhängigkeiten. Unsere Schutzrechte decken beide Wege ab.',
 
   // ── IP ────────────────────────────────────────────────────────────
 
@@ -90,8 +83,7 @@ export const DE = {
   'people.meta.description':     'Dr. Johannes Lierfeld – Autor, Wissenschaftler und Initiator von RETHINK SPACE.',
   'people.band.founder': 'Founder & CEO',
   'people.band.team': 'Team',
-  'people.panel.team.p1': 'RETHINK SPACE arbeitet als Netzwerk: Architektur, Materialforschung und Missionsplanung kommen je Etappe von Partnern, die das jeweilige Fach bereits belegt haben.',
-  'people.panel.team.p2': 'Die Menschen hinter den laufenden Etappen stehen hier. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
+  'people.panel.team.text': 'RETHINK SPACE arbeitet als Netzwerk: Architektur, Materialforschung und Missionsplanung kommen je Etappe von Partnern, die das jeweilige Fach bereits belegt haben.\n\nDie Menschen hinter den laufenden Etappen stehen hier. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
   'people.portrait.placeholder': 'Portrait einsetzen als public/Bilder/Lierfeld.jpg',
   'people.profile.p1':           'Dr. Johannes Lierfeld beschäftigt sich seit Jahren mit den Folgen technologischer Umbrüche – von künstlicher Intelligenz über die Schnittstelle von Biologie und Rechnersystemen bis zur Frage, wie Menschen in künstlich geschaffenen Umgebungen leben.',
   'people.profile.p2':           'RETHINK SPACE führt diese Linien zusammen: Der Mond ist der Ort, an dem sich Technik, Architektur und menschliches Maß zum ersten Mal vollständig neu verhandeln lassen.',

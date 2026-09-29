@@ -275,6 +275,8 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .band-panel h3 { font-size: 20px; margin-bottom: 14px; }
 .band-panel .eyebrow { margin-top: 8px; }
 .band-panel p + p { margin-top: 12px; }
+/* Ein Textfeld je Kachel (CMS); Leerzeilen im Text trennen Absätze. */
+.band-panel .panel-text { white-space: pre-line; }
 .band-panel[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .band-group, .band-toggle::after { transition: none; }

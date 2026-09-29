@@ -53,17 +53,12 @@ export const EN = {
   'habitat.band.design':    'Design & IP',
   'habitat.band.research':  'Researching',
   'habitat.band.partnership': 'Partnership',
-  'habitat.panel.partnership.p1': 'Lunar infrastructure is not built by one organisation. Agencies, research institutes and industry each hold a piece of the problem — materials, robotics, life support, mission design — and the pieces only fit if they are developed together from the start.',
-  'habitat.panel.partnership.p2': 'We therefore work in an open network rather than behind closed doors: joint studies, shared test campaigns, results that each side can also use on its own. If you want to contribute a discipline, the conversation is the shortest route.',
+  'habitat.panel.partnership.text': 'Lunar infrastructure is not built by one organisation. Agencies, research institutes and industry each hold a piece of the problem — materials, robotics, life support, mission design — and the pieces only fit if they are developed together from the start.\n\nWe therefore work in an open network rather than behind closed doors: joint studies, shared test campaigns, results that each side can also use on its own. If you want to contribute a discipline, the conversation is the shortest route.',
   'habitat.band.history':   'History',
-  'habitat.panel.space.p1': 'Regolith covers the lunar surface metres deep. It is shielding, building material and raw material source at once – if you can process it.',
-  'habitat.panel.space.p2': 'Our work starts there: processes that turn local material into load-bearing structures, with minimal energy and without human manual labour on site.',
-  'habitat.panel.design.p1': 'The dome distributes loads evenly and can be assembled from many small, identical elements – ideal for robotic fabrication on site.',
-  'habitat.panel.design.p2': 'Every step is protected by our own IP: geometry, joining processes and the interior that makes a shelter a place to live.',
-  'habitat.panel.research.p1': 'We work in stages: concept study, material qualification, demonstrator, mission integration. Each stage delivers results that also stand on their own.',
-  'habitat.panel.research.p2': 'Site selection by solar exposure, ground conditions and proximity to resources decides half of the mission economics – long before the first structure rises.',
-  'habitat.panel.history.p1': 'The idea began as a question: what does a place look like in which people do not merely survive beyond Earth, but work, do research and recover?',
-  'habitat.panel.history.p2': 'From the first sketch grew studies, demonstrators and partnerships. The milestones of that path are being written up here.',
+  'habitat.panel.space.text': 'Regolith covers the lunar surface metres deep. It is shielding, building material and raw material source at once – if you can process it.\n\nOur work starts there: processes that turn local material into load-bearing structures, with minimal energy and without human manual labour on site.',
+  'habitat.panel.design.text': 'The dome distributes loads evenly and can be assembled from many small, identical elements – ideal for robotic fabrication on site.\n\nEvery step is protected by our own IP: geometry, joining processes and the interior that makes a shelter a place to live.',
+  'habitat.panel.research.text': 'We work in stages: concept study, material qualification, demonstrator, mission integration. Each stage delivers results that also stand on their own.\n\nSite selection by solar exposure, ground conditions and proximity to resources decides half of the mission economics – long before the first structure rises.',
+  'habitat.panel.history.text': 'The idea began as a question: what does a place look like in which people do not merely survive beyond Earth, but work, do research and recover?\n\nFrom the first sketch grew studies, demonstrators and partnerships. The milestones of that path are being written up here.',
 
   // ── Design ────────────────────────────────────────────────────────
 
@@ -76,10 +71,8 @@ export const EN = {
   'dual.meta.description':        'What withstands extreme environments also helps where conventional construction reaches its limits on Earth.',
   'dual.band.defense': 'Defense Options',
   'dual.band.downstream': 'Down Streaming',
-  'dual.panel.defense.p1': 'What withstands radiation, temperature swings and impacts on the Moon also holds where conventional construction reaches its limits on Earth: hardened shelter, sealed structures, supply that works without a chain behind it.',
-  'dual.panel.defense.p2': 'We assess every development for its security-relevant use as well – and are transparent about where that assessment leads. Export control and end use are part of the design decision, not an afterthought.',
-  'dual.panel.downstream.p1': 'Space projects rarely justify themselves through their destination alone. If a development is usable terrestrially at the same time, that changes funding, schedule and risk.',
-  'dual.panel.downstream.p2': 'Building without cement, on-site excavation as raw material, self-sufficient energy: the processes we qualify for the Moon reduce emissions and dependencies in ordinary construction too. Our IP covers both routes.',
+  'dual.panel.defense.text': 'What withstands radiation, temperature swings and impacts on the Moon also holds where conventional construction reaches its limits on Earth: hardened shelter, sealed structures, supply that works without a chain behind it.\n\nWe assess every development for its security-relevant use as well – and are transparent about where that assessment leads. Export control and end use are part of the design decision, not an afterthought.',
+  'dual.panel.downstream.text': 'Space projects rarely justify themselves through their destination alone. If a development is usable terrestrially at the same time, that changes funding, schedule and risk.\n\nBuilding without cement, on-site excavation as raw material, self-sufficient energy: the processes we qualify for the Moon reduce emissions and dependencies in ordinary construction too. Our IP covers both routes.',
 
   // ── IP ────────────────────────────────────────────────────────────
 
@@ -90,8 +83,7 @@ export const EN = {
   'people.meta.description':     'Dr. Johannes Lierfeld – author, scientist and initiator of RETHINK SPACE.',
   'people.band.founder': 'Founder & CEO',
   'people.band.team': 'Team',
-  'people.panel.team.p1': 'RETHINK SPACE works as a network: architecture, materials research and mission planning come together for each stage from partners who have already proven the respective discipline.',
-  'people.panel.team.p2': 'The people behind the current stages are introduced here. If you want to contribute a discipline, the conversation is the shortest route.',
+  'people.panel.team.text': 'RETHINK SPACE works as a network: architecture, materials research and mission planning come together for each stage from partners who have already proven the respective discipline.\n\nThe people behind the current stages are introduced here. If you want to contribute a discipline, the conversation is the shortest route.',
   'people.portrait.placeholder': 'Add portrait as public/Bilder/Lierfeld.jpg',
   'people.profile.p1':           'For years Dr. Johannes Lierfeld has been examining the consequences of technological upheaval – from artificial intelligence to the interface between biology and computing systems, through to the question of how people live in artificially created environments.',
   'people.profile.p2':           'RETHINK SPACE brings these lines together: the Moon is the place where technology, architecture and human scale can be renegotiated from scratch for the first time.',

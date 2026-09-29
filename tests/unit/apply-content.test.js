@@ -20,6 +20,16 @@ describe('Feature: Wörterbuch-Werte ersetzen', () => {
     expect(lines[0]).toBe("  'nav.contact':    'Get in touch',");
   });
 
+  it('maskiert Zeilenumbrüche (Absätze in Kachel-Texten) statt die Zeile zu zerbrechen', () => {
+    const lines = ["  'a.text': 'x',", "  'b': 'y',"];
+    setDictValue(lines, 'a.text', 'Absatz eins.\n\nAbsatz zwei.\r\nDrei.');
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toBe("  'a.text': 'Absatz eins.\\n\\nAbsatz zwei.\\nDrei.',");
+    // und bleibt beim nächsten Durchlauf ersetzbar
+    expect(setDictValue(lines, 'a.text', 'neu')).toBe(true);
+    expect(lines[0]).toBe("  'a.text': 'neu',");
+  });
+
   it('entkommt Apostroph und Backslash', () => {
     const lines = ["  'a.b': 'x',"];
     setDictValue(lines, 'a.b', "Let's go \\ home");

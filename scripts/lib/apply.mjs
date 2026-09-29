@@ -14,7 +14,9 @@ export const escapeAttr = (s) => escapeHtml(s).replace(/"/g, '&quot;');
 export function setDictValue(lines, key, value) {
   const i = lines.findIndex((l) => l.trimStart().startsWith(`'${key}':`));
   if (i < 0) return false;
-  const escaped = value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  // Zeilenumbrüche (Absätze in Kachel-Texten) als \n — ein echter Umbruch
+  // zerbräche die Zeile im Wörterbuch und damit den Build.
+  const escaped = value.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, '\\n');
   const next = lines[i].replace(/:(\s*)'(?:[^'\\]|\\.)*'/, `:$1'${escaped}'`);
   if (next === lines[i]) return false;
   lines[i] = next;
