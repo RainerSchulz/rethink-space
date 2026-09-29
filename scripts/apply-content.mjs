@@ -40,7 +40,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { setDictValue, hasDictKey, applyKeyToHtml, setImages } from './lib/apply.mjs';
+import { setDictValue, hasDictKey, applyKeyToHtml, setImages, keysForPage } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { resolveImage } from './lib/cms-images.mjs';
@@ -222,7 +222,8 @@ for (const page of content.pages) {
     if (r.changed) bandChanges++;
   }
 
-  for (const k of page.keys ?? []) {
+  // Eigene Texte und die geteilten aus „global“ (Header, Footer) — die stehen in jeder Seite.
+  for (const k of keysForPage(content.pages, page)) {
     const en = enByKey.get(k.key);
     if (en === undefined) continue;
     const r = applyKeyToHtml(html, k.key, en);

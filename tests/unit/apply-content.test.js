@@ -10,7 +10,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml,
+  setImages, listImages, applyKeyToHtml, keysForPage,
 } from '../../scripts/lib/apply.mjs';
 
 describe('Feature: Wörterbuch-Werte ersetzen', () => {
@@ -132,6 +132,28 @@ describe('Feature: Bildpfade ersetzen', () => {
     const r = setImages(html, [{ src: 'https://fremd.example/x.jpg' }]);
     expect(r.html).toBe(html);
     expect(r.changed).toBe(0);
+  });
+});
+
+describe('Feature: Header- und Footer-Texte kommen in jede Seite', () => {
+  const pages = [
+    { slug: 'index', keys: [{ key: 'home.hero.title', en: 'Hero' }] },
+    { slug: 'global', keys: [{ key: 'footer.project', en: 'A project by Dr. Dr. Johannes Lierfeld' }] },
+  ];
+
+  it('eine Seite bekommt ihre eigenen Schlüssel und die aus „global“', () => {
+    expect(keysForPage(pages, pages[0]).map((k) => k.key)).toEqual(['home.hero.title', 'footer.project']);
+  });
+
+  it('„global“ selbst bekommt sie nicht doppelt', () => {
+    expect(keysForPage(pages, pages[1]).map((k) => k.key)).toEqual(['footer.project']);
+  });
+
+  it('der geänderte Footer-Text landet im HTML der Seite', () => {
+    const html = '<footer><span data-i18n="footer.project">A project by Dr. Johannes Lierfeld</span></footer>';
+    let out = html;
+    for (const k of keysForPage(pages, pages[0])) out = applyKeyToHtml(out, k.key, k.en).html;
+    expect(out).toContain('>A project by Dr. Dr. Johannes Lierfeld</span>');
   });
 });
 

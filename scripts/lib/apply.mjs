@@ -90,6 +90,17 @@ export function setImages(html, images) {
   return { html: out, changed, skipped: null };
 }
 
+/**
+ * Schlüssel, die in einer Seite zu setzen sind: die eigenen und die geteilten
+ * der Pseudo-Seite „global“ (Header, Footer, Module). Die stehen in JEDER Seite
+ * im HTML — ohne sie bekäme en.js einen neuen Footer-Text, die Seiten aber
+ * nicht, und i18n.test.js (HTML-Text = EN-Wörterbuch) hielte das Veröffentlichen an.
+ */
+export function keysForPage(pages, page) {
+  const shared = page.slug === 'global' ? [] : (pages.find((p) => p.slug === 'global')?.keys ?? []);
+  return [...(page.keys ?? []), ...shared];
+}
+
 /** Alle Texte und Attribute eines Schlüssels in einer Seite setzen. */
 export function applyKeyToHtml(html, key, value) {
   let out = html;
