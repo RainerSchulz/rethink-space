@@ -36,6 +36,18 @@ describe('Feature: formatierte Kacheltexte', () => {
     expect(renderRichHtml('[x](http://unsicher.example)')).not.toContain('<a');
   });
 
+  it('„eigene Seite“ heißt eigene Domain — //, /\\ und /// bleiben Text (Befund rethink-space-dc)', () => {
+    for (const href of ['//evil.example/phish', String.raw`/\evil.example/phish`, '///evil.example', String.raw`/pages\x`]) {
+      expect(renderRichHtml(`[klick](${href})`), href).not.toContain('<a');
+    }
+    for (const href of ['/pages/contact/', '/Bilder/x.jpg', '/']) {
+      expect(renderRichHtml(`[klick](${href})`), href).toContain(`<a href="${href}">`);
+    }
+    // aufgelöst gegen die eigene Adresse bleibt jeder erlaubte relative Link auf rethink.space
+    const hrefs = [...renderRichHtml('[a](/pages/x/) [b](/y)').matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+    for (const h of hrefs) expect(new URL(h, 'https://rethink.space/').host).toBe('rethink.space');
+  });
+
   it('HTML im Text bleibt Text', () => {
     expect(renderRichHtml('<script>x</script> & "Zitat"')).toBe('<p>&lt;script&gt;x&lt;/script&gt; &amp; &quot;Zitat&quot;</p>');
   });
@@ -70,6 +82,6 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('879651d71bf111db0be491570a9ee80f398e9564998784b9aaee3fcaaca080d0');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('1f60436fcefea54286663c24d10e3444499990e8e8959b8475bb8ea3e1771332');
   });
 });

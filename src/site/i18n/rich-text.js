@@ -18,7 +18,9 @@
 /** Welche Schlüssel formatiert werden dürfen: nur die Texte unter „Learn more“. */
 export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$/.test(String(key ?? ''));
 
-const SAFE_HREF = /^(https:\/\/[^\s<>"]+|mailto:[^\s<>"]+|\/[^\s<>"]*)$/;
+// Eigene Seite = ein Schrägstrich, dann KEIN zweiter und kein Backslash:
+// „//fremd.example“ und „/\fremd.example“ lösen Browser als fremde Domain auf.
+const SAFE_HREF = /^(https:\/\/[^\s<>"]+|mailto:[^\s<>"]+|\/(?![/\\])[^\s<>"\\]*)$/;
 
 /** Inline: fett, kursiv, Links, Zeilenumbruch. */
 function parseInline(src) {
