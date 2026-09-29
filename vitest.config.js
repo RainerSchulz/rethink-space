@@ -14,6 +14,6 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.js'],
     // Vite laedt .env auch im Test. Ohne diese Ueberschreibung liefe der
     // Test gegen den echten Endpoint statt gegen den Fall "nicht gesetzt".
-    env: { VITE_CONTACT_ENDPOINT: '', VITE_CHAT_ENDPOINT: '', VITE_GATE_HASH: '' },
+    env: { VITE_CONTACT_ENDPOINT: '', VITE_CHAT_ENDPOINT: '' },
   },
 });

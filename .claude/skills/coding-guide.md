@@ -41,7 +41,7 @@ Das CSS wird bewusst **nicht** aus `main.js` importiert: im Dev-Server käme es 
 │   ├── fonts.css                ← Schrift-Imports
 │   ├── i18n/                    ← index.js (t, setLang, applyLang), de.js, en.js
 │   └── modules/                 ← router.js, nav.js, contact.js, portrait.js,
-│                                   bands.js, chat.js, gate.js
+│                                   bands.js, chat.js
 ├── scripts/                     ← apply-content.mjs (CMS-Rückweg), lib/apply.mjs,
 │                                   build-knowledge.mjs, push-knowledge.mjs
 ├── deploy/nginx.conf, Dockerfile

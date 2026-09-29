@@ -5,7 +5,6 @@
  * nach jedem Seitenwechsel des Routers erneut, weil <main> dann neu ist.
  */
 import { applyLang } from './i18n/index.js';
-import { initGate } from './modules/gate.js';
 import { initNav, markCurrentPage, closeMenu } from './modules/nav.js';
 import { initRouter, PAGE_EVENT } from './modules/router.js';
 import { initContact } from './modules/contact.js';
@@ -20,7 +19,6 @@ function initPage() {
   initPortrait();
 }
 
-initGate();     // Testphase: Anmeldemaske; ohne VITE_GATE_HASH ohne Wirkung
 initNav();
 initBands();    // aufklappbare Bereiche auf /pages/lunar-habitato/
 initChat();     // Widget lebt außerhalb von <main>; ohne VITE_CHAT_ENDPOINT bleibt es aus

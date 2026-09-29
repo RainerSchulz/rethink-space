@@ -36,6 +36,24 @@ jobs:
       - run: npm ci
       - run: npm run test:run
 
+  # ─── Quality Gate 2b: Browser-Tests (Playwright) ───────────────────
+  # Fangen, was nur im Browser bricht: Laufzeit-i18n, Seitenwechsel ohne
+  # Neuladen, Mobilmenü, Formular. Bis 29.09.2026 lief das nirgends
+  # automatisch — so kam ein roter Test unbemerkt auf main.
+  # Schrittnamen enthalten „playwright“/„test:e2e“, daran erkennt die
+  # Fortschrittsanzeige im CMS den Schritt (wie in content.yml).
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
   # ─── Quality Gate 3: Secret-Scan (gitleaks) ────────────────────────
   # Harter Gate: Findet gitleaks ein Secret, gibt es weder Build noch Deploy.
   secret-scan:
@@ -69,7 +87,7 @@ jobs:
 
   # ─── Build ─────────────────────────────────────────────────────────
   build:
-    needs: [lint, test, secret-scan]
+    needs: [lint, test, e2e, secret-scan]
     runs-on: ubuntu-latest
     env:
       HAS_CMS_KEY: ${{ secrets.CMS_DEPLOY_KEY != '' }}
@@ -83,7 +101,6 @@ jobs:
       - run: npm run build
         env:
           VITE_CHAT_ENDPOINT: ${{ vars.VITE_CHAT_ENDPOINT }}
-          VITE_GATE_HASH: ${{ vars.VITE_GATE_HASH }}
 
       # ─── CMS unter /cms/ ─────────────────────────────────────────────
       # Das Redaktionssystem liegt im privaten Repo rethink-cms und wird hier

@@ -30,15 +30,6 @@ export const EN = {
   'chat.you':        'You',
   'chat.bot':        'RETHINK SPACE',
 
-  // ── Test access (VITE_GATE_HASH) ──────────────────────────────────
-  'gate.title':      'Preview access',
-  'gate.intro':      'This site is not public yet. Please sign in to continue.',
-  'gate.email':      'E-mail',
-  'gate.password':   'Password',
-  'gate.remember':   'Stay signed in',
-  'gate.submit':     'Sign in',
-  'gate.error':      'E-mail or password is not correct.',
-  'gate.note':       'Signed in, this device remembers you until you clear your browser data.',
 
   // ── Home ──────────────────────────────────────────────────────────
   'home.meta.title':       'RETHINK SPACE – New Space Economy for Lunar Infrastructure',

@@ -71,22 +71,20 @@ Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge F
 - **Unterseiten-Hero:** Bild in Inhaltsbreite wie die Überschrift, einheitliches 16:9-Fenster, Inhalt schließt dicht an (`.hero-sub + section`).
 - **Handy und Tablet:** kompakt, kein verschenkter Platz — News-Karten Bild links/Text rechts, enges Burger-Menü.
 
-### 11. Testphase: Zugangsschutz über `VITE_GATE_HASH`
-`gate.js` legt eine Anmeldemaske vor die Seite, sobald `VITE_GATE_HASH` gesetzt ist: ein SHA-256 von `e-mail:passwort` (kleingeschrieben) oder mehrere, durch Komma getrennt. Die Checkbox „Angemeldet bleiben“ (vorausgewählt) entscheidet zwischen localStorage und sessionStorage; der Browser darf die Daten speichern (`autocomplete`). Zum Livegang genügt es, die Variable zu entfernen — kein Codeumbau. **Kein echter Schutz:** die Dateien liegen weiter statisch auf dem Server; für echte Sperre braucht es Basic Auth auf einem eigenen Server oder Cloudflare Access.
-
-### 12. Nach jeder Änderung testen
+### 11. Nach jeder Änderung testen
 ```bash
 npm run lint && npm run test:run && npm run build
 npm run test:e2e   # bei HTML/Nav/Sprache/Formular
 ```
+Seit 29.09.2026 laufen die Browser-Tests auch automatisch: als eigener Job in `ci.yml` (der Build wartet darauf) und in `content.yml` vor jedem CMS-Commit. Vorher lief E2E nirgends von allein — so kam ein roter Test unbemerkt auf `main`.
 Nach Textänderungen zusätzlich: `npm run knowledge && npm run knowledge:push` (Chatbot) und im CMS `npm run import`.
 Committen und pushen nur auf ausdrückliche Aufforderung.
 
-### 13. Kontaktformular: die Website schreibt nie direkt in die Datenbank
+### 12. Kontaktformular: die Website schreibt nie direkt in die Datenbank
 `contact.js` schickt an die Edge Function `contact` (`VITE_CONTACT_ENDPOINT`), nie per anon-Key in die Tabelle. Der anon-Key steht im ausgelieferten JavaScript; ein Insert-Recht für ihn wäre eine offene Einladung, `contact_messages` vollzuschreiben. Die Funktion schreibt mit dem Service-Role-Key und prüft vorher: Pflichtfelder, E-Mail-Form, Längen, 5 Anfragen je 10 Minuten und Herkunft, dazu ein Honigtopf-Feld (`name="website"`, für Menschen unsichtbar). Die IP wird **nur gehasht** abgelegt.
 **Ohne Endpoint meldet das Formular ehrlich**, dass gerade nichts ankommt, und verweist auf die E-Mail-Adresse — kein „Danke", hinter dem nichts passiert.
 
-### 14. Inhalte aus dem CMS kommen nur über `content:apply` zurück
+### 13. Inhalte aus dem CMS kommen nur über `content:apply` zurück
 Redaktionelle Änderungen macht der Inhaber im CMS (`../rethink-cms`, eigenes Repo), nicht von Hand in `en.js`. Zwei Wege:
 
 **Knopf im CMS (der übliche Weg).** „Veröffentlichen“ ruft die Edge Function `publish` auf, die ein `repository_dispatch` an GitHub schickt. `content.yml` holt den Stand aus Supabase, prüft ihn mit Lint, Tests und Build und committet nur, wenn sich etwas geändert hat. Der Push startet `ci.yml` und damit den Deploy.
@@ -118,7 +116,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 | `src/site/site.css` | Alle Stile |
 | `src/site/fonts.css` | Inter, selbst gehostet (fontsource) |
 | `src/site/i18n/` | `index.js` (Runtime), `de.js`, `en.js` |
-| `src/site/modules/` | `router.js`, `nav.js`, `bands.js`, `contact.js`, `portrait.js`, `chat.js`, `gate.js` |
+| `src/site/modules/` | `router.js`, `nav.js`, `bands.js`, `contact.js`, `portrait.js`, `chat.js` |
 | `supabase/` | Chatbot-Backend: Edge Function `functions/chat/` (Claude-Aufruf, Streaming), `knowledge/` (Fakten, Autor, Buchzusammenfassungen), Migration `chat_log`; Anleitung in `supabase/README.md` |
 | `scripts/apply-content.mjs`, `lib/apply.mjs`, `lib/cms-fetch.mjs` | `npm run content:apply -- <export.json>` schreibt einen CMS-Export zurück: Werte nach `en.js`/`de.js`, englischer Text an jedes `data-i18n`-Element, Bildpfade in den Shells. Mit `--from-supabase` liest es statt aus der Datei direkt aus den CMS-Tabellen (so läuft es in GitHub Actions). Umformungen in `lib/apply.mjs`, geprüft von `tests/unit/apply-content.test.js` |
 | `scripts/build-knowledge.mjs`, `push-knowledge.mjs` | `npm run knowledge` baut `knowledge.txt` aus Wörterbüchern + `knowledge/`; `npm run knowledge:push` lädt sie nach `public.chat_knowledge` |
@@ -145,7 +143,7 @@ Vollständiger Guide: `.claude/skills/coding-guide.md`
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen
 - GitHub Pages: Source = "GitHub Actions" + Custom domain, oder Docker-Image auf dem eigenen Server
-- Vor dem Livegang: Repository-Variable `VITE_GATE_HASH` entfernen, damit die Anmeldemaske verschwindet
+- Erledigt am 29.09.2026: Der Zugangsschutz der Testphase ist **ganz entfernt** — `modules/gate.js`, die acht `gate.*`-Schlüssel, der CSS-Abschnitt, beide Tests und `VITE_GATE_HASH` in den Workflows. Die Website ist ohne Anmeldung erreichbar (im Browser gegen https://rethink.space/ geprüft), ein Login gibt es nur noch fürs CMS unter `/cms/`. Wer die Seite je wieder sperren will, holt das Modul aus der Git-Historie oder nimmt Basic Auth bzw. Cloudflare Access — für echten Schutz war es ohnehin nie gedacht.
 - Aufgeräumt am 25.09.2026: `design`, `space`, `deployment`, `ip`, `news` und `history` sind gelöscht — sie waren von der Website aus nicht mehr erreichbar. Ihre Inhalte liegen in der Git-Historie und teils in den aufklappbaren Bereichen der Bandseiten. **Neue Kachel oder neuer Link braucht erst ein Ziel**, das es noch gibt.
 - Entrümpelt am 25.09.2026: Mit den sechs Seiten sind auch ihre Bausteine gefallen — `modules/lightbox.js` samt Wörterbuch-Schlüsseln, die CSS-Abschnitte für Kacheln, Galerie, Lightbox, Split, Statistik und CTA (`site.css` von 700 auf 506 Zeilen) und 40 nicht mehr eingebundene Bilder (13 bleiben). Belegt durch einen Pixelvergleich aller acht Seiten in 1440 px und 412 px: 16 von 16 Ansichten unverändert. **Alles steht in der Git-Historie** — eine neue Galerie oder Kachel braucht ihr CSS und ihr Modul wieder.
 - CMS: Rückweg, Supabase-Betrieb und Veröffentlichen-Knopf stehen (25.09.2026). Offen: GitHub-Token anlegen und als Secret hinterlegen (`GITHUB_TOKEN` in Supabase, `CONTENT_PUSH_TOKEN` in GitHub), `VITE_PUBLISH_WEBHOOK` im CMS setzen, CMS für Dr. Lierfeld hosten

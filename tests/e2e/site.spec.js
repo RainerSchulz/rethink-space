@@ -5,12 +5,6 @@
 import { test, expect } from '@playwright/test';
 import { EN } from '../../src/site/i18n/en.js';
 
-// In der Testphase liegt ein Zugangsschutz vor der Seite (VITE_GATE_HASH).
-// Für alle Tests außer dem Gate-Test wird er abgeschaltet.
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => { window.RETHINK_GATE_HASH = ''; });
-});
-
 const PAGES = [
   'lunar-habitato', 'dual-use', 'people', 'contact',
   'legal-notice', 'privacy', '404',
@@ -272,34 +266,5 @@ test.describe('Feature: Chat-Widget „Frag RETHINK SPACE“', () => {
     // Nur aussagekräftig, wenn lokal kein VITE_CHAT_ENDPOINT gesetzt ist; sonst ist der Button erlaubt.
     const count = await page.locator('.chat-fab').count();
     expect(count).toBeLessThanOrEqual(1);
-  });
-});
-
-test.describe('Feature: Zugangsschutz der Testphase', () => {
-  const HASH = '6987d5d14499d7c677ed0aa6eb68e7745e43448197caf60cbcba7d68ecd30d57';
-
-  test('Maske sperrt die Seite, richtige Daten schalten frei und bleiben gespeichert', async ({ page }) => {
-    await page.addInitScript((h) => { window.RETHINK_GATE_HASH = h; }, HASH);
-    await page.goto('/');
-    const gate = page.locator('.site-gate');
-    await expect(gate).toBeVisible();
-    await expect(page.locator('main')).toBeHidden();
-
-    await page.fill('#gate-email', 'test@rethink.space');
-    await page.fill('#gate-password', 'falsch');
-    await page.locator('.gate-submit').click();
-    await expect(page.locator('.gate-error')).toBeVisible();
-    await expect(gate).toBeVisible();
-
-    await expect(page.locator('#gate-remember')).toBeChecked(); // Merken ist vorausgewählt
-    await page.fill('#gate-password', 'Re-Think-Space-26');
-    await page.locator('.gate-submit').click();
-    await expect(gate).toBeHidden();
-    await expect(page.locator('main')).toBeVisible();
-
-    // Zweiter Besuch: keine erneute Anmeldung
-    await page.goto('/pages/lunar-habitato/');
-    await expect(page.locator('.site-gate')).toHaveCount(0);
-    await expect(page.locator('main h1')).toBeVisible();
   });
 });
