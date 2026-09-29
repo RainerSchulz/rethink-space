@@ -10,7 +10,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml, keysForPage,
+  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml,
 } from '../../scripts/lib/apply.mjs';
 
 describe('Feature: Wörterbuch-Werte ersetzen', () => {
@@ -141,19 +141,27 @@ describe('Feature: Header- und Footer-Texte kommen in jede Seite', () => {
     { slug: 'global', keys: [{ key: 'footer.project', en: 'A project by Dr. Dr. Johannes Lierfeld' }] },
   ];
 
-  it('eine Seite bekommt ihre eigenen Schlüssel und die aus „global“', () => {
-    expect(keysForPage(pages, pages[0]).map((k) => k.key)).toEqual(['home.hero.title', 'footer.project']);
+  const enOf = (key) => [...pages.flatMap((p) => p.keys)].find((k) => k.key === key)?.en;
+
+  it('die geteilten Schlüssel sind die der Seite „global“ — auch in einem Export nur mit „global“', () => {
+    expect(sharedKeys(pages).map((k) => k.key)).toEqual(['footer.project']);
+    expect(sharedKeys([pages[1]]).map((k) => k.key)).toEqual(['footer.project']);
+    expect(sharedKeys([pages[0]])).toEqual([]);
   });
 
-  it('„global“ selbst bekommt sie nicht doppelt', () => {
-    expect(keysForPage(pages, pages[1]).map((k) => k.key)).toEqual(['footer.project']);
+  it('der geänderte Footer-Text landet im HTML der Seite, auch als Attribut', () => {
+    const html = '<nav aria-label="Main" data-i18n-aria-label="nav.main"></nav>'
+      + '<footer><span data-i18n="footer.project">A project by Dr. Johannes Lierfeld</span></footer>';
+    const keys = [...sharedKeys(pages), { key: 'nav.main' }];
+    const r = applyKeysToHtml(html, keys, (key) => (key === 'nav.main' ? 'Primary navigation' : enOf(key)));
+    expect(r.html).toContain('>A project by Dr. Dr. Johannes Lierfeld</span>');
+    expect(r.html).toContain('aria-label="Primary navigation"');
+    expect(r.changed).toBe(2);
   });
 
-  it('der geänderte Footer-Text landet im HTML der Seite', () => {
-    const html = '<footer><span data-i18n="footer.project">A project by Dr. Johannes Lierfeld</span></footer>';
-    let out = html;
-    for (const k of keysForPage(pages, pages[0])) out = applyKeyToHtml(out, k.key, k.en).html;
-    expect(out).toContain('>A project by Dr. Dr. Johannes Lierfeld</span>');
+  it('nur per JavaScript genutzte Schlüssel ändern nichts und sind kein Fehler', () => {
+    const r = applyKeysToHtml('<p>x</p>', [{ key: 'chat.placeholder' }], () => 'Ask me');
+    expect(r).toEqual({ html: '<p>x</p>', changed: 0 });
   });
 });
 

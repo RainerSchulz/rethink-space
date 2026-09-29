@@ -40,7 +40,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { setDictValue, hasDictKey, applyKeyToHtml, setImages, keysForPage } from './lib/apply.mjs';
+import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { resolveImage } from './lib/cms-images.mjs';
@@ -222,14 +222,9 @@ for (const page of content.pages) {
     if (r.changed) bandChanges++;
   }
 
-  // Eigene Texte und die geteilten aus „global“ (Header, Footer) — die stehen in jeder Seite.
-  for (const k of keysForPage(content.pages, page)) {
-    const en = enByKey.get(k.key);
-    if (en === undefined) continue;
-    const r = applyKeyToHtml(html, k.key, en);
-    html = r.html;
-    htmlChanges += r.changed;
-  }
+  const own = applyKeysToHtml(html, page.keys ?? [], (key) => enByKey.get(key));
+  html = own.html;
+  htmlChanges += own.changed;
 
   // Bilder nach Position — ohne die Kachel-Bilder, die gehören zu page.bands.
   const images = [];
@@ -241,6 +236,23 @@ for (const page of content.pages) {
   imageChanges += img.changed;
 
   if (html !== before && !DRY) writeFileSync(file, html);
+}
+
+/* ---------- Header, Footer, Module: in JEDE Seite ---------- */
+// Über die Dateien auf der Platte, nicht über die Seiten des Exports: sonst
+// hinge es davon ab, dass der Export jede Seite mitbringt (ein Export nur mit
+// „global“ hätte en.js geändert, aber keine Seite — i18n.test.js schlägt an).
+const shared = sharedKeys(content.pages);
+if (shared.length) {
+  const pagesDir = join(ROOT, 'pages');
+  const shells = [join(ROOT, 'index.html'), ...(existsSync(pagesDir) ? readdirSync(pagesDir) : [])
+    .map((d) => join(pagesDir, d, 'index.html')).filter((f) => existsSync(f))];
+  for (const file of shells) {
+    const before = readFileSync(file, 'utf8');
+    const r = applyKeysToHtml(before, shared, (key) => enByKey.get(key));
+    htmlChanges += r.changed;
+    if (r.html !== before && !DRY) writeFileSync(file, r.html);
+  }
 }
 
 if (!DRY) for (const d of Object.values(dicts)) writeFileSync(d.file, d.lines.join('\n'));
