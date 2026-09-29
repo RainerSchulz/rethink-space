@@ -12,7 +12,7 @@ export const EN = {
   'nav.contact':     'Contact',
   'footer.imprint':  'Legal notice',
   'footer.privacy':  'Privacy',
-  'footer.project':  'A project by Dr. Johannes Lierfeld',
+  'footer.project':  'A project by Dr. Dr. Johannes Lierfeld',
   'footer.email':    'E-mail',
   'common.more':     'Learn more',
   'common.skip':     'Skip to content',
