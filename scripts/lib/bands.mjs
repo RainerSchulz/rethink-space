@@ -97,8 +97,9 @@ function setImage(block, src, focus) {
   if (img[2] === src && cls === img[1]) return block;
   const plain = `<img class="${cls}" src="${escapeHtml(src)}" alt="" loading="lazy">`;
   const picture = /( *)<picture>[\s\S]*?<\/picture>/.exec(block);
-  if (picture) return block.replace(picture[0], `${picture[1]}${plain}`);
-  return block.replace(img[0], plain);
+  // Ersetzung als Funktion: Pfade und Texte aus dem CMS dürfen $-Zeichen enthalten.
+  if (picture) return block.replace(picture[0], () => `${picture[1]}${plain}`);
+  return block.replace(img[0], () => plain);
 }
 
 /**
@@ -144,7 +145,8 @@ export function maskRegion(html) {
   const token = '\u0000CMS_BANDS\u0000';
   return {
     masked: parts.before + token + parts.after,
-    restore: (h) => h.replace(token, parts.region),
+    // Funktion statt Text: der Bereich enthält Kacheltexte, $&, $$ oder $' darin blieben sonst nicht stehen.
+    restore: (h) => h.replace(token, () => parts.region),
   };
 }
 

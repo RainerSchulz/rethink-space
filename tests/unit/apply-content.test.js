@@ -176,3 +176,38 @@ describe('Feature: zweimal anwenden ändert nichts mehr', () => {
     expect(twice.changed).toBe(0);
   });
 });
+
+describe('Feature: Dollarzeichen im Text bleiben, wie sie sind', () => {
+  // In einem Ersetzungs-TEXT sind $1, $&, $$, $` und $' Platzhalter. „$1M per
+  // kilogram“ im Kacheltext verfälschte so am 30.09.2026 das Wörterbuch (i18n.test
+  // hielt das Veröffentlichen an). Alle Ersetzungen mit CMS-Inhalt laufen deshalb
+  // über Funktionen.
+  const DOLLAR = "Cost of $1M per kg, $& and $$ and $` and $' end, 1M $ / kg, zuletzt $";
+
+  it('Wörterbuch', async () => {
+    const lines = ["export const EN = {", "  'habitat.panel.space.text': 'alt',", '};'];
+    expect(setDictValue(lines, 'habitat.panel.space.text', DOLLAR)).toBe(true);
+    const EN = new Function(`${lines.join('\n').replace('export const EN =', 'return')}`)();
+    expect(EN['habitat.panel.space.text']).toBe(DOLLAR);
+  });
+
+  it('Attribut (Meta-Beschreibung)', () => {
+    const html = '<meta name="description" content="alt" data-i18n-content="x.meta.description">';
+    const { html: out } = setElementAttr(html, 'x.meta.description', DOLLAR, 'content', 'content');
+    const doc = new DOMParser().parseFromString(out, 'text/html');
+    expect(doc.querySelector('meta').getAttribute('content')).toBe(DOLLAR);
+  });
+
+  it('Kacheltext im verwalteten Bereich übersteht Maskieren und Zurücksetzen', async () => {
+    const { maskRegion } = await import('../../scripts/lib/bands.mjs');
+    const html = `<main>\n<!-- cms:bands -->\n<div class="panel-text" data-i18n="a.panel.x.text"><p>${DOLLAR}</p></div>\n<!-- /cms:bands -->\n</main>`;
+    const { masked, restore } = maskRegion(html);
+    expect(restore(masked)).toBe(html);
+  });
+
+  it('Bildpfad', () => {
+    const html = '<img src="/Bilder/alt.jpg" alt="">';
+    const { html: out } = setImages(html, [{ src: '/Bilder/$1-$&.jpg', alt: '' }]);
+    expect(out).toContain('src="/Bilder/$1-$&.jpg"');
+  });
+});

@@ -19,7 +19,9 @@ export function setDictValue(lines, key, value) {
   // Zeilenumbrüche (Absätze in Kachel-Texten) als \n — ein echter Umbruch
   // zerbräche die Zeile im Wörterbuch und damit den Build.
   const escaped = value.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, '\\n');
-  const next = lines[i].replace(/:(\s*)'(?:[^'\\]|\\.)*'/, `:$1'${escaped}'`);
+  // Ersetzung als Funktion: in einem Ersetzungs-TEXT wären $1, $&, $$ … aus dem
+  // Inhalt Platzhalter — „$1M“ im Kacheltext verfälschte so das Wörterbuch.
+  const next = lines[i].replace(/:(\s*)'(?:[^'\\]|\\.)*'/, (_, space) => `:${space}'${escaped}'`);
   if (next === lines[i]) return false;
   lines[i] = next;
   return true;
@@ -63,7 +65,7 @@ export function setElementAttr(html, key, value, kind, attr) {
   let changed = false;
   const out = html.replace(re, (tag) => {
     if (!attrRe.test(tag)) return tag;
-    const nextTag = tag.replace(attrRe, ` ${attr}="${escapeAttr(value)}"`);
+    const nextTag = tag.replace(attrRe, () => ` ${attr}="${escapeAttr(value)}"`);
     if (nextTag !== tag) changed = true;
     return nextTag;
   });
@@ -93,8 +95,8 @@ export function setImages(html, images) {
     const to = img?.src;
     if (!to || to === from || !to.startsWith('/Bilder/')) return;
     const before = out;
-    out = out.replace(new RegExp(`href="${rx(from)}"([^>]*data-lightbox)`), `href="${to}"$1`);
-    out = out.replace(new RegExp(`(\\ssrc="|\\sdata-portrait-src=")${rx(from)}"`), `$1${to}"`);
+    out = out.replace(new RegExp(`href="${rx(from)}"([^>]*data-lightbox)`), (_, rest) => `href="${to}"${rest}`);
+    out = out.replace(new RegExp(`(\\ssrc="|\\sdata-portrait-src=")${rx(from)}"`), (_, pre) => `${pre}${to}"`);
     if (out !== before) changed++;
   });
   return { html: out, changed, skipped: null };
