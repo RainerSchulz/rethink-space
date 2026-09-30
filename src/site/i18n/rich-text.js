@@ -6,6 +6,7 @@
  *   - Zeile mit Strich am Anfang   → Aufzählung (aufeinanderfolgende Zeilen = eine Liste)
  *   Leerzeile                      → neuer Absatz
  *   einzelner Zeilenumbruch        → Zeilenumbruch im Absatz
+ *   \* \[ \] \( \) \- \\           → das Zeichen selbst (z. B. „5\*3“ ist 5*3, nicht kursiv)
  *
  * Es entsteht nie freies HTML: nur p, ul/li, strong, em, a, br. Links nur mit
  * https://, mailto: oder auf eigene Seiten (/…); alles andere bleibt Text.
@@ -22,18 +23,21 @@ export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$/.test(String(key ?
 // „//fremd.example“ und „/\fremd.example“ lösen Browser als fremde Domain auf.
 const SAFE_HREF = /^(https:\/\/[^\s<>"]+|mailto:[^\s<>"]+|\/(?![/\\])[^\s<>"\\]*)$/;
 
-/** Inline: fett, kursiv, Links, Zeilenumbruch. */
+/** Inline: Maskierung, fett, kursiv, Links, Zeilenumbruch. */
 function parseInline(src) {
   const out = [];
-  const re = /\*\*(?=\S)([\s\S]+?)(?<=\S)\*\*|\*(?=[^\s*])([\s\S]+?)(?<=[^\s*])\*|\[([^\]\n]+)\]\(([^)\s]+)\)|\n/g;
+  // Reihenfolge zählt: erst „\x“ (Zeichen wörtlich), dann fett, kursiv, Link.
+  // Ein maskiertes Sternchen schließt kein fett/kursiv ((?<=[^…\\]) vor dem Stern).
+  const re = /\\([\\*[\]()-])|\*\*(?=\S)([\s\S]+?)(?<=[^\s\\])\*\*|\*(?=[^\s*])([\s\S]+?)(?<=[^\s*\\])\*|\[((?:\\.|[^\]\n\\])+)\]\(([^)\s]+)\)|\n/g;
   let last = 0;
   for (let m = re.exec(src); m; m = re.exec(src)) {
     if (m.index > last) out.push({ type: 'text', text: src.slice(last, m.index) });
-    if (m[1] !== undefined) out.push({ type: 'strong', children: parseInline(m[1]) });
-    else if (m[2] !== undefined) out.push({ type: 'em', children: parseInline(m[2]) });
-    else if (m[3] !== undefined) {
-      out.push(SAFE_HREF.test(m[4])
-        ? { type: 'a', href: m[4], children: parseInline(m[3]) }
+    if (m[1] !== undefined) out.push({ type: 'text', text: m[1] });
+    else if (m[2] !== undefined) out.push({ type: 'strong', children: parseInline(m[2]) });
+    else if (m[3] !== undefined) out.push({ type: 'em', children: parseInline(m[3]) });
+    else if (m[4] !== undefined) {
+      out.push(SAFE_HREF.test(m[5])
+        ? { type: 'a', href: m[5], children: parseInline(m[4]) }
         : { type: 'text', text: m[0] });
     } else out.push({ type: 'br' });
     last = re.lastIndex;

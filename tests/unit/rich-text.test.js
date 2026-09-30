@@ -82,6 +82,6 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('1f60436fcefea54286663c24d10e3444499990e8e8959b8475bb8ea3e1771332');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('2076fcf5645d794ce50cf5ffcd3ae9af3ea9e8257640ad349443e88195b638c9');
   });
 });

@@ -10,15 +10,28 @@ export const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').
 export const escapeAttr = (s) => escapeHtml(s).replace(/"/g, '&quot;');
 
 /**
+ * Text als Inhalt einer '…'-Zeichenkette in de.js/en.js — die EINE Stelle dafür
+ * (setDictValue, bands.mjs insertDictKeys). Backslash und Apostroph maskiert;
+ * jeder Zeilenumbruch (CRLF, LF, einzelnes CR) wird zu \n — ein rohes CR beendete
+ * die Zeichenkette und bräche den Build. U+2028/2029 wären seit ES2019 erlaubt;
+ * sie werden nur vorsorglich maskiert (ältere Werkzeuge lesen sie als Zeilenende).
+ * tests/unit/special-chars.test.js prüft das mit einem Zeichenkatalog.
+ */
+export const escapeJsString = (s) => String(s)
+  .replace(/\\/g, '\\\\')
+  .replace(/'/g, "\\'")
+  .replace(/\r\n?|\n/g, '\\n')
+  .replace(/\u2028/g, '\\u2028')
+  .replace(/\u2029/g, '\\u2029');
+
+/**
  * Einen Wert in de.js/en.js ersetzen, ohne die Formatierung der Datei zu stören.
  * Gibt zurück, ob sich etwas geändert hat.
  */
 export function setDictValue(lines, key, value) {
   const i = lines.findIndex((l) => l.trimStart().startsWith(`'${key}':`));
   if (i < 0) return false;
-  // Zeilenumbrüche (Absätze in Kachel-Texten) als \n — ein echter Umbruch
-  // zerbräche die Zeile im Wörterbuch und damit den Build.
-  const escaped = value.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, '\\n');
+  const escaped = escapeJsString(value);
   // Ersetzung als Funktion: in einem Ersetzungs-TEXT wären $1, $&, $$ … aus dem
   // Inhalt Platzhalter — „$1M“ im Kacheltext verfälschte so das Wörterbuch.
   const next = lines[i].replace(/:(\s*)'(?:[^'\\]|\\.)*'/, (_, space) => `:${space}'${escaped}'`);

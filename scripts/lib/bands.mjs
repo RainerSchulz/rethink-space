@@ -16,7 +16,7 @@
  * Reine Umformungen ohne Dateizugriff, getestet in tests/unit/bands.test.js.
  */
 import { renderRichHtml } from '../../src/site/i18n/rich-text.js';
-import { escapeHtml } from './apply.mjs';
+import { escapeHtml, escapeJsString } from './apply.mjs';
 
 export const REGION_START = '<!-- cms:bands -->';
 export const REGION_END = '<!-- /cms:bands -->';
@@ -152,8 +152,9 @@ export function maskRegion(html) {
 
 /* ---------- Wörterbücher: Schlüssel neuer Kacheln anlegen, gelöschter entfernen ---------- */
 
+/** Wörterbuch-Zeichenkette — dieselbe Maskierung wie setDictValue (apply.mjs escapeJsString). */
 export function dictEscape(value) {
-  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, '\\n');
+  return escapeJsString(value);
 }
 
 /**
