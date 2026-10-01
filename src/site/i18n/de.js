@@ -90,10 +90,10 @@ export const DE = {
   'people.books.2.meta':         'Brain-Computer Interfaces als Brücken zwischen Protein und Silizium – Sachbuch, Projekt Verlag, 2023',
   'people.books.3.title':        'Digitale Perspektiven',
   'people.books.3.meta':         'Wie künstliche Intelligenz und Robotik unsere Welt verändern – mit Thomas Rusche, Projekt Verlag, 2022',
-  'people.books.4.title':        'Künstliche Superintelligenz und/oder Ethik',
-  'people.books.4.meta':         'Utopien, Dystopien, Disruptionen – Sachbuch, Projekt Verlag, 2019',
   'people.books.5.title':        'Artificial Superintelligence',
   'people.books.5.meta':         'Utopias, Dystopias, Disruptions – Sachbuch auf Englisch, Projekt Verlag, 2018',
+  'people.books.the-conversion-theory-brain-computer-int.title': 'The Conversion Theory: Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion',
+  'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; in English; [transcript!] / Columbia University Press, 2026',
 
   // ── Kontakt ───────────────────────────────────────────────────────
   'contact.meta.title':       'Kontakt – RETHINK SPACE',
