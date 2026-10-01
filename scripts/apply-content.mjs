@@ -212,7 +212,10 @@ for (const page of content.pages) {
   if (Array.isArray(page.bands)) {
     const bands = [];
     for (const b of page.bands) {
-      const src = await imagePath(b.image?.src);
+      // Ohne Bild ist erlaubt (dunkle Fläche, band--plain); ein angegebenes, aber
+      // unbrauchbares Bild wird übersprungen — sonst verschwände die Kachel still.
+      if (!b.image?.src) { bands.push({ ...b, image: { src: null } }); continue; }
+      const src = await imagePath(b.image.src);
       if (!src) { notes.push(`${page.slug}: Kachel „${b.id}“ ohne gültiges Bild — übersprungen`); continue; }
       bands.push({ ...b, image: { ...b.image, src } });
     }

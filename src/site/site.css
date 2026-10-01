@@ -234,6 +234,15 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   aspect-ratio: 64 / 15; min-height: 190px; background: #000;
 }
 .band picture { position: absolute; inset: 0; display: block; }
+/* Kachel ohne Bild (im CMS so angelegt): gleiche Höhe, dunkle Fläche mit feinem Rand,
+   Titel und „Learn more“ an derselben Stelle wie bei Bildkacheln. */
+.band--plain {
+  background:
+    radial-gradient(120% 140% at 0% 100%, rgba(0, 217, 255, .06), transparent 55%),
+    linear-gradient(180deg, #111114, #08080a);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+}
+.band--plain .band-title { background: none; text-shadow: none; }
 .band-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Hochformatige Motive im sehr breiten Band: Ausschnitt nach oben ziehen,
    damit nicht der Kopf abgeschnitten wird. */

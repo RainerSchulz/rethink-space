@@ -248,14 +248,17 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
       it(`${min} bis ${MAX_BANDS} Bänder, jedes mit eigenem Bild (Regel 10: keine zwei gleichen Motive)`, () => {
         expect(count).toBeGreaterThanOrEqual(min);
         expect(count).toBeLessThanOrEqual(MAX_BANDS);
+        // Kacheln ohne Bild (band--plain, im CMS so angelegt) zählen mit, haben aber kein Bild
         const srcs = [...html.matchAll(/<img class="band-media[^"]*" src="([^"]+)"/g)].map((m) => m[1]);
-        expect(srcs).toHaveLength(count);
-        expect(new Set(srcs).size, `doppelte Bilder: ${srcs.join(', ')}`).toBe(count);
+        const plain = [...html.matchAll(/<div class="band band--plain">/g)].length;
+        expect(srcs.length + plain).toBe(count);
+        expect(new Set(srcs).size, `doppelte Bilder: ${srcs.join(', ')}`).toBe(srcs.length);
       });
 
       it('Bänder mit Bild und Überschrift', () => {
         // Zusatzklassen erlaubt (z. B. band-media--top für hochformatige Motive)
-        expect([...html.matchAll(/<img class="band-media[^"]*" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count);
+        const plain = [...html.matchAll(/<div class="band band--plain">/g)].length;
+        expect([...html.matchAll(/<img class="band-media[^"]*" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count - plain);
         expect([...html.matchAll(/class="band-h"/g)]).toHaveLength(count);
       });
 

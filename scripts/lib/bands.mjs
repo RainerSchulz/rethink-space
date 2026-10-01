@@ -62,12 +62,17 @@ export function parseBands(region) {
   });
 }
 
-/** Neue Kachel aus der Vorlage (derselbe Aufbau wie die bestehenden). */
+/** Kachel ohne Bild: dunkle Fläche in gleicher Höhe (site.css .band--plain). */
+const PLAIN = 'band--plain';
+const bandImg = (src, cls) => `<img class="${cls}" src="${escapeHtml(src)}" alt="" loading="lazy">`;
+
+/** Neue Kachel aus der Vorlage (derselbe Aufbau wie die bestehenden); ohne Bild mit Klasse band--plain. */
 export function renderBand({ id, titleKey, textKey, title = '', text = '', image }, { more = 'Learn more' } = {}) {
+  const src = image?.src;
   return [
     GROUP_OPEN,
-    '          <div class="band">',
-    `            <img class="${mediaClass(image.focus)}" src="${escapeHtml(image.src)}" alt="" loading="lazy">`,
+    src ? '          <div class="band">' : `          <div class="band ${PLAIN}">`,
+    src ? `            ${bandImg(src, mediaClass(image.focus))}` : null,
     '            <div class="band-title">',
     `              <h2 class="band-h" data-i18n="${titleKey}">${escapeHtml(title)}</h2>`,
     `              <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-${id}" data-i18n="common.more">${escapeHtml(more)}</button>`,
@@ -77,7 +82,7 @@ export function renderBand({ id, titleKey, textKey, title = '', text = '', image
     `            <div class="panel-text" data-i18n="${textKey}">${renderRichHtml(text)}</div>`,
     '          </div>',
     GROUP_CLOSE,
-  ].join('\n');
+  ].filter((l) => l !== null).join('\n');
 }
 
 /** Überschrift eines Blocks auf h1/h2 setzen (die Seite hat genau eine h1). */
@@ -89,23 +94,38 @@ function setHeading(block, tag) {
  * Bild eines bestehenden Blocks tauschen; aus <picture> wird ein schlichtes <img>.
  * focus (top/center/bottom) setzt den Ausschnitt; ohne Angabe bleibt die
  * vorhandene Klasse (etwa band-media--partnership) stehen.
+ * src leer = Kachel ohne Bild: Bild raus, Klasse band--plain; kommt wieder ein
+ * Bild, wandert es an den Anfang der Kachel und band--plain fällt weg.
  */
 function setImage(block, src, focus) {
   const img = /<img class="(band-media[^"]*)" src="([^"]+)"[^>]*>/.exec(block);
-  if (!img) return block;
+  const picture = /\n( *)<picture>[\s\S]*?<\/picture>/.exec(block);
+  if (!src) {
+    if (!img && !picture) return block;
+    const without = picture
+      ? block.replace(picture[0], () => '')
+      : block.split('\n').filter((line) => !line.includes(img[0])).join('\n');
+    return without.replace('<div class="band">', () => `<div class="band ${PLAIN}">`);
+  }
+  if (!img) {
+    // Kachel hatte kein Bild: Bild vor die Titelzeile, Klasse band--plain weg
+    return block
+      .replace(`<div class="band ${PLAIN}">`, () => '<div class="band">')
+      .replace(/\n( *)<div class="band-title">/, (all, indent) => `\n${indent}${bandImg(src, mediaClass(focus))}${all}`);
+  }
   const cls = focus ? mediaClass(focus) : img[1];
   if (img[2] === src && cls === img[1]) return block;
-  const plain = `<img class="${cls}" src="${escapeHtml(src)}" alt="" loading="lazy">`;
-  const picture = /( *)<picture>[\s\S]*?<\/picture>/.exec(block);
+  const plain = bandImg(src, cls);
   // Ersetzung als Funktion: Pfade und Texte aus dem CMS dürfen $-Zeichen enthalten.
-  if (picture) return block.replace(picture[0], () => `${picture[1]}${plain}`);
+  if (picture) return block.replace(picture[0], () => `\n${picture[1]}${plain}`);
   return block.replace(img[0], () => plain);
 }
 
 /**
  * Den Bereich nach der Liste des CMS neu zusammensetzen.
  * @param {string} html   ganze Seite
- * @param {{id:string,titleKey:string,textKey:string,image:{src:string}}[]} bands  Reihenfolge aus dem CMS
+ * @param {{id:string,titleKey:string,textKey:string,image:{src:string|null}|null}[]} bands  Reihenfolge aus dem CMS;
+ *   image.src leer/null = Kachel ohne Bild, image fehlt ganz (undefined) = Bild bleibt, wie es ist
  * @param {(key:string) => string|undefined} text   englischer Text je Schlüssel (für neue Kacheln)
  * @returns {{ html: string, changed: boolean, added: string[], removed: string[], skipped?: string }}
  */
@@ -122,7 +142,7 @@ export function applyBands(html, bands, text = () => undefined) {
     const tag = i === 0 ? firstTag : 'h2';
     const old = byId.get(b.id);
     const block = old
-      ? setImage(old.block, b.image?.src ?? old.image.src, b.image?.focus)
+      ? setImage(old.block, b.image === undefined ? old.image.src : (b.image?.src || null), b.image?.focus)
       : renderBand({ ...b, title: text(b.titleKey) ?? '', text: text(b.textKey) ?? '' }, { more });
     return setHeading(block, tag);
   });

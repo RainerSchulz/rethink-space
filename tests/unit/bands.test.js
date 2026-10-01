@@ -36,7 +36,9 @@ describe('Feature: Kacheln aus dem CMS', () => {
       for (const b of bands) {
         expect(b.titleKey, slug).toMatch(/^[a-z][a-z0-9-]*\.band\.[a-z0-9-]+$/);
         expect(b.textKey, slug).toBe(`${b.titleKey.split('.')[0]}.panel.${b.id}.text`);
-        expect(b.image.src, slug).toMatch(/^\/Bilder\//);
+        // Bild oder bewusst keins (Kachel ohne Bild, band--plain) — nie ein kaputter Pfad
+        if (b.image.src !== undefined) expect(b.image.src, slug).toMatch(/^\/Bilder\//);
+        else expect(b.block, slug).toContain('band--plain');
       }
     }
   });
@@ -159,5 +161,41 @@ describe('Feature: Wörterbuch-Schlüssel für Kacheln', () => {
   it('Hilfsfunktionen', () => {
     expect(dictEscape("a'b\\c\r\nd")).toBe("a\\'b\\\\c\\nd");
     expect(prefixOf('people.band.team')).toBe('people');
+  });
+});
+
+describe('Feature: Kacheln ohne Bild', () => {
+  const html = fixture('bands-lunar.html');
+  const bands = asData(parseBands(splitRegion(html).region));
+  const blockOf = (h, id) => parseBands(splitRegion(h).region).find((b) => b.id === id).block;
+
+  it('neue Kachel ohne Bild: dunkle Fläche (band--plain), kein <img>, Titel und Knopf wie sonst', () => {
+    const neu = { id: 'ohne', titleKey: 'habitat.band.ohne', textKey: 'habitat.panel.ohne.text', image: { src: null } };
+    const r = applyBands(html, [...bands, neu], (k) => ({ 'habitat.band.ohne': 'Ohne Bild', 'habitat.panel.ohne.text': 'Text' })[k]);
+    const block = blockOf(r.html, 'ohne');
+    expect(block).toContain('<div class="band band--plain">');
+    expect(block).not.toContain('<img');
+    expect(block).toContain('data-i18n="habitat.band.ohne">Ohne Bild</h2>');
+    expect(block).toContain('aria-controls="band-ohne"');
+  });
+
+  it('bestehende Kachel: Bild entfernen und wieder einsetzen, sonst bleibt alles gleich', () => {
+    const without = applyBands(html, bands.map((b) => (b.id === 'design' ? { ...b, image: { src: null } } : b)));
+    const plain = blockOf(without.html, 'design');
+    expect(plain).toContain('band--plain');
+    expect(plain).not.toMatch(/<img|<picture/);
+    expect(applyBands(without.html, asData(parseBands(splitRegion(without.html).region))).changed).toBe(false);
+
+    const back = applyBands(without.html, bands.map((b) => (b.id === 'design' ? { ...b, image: { src: '/Bilder/cms/neu.jpg', focus: 'top' } } : b)));
+    const withImg = blockOf(back.html, 'design');
+    expect(withImg).not.toContain('band--plain');
+    expect(withImg).toMatch(/<img class="band-media band-media--top" src="\/Bilder\/cms\/neu\.jpg"/);
+    // das Bild steht vor der Titelzeile, wie bei allen Kacheln
+    expect(withImg.indexOf('<img')).toBeLessThan(withImg.indexOf('band-title'));
+  });
+
+  it('fehlt die Bildangabe ganz (undefined), bleibt das vorhandene Bild', () => {
+    const r = applyBands(html, bands.map((b) => (b.id === 'design' ? { ...b, image: undefined } : b)));
+    expect(r.changed).toBe(false);
   });
 });
