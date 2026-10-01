@@ -68,7 +68,7 @@ main:focus, .form-status:focus { outline: none; }
   .hero-copy { text-shadow: none; }
 }
 @media (forced-colors: active) {
-  .moonscape::before, .moonscape::after, .hero::after { display: none; }
+  .moon, .moonscape::after, .hero::after { display: none; }
 }
 
 /* ---------- 2b. Seitenwechsel (router.js) ---------- */
@@ -153,9 +153,11 @@ p { margin: 0 0 18px; color: var(--text-soft); }
    die Überschrift über die volle Breite, rechts daneben Lead und Button; die
    drei Kacheln liegen tiefer auf der Mondoberfläche.
    Die Scheibe ist ein kreisrundes Pseudo-Element mit dem NASA-Vollmond
-   (moon-full.jpg, LRO-Daten, SVS, gemeinfrei) als Hintergrund. Mittelpunkt und
+   (moon-full.jpg, LRO-Daten, SVS, gemeinfrei) als Bild. Mittelpunkt und
    Durchmesser sind so gewählt, dass der Kreis unten nie endet, bevor der
-   Block endet. */
+   Block endet. Das Bild ist ein echtes <img> in .moon, damit das CMS es
+   tauschen kann (Bild nach Position); Größe und Lage legt allein .moon fest,
+   ein anderes Motiv wird in den Kreis eingepasst (object-fit: cover). */
 .moonscape {
   position: relative; overflow: hidden; isolation: isolate;
   background: #000; container-type: inline-size;
@@ -164,18 +166,23 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   --moon-x: 88cqw;                   /* Mittelpunkt nahe dem rechten Rand (Mond gespiegelt) */
   --moon-top: 240px;                 /* Oberkante der Kugel: gleicher Abstand wie Header→Überschrift (56px) */
 }
-.moonscape::before {
-  content: ""; position: absolute; z-index: -1; pointer-events: none;
+.moon {
+  position: absolute; z-index: -1; pointer-events: none; overflow: hidden;
   top: var(--moon-top);
   left: calc(var(--moon-x) - var(--moon-d) / 2);
   width: var(--moon-d); height: var(--moon-d);
   border-radius: 50%;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, .04) 0%, rgba(0, 0, 0, .14) 40%, rgba(0, 0, 0, .3) 100%),
-    url("/Bilder/moon-full.jpg") center / 100.4% 100.4% no-repeat #1a1a1c;
+  background: #1a1a1c;
   box-shadow: 0 0 140px rgba(215, 220, 240, .16);
   transform: scaleX(-1);             /* Krater ebenfalls spiegeln */
+  --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, .04) 0%, rgba(0, 0, 0, .14) 40%, rgba(0, 0, 0, .3) 100%);
 }
+/* 100.4 %: der Rand des Fotos liegt knapp außerhalb des Kreises (wie zuvor als Hintergrund) */
+.moon img {
+  position: absolute; left: -.2%; top: -.2%; width: 100.4%; height: 100.4%; max-width: none;
+  object-fit: cover; display: block;
+}
+.moon::after { content: ""; position: absolute; inset: 0; background: var(--moon-shade); }
 
 .hero { position: relative; }
 .hero .wrap { position: relative; z-index: 2; width: 100%; }
@@ -471,11 +478,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   /* Handy: kleinere Scheibe, Mittelpunkt links – der Rand läuft als deutlicher Bogen
      von links oben nach rechts unten; darunter füllt der Mond die Breite */
   .moonscape { --moon-d: 240cqw; --moon-x: 78cqw; --moon-top: 129px; min-height: calc(100svh - var(--header-h)); }
-  .moonscape::before {
-    background:
-      linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%),
-      url("/Bilder/moon-full.jpg") center / 100.4% 100.4% no-repeat #1a1a1c;
-  }
+  .moon { --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%); }
   /* Bänder: höheres Format, Überschrift wie die Startseite auf dem Handy */
   .bands { padding: 20px 0 48px; }
   .bands .wrap { gap: 12px; }
