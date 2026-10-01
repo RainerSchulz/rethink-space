@@ -24,6 +24,8 @@ concurrency:
 jobs:
   uebernehmen:
     runs-on: ubuntu-latest
+    # Ein hängender Lauf blockiert alle folgenden (concurrency cms-content) — nie länger als 30 Minuten
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,7 +52,17 @@ jobs:
       # Wörterbuch an, Navigation, Mobilansicht). Beide Projekte laufen auf Chromium.
       # Schrittnamen enthalten „playwright“/„test:e2e“ — daran erkennt die
       # Fortschrittsanzeige im CMS den Schritt (rethink-cms src/publish-progress.js).
-      - run: npx playwright install --with-deps chromium
+      - name: npx playwright install --with-deps chromium (Zeitlimit, bis zu 3 Versuche)
+        timeout-minutes: 15
+        run: |
+          # Hing am 01.10.2026 ueber 45 Minuten (apt auf dem GitHub-Runner) und hielt jedes weitere
+          # Veroeffentlichen in der Warteschlange fest. Je Versuch hoechstens 4 Minuten, bis zu drei Versuche.
+          for i in 1 2 3; do
+            timeout 240 npx playwright install --with-deps chromium && exit 0
+            echo "::warning::Browser-Installation hing oder scheiterte (Versuch $i von 3) - neuer Versuch."
+            sleep 5
+          done
+          exit 1
       - run: npm run test:e2e
       - run: npm run build
         env:

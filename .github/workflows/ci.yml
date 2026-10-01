@@ -44,6 +44,7 @@ jobs:
   # Fortschrittsanzeige im CMS den Schritt (wie in content.yml).
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,7 +52,17 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - name: npx playwright install --with-deps chromium (Zeitlimit, bis zu 3 Versuche)
+        timeout-minutes: 15
+        run: |
+          # Hing am 01.10.2026 ueber 45 Minuten (apt auf dem GitHub-Runner) und hielt jedes weitere
+          # Veroeffentlichen in der Warteschlange fest. Je Versuch hoechstens 4 Minuten, bis zu drei Versuche.
+          for i in 1 2 3; do
+            timeout 240 npx playwright install --with-deps chromium && exit 0
+            echo "::warning::Browser-Installation hing oder scheiterte (Versuch $i von 3) - neuer Versuch."
+            sleep 5
+          done
+          exit 1
       - run: npm run test:e2e
 
   # ─── Quality Gate 3: Secret-Scan (gitleaks) ────────────────────────
