@@ -68,7 +68,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     await page.locator('#site-nav a[href="/pages/lunar-habitato/"]').click();
 
     await expect(page).toHaveURL(/\/pages\/lunar-habitato\/$/);
-    await expect(page).toHaveTitle('Lunar Habitato – RETHINK SPACE');
+    await expect(page).toHaveTitle(EN['habitat.meta.title']);
     await expect(page.locator('#site-nav a[href="/pages/lunar-habitato/"]')).toHaveAttribute('aria-current', 'page');
     expect(await page.evaluate(() => window.__keep)).toBe(42); // kein Reload
     if (isMobile) await expect(page.locator('#site-nav')).toBeHidden(); // Menü schließt nach Wechsel
@@ -136,7 +136,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     const status = page.locator('.form-status');
     await expect(status).toBeVisible();
     await expect(status).toHaveAttribute('data-art', 'fehler');
-    await expect(status).toContainText('contact@rethink.space');
+    await expect(status).toHaveText(EN['contact.form.error']);
   });
 });
 

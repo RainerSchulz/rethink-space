@@ -6,7 +6,12 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   // HTML-Report nur in der CI: auf dem NAS-Share scheitert das Anlegen des Ordners.
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  // 'github' schreibt Fehler als Workflow-Annotation. Ohne sie steht die Meldung
+  // nur im Joblog, an das weder das CMS noch jemand ohne Admin-Rechte kommt —
+  // ein fehlgeschlagenes Veröffentlichen war dann nicht nachvollziehbar.
+  reporter: process.env.CI
+    ? [['list'], ['github'], ['html', { open: 'never' }]]
+    : 'list',
   use: {
     baseURL: 'http://localhost:3100',
     locale: 'de-DE', // Erstbesuch aus deutschem Browser — Sprachtests gehen davon aus
