@@ -157,7 +157,7 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
   it('Bücher auf der People-Seite: schlichte Zeilen ohne Link, je Zeile im CMS entfernbar', () => {
     if (slug !== 'people') return;
     // data-cms-row = Titel-Schlüssel (ausgeblendet per hidden) — das Markup bleibt, gezählt wird es deshalb auch ausgeblendet
-    const items = [...html.matchAll(/<li data-cms-row="(people\.books\.\d+\.title)"(?: hidden)?><div class="book"><span class="t" data-i18n="([^"]+)"[^>]*>[^<]+<\/span><span class="m" data-i18n="[^"]+">[^<]+<\/span><\/div><\/li>/g)];
+    const items = [...html.matchAll(/<li data-cms-row="(people\.books\.[a-z0-9-]+\.title)"(?: hidden)?><div class="book"><span class="t" data-i18n="([^"]+)"[^>]*>[^<]+<\/span><span class="m" data-i18n="[^"]+">[^<]+<\/span><\/div><\/li>/g)];
     expect(items.length).toBeGreaterThanOrEqual(4);
     expect(items.length, 'jede Buchzeile braucht data-cms-row und Titel-Schlüssel').toBe([...html.matchAll(/class="book"/g)].length);
     for (const [, row, titleKey] of items) expect(titleKey, 'data-cms-row muss der Titel-Schlüssel der Zeile sein').toBe(row);

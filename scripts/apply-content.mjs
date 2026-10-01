@@ -43,6 +43,7 @@ import { fileURLToPath } from 'url';
 import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
+import { findLists, applyLists, ID_RE as LIST_ID_RE } from './lib/lists.mjs';
 import { resolveImage } from './lib/cms-images.mjs';
 import { toSnapshot } from './lib/snapshot.mjs';
 
@@ -179,6 +180,45 @@ for (const page of content.pages) {
   }
 }
 
+/* ---------- Listen (cms:list): Schlüssel neuer Einträge anlegen, gelöschter entfernen ---------- */
+let listChanges = 0;
+for (const page of content.pages) {
+  if (!page.lists || typeof page.lists !== 'object') continue;
+  const file = pageFile(page.slug);
+  if (!existsSync(file)) continue;
+  const found = findLists(readFileSync(file, 'utf8'));
+  const keys = new Map((page.keys ?? []).map((k) => [k.key, k]));
+  for (const [name, wanted] of Object.entries(page.lists)) {
+    const list = found.find((l) => l.name === name);
+    if (!list) { notes.push(`${page.slug}: Liste „${name}“ im Export, aber kein Bereich <!-- cms:list ${name} --> in der Seite`); delete page.lists[name]; continue; }
+    if (!Array.isArray(wanted)) { delete page.lists[name]; continue; }
+    page.lists[name] = wanted.filter((w) => {
+      const ok = LIST_ID_RE.test(w?.id ?? '');
+      if (!ok) notes.push(`${page.slug}: Listeneintrag „${w?.id}“ in ${name} hat keine gültige Kennung — übersprungen`);
+      return ok;
+    });
+    const fields = list.items[0]?.fields ?? [];
+    for (const { id } of page.lists[name]) {
+      if (list.items.some((it) => it.id === id)) continue;
+      const entries = (lang) => fields.map((f) => {
+        const key = `${name}.${id}.${f}`;
+        const k = keys.get(key);
+        const en = k?.en?.trim() ? k.en : id;
+        return { key, value: lang === 'de' && k?.de?.trim() ? k.de : en };
+      });
+      dictKeysAdded += insertDictKeys(dicts.en.lines, entries('en'), `${name}.`);
+      insertDictKeys(dicts.de.lines, entries('de'), `${name}.`);
+    }
+    for (const it of list.items) {
+      if (page.lists[name].some((w) => w.id === it.id)) continue;
+      for (const f of it.fields) {
+        if (removeDictKey(dicts.en.lines, `${name}.${it.id}.${f}`)) dictKeysRemoved++;
+        removeDictKey(dicts.de.lines, `${name}.${it.id}.${f}`);
+      }
+    }
+  }
+}
+
 const enByKey = new Map();
 for (const page of content.pages) {
   for (const k of page.keys ?? []) {
@@ -223,6 +263,14 @@ for (const page of content.pages) {
     if (r.skipped) notes.push(`${page.slug}: ${r.skipped}`);
     html = r.html;
     if (r.changed) bandChanges++;
+  }
+
+  // Listen (cms:list) vor den Texten: danach stehen alle Einträge da, deren Texte unten gesetzt werden
+  if (page.lists) {
+    const r = applyLists(html, page.lists, (key) => enByKey.get(key));
+    for (const n of r.notes) notes.push(`${page.slug}: ${n}`);
+    html = r.html;
+    if (r.changed) listChanges++;
   }
 
   const own = applyKeysToHtml(html, page.keys ?? [], (key) => enByKey.get(key));
@@ -276,7 +324,9 @@ console.log(`Seiten im Export: ${content.pages.length}`);
 console.log(`Wörterbuch-Werte geändert: ${dictChanges}`);
 console.log(`Texte in Shells geändert:  ${htmlChanges}`);
 console.log(`Bildpfade geändert:        ${imageChanges}`);
-console.log(`Seiten mit geänderten Kacheln: ${bandChanges} (Schlüssel neu: ${dictKeysAdded}, entfernt: ${dictKeysRemoved})`);
+console.log(`Seiten mit geänderten Kacheln: ${bandChanges}`);
+console.log(`Seiten mit geänderten Listen:  ${listChanges}`);
+console.log(`Schlüssel (Kacheln, Listen): neu ${dictKeysAdded}, entfernt ${dictKeysRemoved}`);
 console.log(`Bilder aus dem CMS geladen: ${downloads}`);
 if (notes.length > 0) {
   console.log(`\nHinweise (${notes.length}):`);

@@ -27,6 +27,8 @@ export function toSnapshot(content, applied = () => true) {
       bands: (p.bands ?? []).map((b) => ({
         id: b.id, titleKey: b.titleKey, textKey: b.textKey, src: b.image?.src ?? null, focus: b.image?.focus ?? null,
       })),
+      // Listen (cms:list): je Name die Kennungen in Reihenfolge
+      ...(p.lists ? { lists: Object.fromEntries(Object.entries(p.lists).map(([n, items]) => [n, items.map((i) => i.id)])) } : {}),
     };
   }
   return { version: 1, pages };

@@ -47,13 +47,15 @@ async function holeBilder(url, key) {
 export async function ladeInhalt({ url, key }) {
   if (!url || !key) throw new Error('SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY fehlen');
 
-  const [seiten, texte, bilder, kacheln] = await Promise.all([
+  const [seiten, texte, bilder, kacheln, listen] = await Promise.all([
     hole(url, key, 'cms_pages?select=slug,url,title,updated_at&order=slug'),
     // hidden: Zeile im CMS entfernt (rethink-cms 0015) — ältere Datenbank ohne die Spalte → ohne
     holeMitHidden(url, key, 'cms_texts?select=key,page_slug,tag,position,en,de,hidden&order=page_slug,position'),
     // hidden: im CMS entfernt (rethink-cms 0011) — fehlt die Spalte, fällt der Abruf auf ohne zurück
     holeBilder(url, key),
     holeFallsDa(url, key, 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus&order=page_slug,position'),
+    // Listen (rethink-cms 0016); ältere Datenbank ohne Tabelle → keine (Listen bleiben, wie sie sind)
+    holeFallsDa(url, key, 'cms_list_items?select=page_slug,list,id,position&order=page_slug,list,position'),
   ]);
 
   const texteJeSeite = new Map();
@@ -80,6 +82,13 @@ export async function ladeInhalt({ url, key }) {
     });
   }
 
+  // Listen je Seite: { name: [{id}] }; Seiten ohne Einträge bekommen keine (sonst hieße „leer“: alles löschen)
+  const listenJeSeite = new Map();
+  for (const l of listen ?? []) {
+    if (!listenJeSeite.has(l.page_slug)) listenJeSeite.set(l.page_slug, {});
+    (listenJeSeite.get(l.page_slug)[l.list] ??= []).push({ id: l.id });
+  }
+
   return {
     generatedAt: null,
     exportedAt: new Date().toISOString(),
@@ -92,6 +101,7 @@ export async function ladeInhalt({ url, key }) {
       keys: texteJeSeite.get(p.slug) ?? [],
       images: bilderJeSeite.get(p.slug) ?? [],
       bands: kachelnJeSeite.get(p.slug),
+      lists: listenJeSeite.get(p.slug),
     })),
     media: [],
   };
