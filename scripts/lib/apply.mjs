@@ -159,6 +159,32 @@ export function sharedKeys(pages) {
 }
 
 /**
+ * Zeilen, die das CMS entfernen kann: das Element mit data-cms-row="<schlüssel>"
+ * (People: je Buch ein <li>, Schlüssel = sein Titel). hidden am Schlüssel im CMS
+ * → Attribut hidden an der Zeile; das Element bleibt stehen (wieder einblendbar),
+ * site.css blendet [hidden] aus. Ohne Angabe ist die Zeile sichtbar.
+ */
+export function setRows(html, keys) {
+  let out = html;
+  let changed = 0;
+  for (const k of keys) {
+    const at = out.indexOf(` data-cms-row="${k.key}"`);
+    if (at < 0) continue;
+    const start = out.lastIndexOf('<', at);
+    const end = out.indexOf('>', at) + 1;
+    const tag = out.slice(start, end);
+    const isHidden = HIDDEN_ATTR.test(tag);
+    let next = tag;
+    if (k.hidden === true && !isHidden) next = tag.replace(/>$/, () => ' hidden>');
+    if (k.hidden !== true && isHidden) next = tag.replace(HIDDEN_ATTR, '');
+    if (next === tag) continue;
+    out = out.slice(0, start) + next + out.slice(end);
+    changed++;
+  }
+  return { html: out, changed };
+}
+
+/**
  * Mehrere Schlüssel in einer Seite setzen; `enOf(key)` liefert den Text oder
  * undefined (dann bleibt die Stelle, wie sie ist). Schlüssel, die nur das
  * JavaScript nutzt (chat.*, gate.*), stehen nicht im HTML — kein Treffer, kein Fehler.

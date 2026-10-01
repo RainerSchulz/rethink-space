@@ -24,6 +24,16 @@ async function holeFallsDa(url, key, pfad) {
   }
 }
 
+/** Abruf mit Spalte hidden; fehlt sie (ältere Datenbank), derselbe Abruf ohne. */
+async function holeMitHidden(url, key, pfad) {
+  try {
+    return await hole(url, key, pfad);
+  } catch (err) {
+    if (!/42703|PGRST204|hidden/.test(err.message)) throw err;
+    return hole(url, key, pfad.replace(',hidden', ''));
+  }
+}
+
 /** Bilder nach Position, mit „entfernt“ (Spalte hidden); ältere Datenbank ohne die Spalte → ohne. */
 async function holeBilder(url, key) {
   try {
@@ -39,7 +49,8 @@ export async function ladeInhalt({ url, key }) {
 
   const [seiten, texte, bilder, kacheln] = await Promise.all([
     hole(url, key, 'cms_pages?select=slug,url,title,updated_at&order=slug'),
-    hole(url, key, 'cms_texts?select=key,page_slug,tag,position,en,de&order=page_slug,position'),
+    // hidden: Zeile im CMS entfernt (rethink-cms 0015) — ältere Datenbank ohne die Spalte → ohne
+    holeMitHidden(url, key, 'cms_texts?select=key,page_slug,tag,position,en,de,hidden&order=page_slug,position'),
     // hidden: im CMS entfernt (rethink-cms 0011) — fehlt die Spalte, fällt der Abruf auf ohne zurück
     holeBilder(url, key),
     holeFallsDa(url, key, 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus&order=page_slug,position'),
@@ -48,7 +59,10 @@ export async function ladeInhalt({ url, key }) {
   const texteJeSeite = new Map();
   for (const t of texte) {
     if (!texteJeSeite.has(t.page_slug)) texteJeSeite.set(t.page_slug, []);
-    texteJeSeite.get(t.page_slug).push({ key: t.key, tag: t.tag ?? '', attr: 'text', en: t.en ?? '', de: t.de ?? '', position: t.position });
+    texteJeSeite.get(t.page_slug).push({
+      key: t.key, tag: t.tag ?? '', attr: 'text', en: t.en ?? '', de: t.de ?? '', position: t.position,
+      ...(t.hidden === true ? { hidden: true } : {}),
+    });
   }
   const bilderJeSeite = new Map();
   for (const i of bilder) {

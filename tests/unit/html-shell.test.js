@@ -156,9 +156,13 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
 
   it('Bücher auf der People-Seite verlinken auf Amazon.de (neuer Tab, rel=noopener)', () => {
     if (slug !== 'people') return;
-    const items = [...html.matchAll(/<li><a class="book" ([^>]*)>/g)];
+    // Jede Zeile ist im CMS entfernbar (data-cms-row = Titel-Schlüssel, ausgeblendet per hidden) —
+    // das Markup bleibt, gezählt wird es deshalb auch ausgeblendet.
+    const items = [...html.matchAll(/<li data-cms-row="(people\.books\.\d+\.title)"(?: hidden)?><a class="book" ([^>]*)><span class="t" data-i18n="([^"]+)"/g)];
     expect(items.length).toBeGreaterThanOrEqual(4);
-    for (const [, attrs] of items) {
+    expect(items.length, 'jede Buchzeile braucht data-cms-row und Titel-Schlüssel').toBe([...html.matchAll(/class="book"/g)].length);
+    for (const [, row, attrs, titleKey] of items) {
+      expect(titleKey, 'data-cms-row muss der Titel-Schlüssel der Zeile sein').toBe(row);
       expect(attrs).toMatch(/href="https:\/\/www\.amazon\.de\/dp\/[0-9X]{10}"/);
       expect(attrs).toContain('target="_blank"');
       expect(attrs).toContain('rel="noopener"');

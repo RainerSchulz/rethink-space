@@ -40,7 +40,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml } from './lib/apply.mjs';
+import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { resolveImage } from './lib/cms-images.mjs';
@@ -228,6 +228,10 @@ for (const page of content.pages) {
   const own = applyKeysToHtml(html, page.keys ?? [], (key) => enByKey.get(key));
   html = own.html;
   htmlChanges += own.changed;
+  // Im CMS entfernte Zeilen (data-cms-row, z. B. Bücher auf People)
+  const rows = setRows(html, page.keys ?? []);
+  html = rows.html;
+  htmlChanges += rows.changed;
 
   // Bilder nach Position — ohne die Kachel-Bilder, die gehören zu page.bands.
   const images = [];

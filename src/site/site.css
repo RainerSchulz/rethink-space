@@ -332,8 +332,8 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 /* Bücher: schlichte Liste, keine Kachel-Optik — Kacheln sind immer Links (Regel 8). */
 .books { list-style: none; margin: 0; padding: 0; }
+.books { border-bottom: 1px solid var(--line); } /* an der Liste: bleibt, auch wenn die letzte Zeile im CMS entfernt ist */
 .books li { border-top: 1px solid var(--line); }
-.books li:last-child { border-bottom: 1px solid var(--line); }
 .book {
   display: grid; grid-template-columns: 1fr auto; column-gap: 24px; row-gap: 4px; align-items: center;
   padding: 18px 0; color: inherit;

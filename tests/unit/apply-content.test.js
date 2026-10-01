@@ -10,7 +10,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml,
+  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows,
 } from '../../scripts/lib/apply.mjs';
 
 describe('Feature: Wörterbuch-Werte ersetzen', () => {
@@ -253,5 +253,30 @@ describe('Feature: Alt-Texte aus dem CMS kommen an', () => {
     expect(doc.querySelector('.portrait').getAttribute('data-portrait-alt')).toBe('Dr. Dr. J. L.');
     expect(imgs[1].getAttribute('alt')).toBe('B'); // fehlte vorher, wird ergänzt
     expect(setImages(r.html, [{ src: '/Bilder/a.jpg', alt: 'Neu "zitiert" & gut' }, { src: '/Bilder/p.jpg', alt: 'Dr. Dr. J. L.' }, { src: '/Bilder/b.jpg', alt: 'B' }]).changed).toBe(0);
+  });
+});
+
+describe('Feature: Zeilen im CMS entfernen (data-cms-row)', () => {
+  const html = [
+    '<ul class="books">',
+    '<li data-cms-row="people.books.1.title"><a class="book" href="x"><span class="t" data-i18n="people.books.1.title">A</span></a></li>',
+    '<li data-cms-row="people.books.2.title"><a class="book" href="y"><span class="t" data-i18n="people.books.2.title">B</span></a></li>',
+    '</ul>',
+  ].join('\n');
+
+  it('hidden am Titel-Schlüssel blendet die ganze Zeile aus — das Element bleibt stehen', () => {
+    const r = setRows(html, [{ key: 'people.books.1.title', hidden: true }, { key: 'people.books.2.title' }]);
+    expect(r.changed).toBe(1);
+    expect(r.html).toContain('<li data-cms-row="people.books.1.title" hidden><a class="book"');
+    expect(r.html).toContain('<li data-cms-row="people.books.2.title"><a');
+    expect(r.html).toContain('>A</span>'); // Text bleibt, nur ausgeblendet
+  });
+
+  it('wieder einblenden, zweimal anwenden ändert nichts, Schlüssel ohne Zeile werden ignoriert', () => {
+    const hidden = setRows(html, [{ key: 'people.books.1.title', hidden: true }]).html;
+    expect(setRows(hidden, [{ key: 'people.books.1.title', hidden: true }]).changed).toBe(0);
+    const back = setRows(hidden, [{ key: 'people.books.1.title', hidden: false }]);
+    expect(back.html).toBe(html);
+    expect(setRows(html, [{ key: 'people.profile.p1', hidden: true }]).changed).toBe(0);
   });
 });

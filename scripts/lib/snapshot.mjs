@@ -19,7 +19,7 @@ export function toSnapshot(content, applied = () => true) {
     const texts = {};
     (p.keys ?? []).forEach((k, i) => {
       if (!applied(k.key)) return;
-      texts[k.key] = { en: k.en ?? '', de: k.de ?? '', tag: k.tag ?? '', position: k.position ?? i };
+      texts[k.key] = { en: k.en ?? '', de: k.de ?? '', tag: k.tag ?? '', position: k.position ?? i, ...(k.hidden ? { hidden: true } : {}) };
     });
     pages[p.slug] = {
       texts,
