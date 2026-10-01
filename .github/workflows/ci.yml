@@ -98,9 +98,14 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Endpunkte pruefen
+        run: |
+          [ -n "${{ vars.VITE_CONTACT_ENDPOINT }}" ] || echo "::warning::VITE_CONTACT_ENDPOINT ist nicht gesetzt - das Kontaktformular sendet nicht."
+          [ -n "${{ vars.VITE_CHAT_ENDPOINT }}" ]    || echo "::warning::VITE_CHAT_ENDPOINT ist nicht gesetzt - das Chat-Widget bleibt aus."
       - run: npm run build
         env:
           VITE_CHAT_ENDPOINT: ${{ vars.VITE_CHAT_ENDPOINT }}
+          VITE_CONTACT_ENDPOINT: ${{ vars.VITE_CONTACT_ENDPOINT }}
 
       # ─── CMS unter /cms/ ─────────────────────────────────────────────
       # Das Redaktionssystem liegt im privaten Repo rethink-cms und wird hier
