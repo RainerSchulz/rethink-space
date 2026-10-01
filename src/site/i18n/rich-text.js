@@ -16,8 +16,12 @@
  * CMS vergleicht sie.
  */
 
-/** Welche Schlüssel formatiert werden dürfen: nur die Texte unter „Learn more“. */
-export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$/.test(String(key ?? ''));
+/**
+ * Welche Schlüssel formatiert werden dürfen: die Fließtexte unter „Learn more“ —
+ * Kacheltexte (*.panel.<id>.text) und die Absätze der Founder-Kachel (*.profile.p<n>).
+ * Überschriften, Knöpfe und Listenzeilen bleiben schlichter Text.
+ */
+export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$|\.profile\.p[0-9]+$/.test(String(key ?? ''));
 
 // Eigene Seite = ein Schrägstrich, dann KEIN zweiter und kein Backslash:
 // „//fremd.example“ und „/\fremd.example“ lösen Browser als fremde Domain auf.

@@ -82,7 +82,7 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('23111ebd1af38a0ca1ecf3e3b1972dd3c67fe285d1f5fdc0a2d2f62587db01e0');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('f1d412925c2464e387e0e74e723fe06bc213b8ad55631efedc0011275509ea7c');
   });
 });
 
@@ -124,4 +124,36 @@ describe('Feature: Leerzeilen wie im Textfeld (CMS und Website gleich)', () => {
     const css = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/site.css'), 'utf8');
     for (let g = 1; g <= MAX_GAP; g++) expect(css, `data-gap="${g}"`).toContain(`.panel-text > [data-gap="${g}"]`);
   });
+});
+
+describe('Feature: jeder Fließtext in einer Kachel ist formatierbar (Werkzeugleiste im CMS)', () => {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+  const pages = ['pages/lunar-habitato/index.html', 'pages/dual-use/index.html', 'pages/people/index.html'];
+
+  it('Founder-Absätze und Kacheltexte sind formatierbar, Überschriften und Listenzeilen nicht', () => {
+    expect(isRichKey('people.profile.p1')).toBe(true);
+    expect(isRichKey('people.profile.p12')).toBe(true);
+    expect(isRichKey('people.profile.name')).toBe(false);
+    expect(isRichKey('people.profile.contact')).toBe(false);
+    expect(isRichKey('people.books.1.meta')).toBe(false);
+  });
+
+  for (const page of pages) {
+    it(`${page}: kein Absatz (<p data-i18n>) in einem aufklappbaren Bereich ohne Formatierung`, () => {
+      const html = readFileSync(resolve(root, page), 'utf8');
+      const panels = [...html.matchAll(/<div class="band-panel"[\s\S]*?(?=<div class="band-group"|<!-- \/cms:bands -->|<\/section>)/g)].map((m) => m[0]);
+      expect(panels.length).toBeGreaterThan(0);
+      for (const panel of panels) {
+        // Absätze: <p data-i18n> (ohne die Zwischenüberschrift „eyebrow“) müssten formatierbare Texte sein
+        for (const m of panel.matchAll(/<p(?![^>]*class="eyebrow")[^>]*\sdata-i18n="([^"]+)"/g)) {
+          expect(isRichKey(m[1]), `${m[1]} ist ein Absatz ohne Werkzeugleiste`).toBe(true);
+        }
+        // Jedes Textfeld (panel-text) ist formatiert und steht als <div> (Absätze und Listen darin)
+        for (const m of panel.matchAll(/<([a-z]+) class="panel-text" data-i18n="([^"]+)"/g)) {
+          expect(isRichKey(m[2]), m[2]).toBe(true);
+          expect(m[1], `${m[2]} muss ein <div> sein`).toBe('div');
+        }
+      }
+    });
+  }
 });
