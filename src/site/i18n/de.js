@@ -50,6 +50,8 @@ export const DE = {
   'habitat.panel.design.text': 'Die Kuppel verteilt Lasten gleichmäßig und lässt sich aus vielen kleinen, gleichen Elementen fügen – ideal für robotische Fertigung vor Ort.\n\nJeder Schritt ist durch eigene Schutzrechte gesichert: Geometrie, Fügeverfahren und der Innenraum, der aus einem Schutzbau einen Ort zum Leben macht.',
   'habitat.panel.research.text': 'Wir arbeiten in Etappen: Konzeptstudie, Materialqualifizierung, Demonstrator, Missionsintegration. Jede Etappe liefert Ergebnisse, die auch für sich stehen.\n\nDie Wahl des Standorts nach Sonneneinstrahlung, Untergrund und Nähe zu Rohstoffen entscheidet die halbe Missionsrechnung – lange vor dem ersten Bauwerk.',
   'habitat.panel.history.text': 'Am Anfang stand eine Frage: Wie sieht ein Ort aus, an dem Menschen jenseits der Erde nicht nur überleben, sondern arbeiten, forschen und sich erholen?\n\nAus der ersten Skizze wurden Studien, Demonstratoren und Partnerschaften. Die Meilensteine dieses Weges entstehen hier.',
+  'habitat.band.lunar-habitato': 'LUNAR HABITATO',
+  'habitat.panel.lunar-habitato.text': 'LUNAR HABITATO',
 
   // ── Design ────────────────────────────────────────────────────────
 
