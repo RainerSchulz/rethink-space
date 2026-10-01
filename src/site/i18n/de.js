@@ -94,8 +94,6 @@ export const DE = {
   'people.books.4.meta':         'Utopien, Dystopien, Disruptionen – Sachbuch, Projekt Verlag, 2019',
   'people.books.5.title':        'Artificial Superintelligence',
   'people.books.5.meta':         'Utopias, Dystopias, Disruptions – Sachbuch auf Englisch, Projekt Verlag, 2018',
-  'people.books.amazon':         'Kaufen bei Amazon',
-  'people.books.note':           'Die Links öffnen die Buchseite auf Amazon.de in einem neuen Tab.',
 
   // ── Kontakt ───────────────────────────────────────────────────────
   'contact.meta.title':       'Kontakt – RETHINK SPACE',

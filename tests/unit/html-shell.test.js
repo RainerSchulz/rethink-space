@@ -154,19 +154,15 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
     expect(branded, `${file}: Originale mit Schriftzug – zugeschnittene Fassung (…-clean/…-wide) verwenden: ${branded.join(', ')}`).toHaveLength(0);
   });
 
-  it('Bücher auf der People-Seite verlinken auf Amazon.de (neuer Tab, rel=noopener)', () => {
+  it('Bücher auf der People-Seite: schlichte Zeilen ohne Link, je Zeile im CMS entfernbar', () => {
     if (slug !== 'people') return;
-    // Jede Zeile ist im CMS entfernbar (data-cms-row = Titel-Schlüssel, ausgeblendet per hidden) —
-    // das Markup bleibt, gezählt wird es deshalb auch ausgeblendet.
-    const items = [...html.matchAll(/<li data-cms-row="(people\.books\.\d+\.title)"(?: hidden)?><a class="book" ([^>]*)><span class="t" data-i18n="([^"]+)"/g)];
+    // data-cms-row = Titel-Schlüssel (ausgeblendet per hidden) — das Markup bleibt, gezählt wird es deshalb auch ausgeblendet
+    const items = [...html.matchAll(/<li data-cms-row="(people\.books\.\d+\.title)"(?: hidden)?><div class="book"><span class="t" data-i18n="([^"]+)"[^>]*>[^<]+<\/span><span class="m" data-i18n="[^"]+">[^<]+<\/span><\/div><\/li>/g)];
     expect(items.length).toBeGreaterThanOrEqual(4);
     expect(items.length, 'jede Buchzeile braucht data-cms-row und Titel-Schlüssel').toBe([...html.matchAll(/class="book"/g)].length);
-    for (const [, row, attrs, titleKey] of items) {
-      expect(titleKey, 'data-cms-row muss der Titel-Schlüssel der Zeile sein').toBe(row);
-      expect(attrs).toMatch(/href="https:\/\/www\.amazon\.de\/dp\/[0-9X]{10}"/);
-      expect(attrs).toContain('target="_blank"');
-      expect(attrs).toContain('rel="noopener"');
-    }
+    for (const [, row, titleKey] of items) expect(titleKey, 'data-cms-row muss der Titel-Schlüssel der Zeile sein').toBe(row);
+    const list = html.slice(html.indexOf('<ul class="books">'), html.indexOf('</ul>', html.indexOf('<ul class="books">')));
+    expect(list, 'Buchzeilen verlinken nicht (auch nicht auf Amazon)').not.toMatch(/<a\b|amazon/i);
   });
 
   it('404 ist noindex, alle anderen Seiten sind indexierbar', () => {

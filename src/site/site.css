@@ -334,18 +334,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .books { list-style: none; margin: 0; padding: 0; }
 .books { border-bottom: 1px solid var(--line); } /* an der Liste: bleibt, auch wenn die letzte Zeile im CMS entfernt ist */
 .books li { border-top: 1px solid var(--line); }
-.book {
-  display: grid; grid-template-columns: 1fr auto; column-gap: 24px; row-gap: 4px; align-items: center;
-  padding: 18px 0; color: inherit;
-}
-.book .t, .book .m { grid-column: 1; }
-.book .arrow-link { grid-column: 2; grid-row: 1 / 3; white-space: nowrap; }
-.book:hover .t { color: var(--accent-hi); }
-.book:hover .arrow-link::after { transform: translateX(5px); }
-@media (max-width: 480px) {
-  .book { grid-template-columns: 1fr; }
-  .book .arrow-link { grid-column: 1; grid-row: auto; margin-top: 6px; }
-}
+.book { display: grid; row-gap: 4px; padding: 18px 0; } /* Buchzeile: kein Link (Titel, Angaben) */
 .books .t { font-weight: 700; font-size: 17px; letter-spacing: -.01em; }
 .books .m { font-size: 13.5px; color: var(--muted); }
 

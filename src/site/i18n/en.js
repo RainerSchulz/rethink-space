@@ -94,8 +94,6 @@ export const EN = {
   'people.books.4.meta':         'Utopias, dystopias, disruptions – non-fiction, in German, Projekt Verlag, 2019',
   'people.books.5.title':        'Artificial Superintelligence',
   'people.books.5.meta':         'Utopias, Dystopias, Disruptions – non-fiction, in English, Projekt Verlag, 2018',
-  'people.books.amazon':         'Buy on Amazon',
-  'people.books.note':           'Links open the book page on Amazon.de in a new tab.',
 
   // ── Contact ───────────────────────────────────────────────────────
   'contact.meta.title':       'Contact – RETHINK SPACE',
