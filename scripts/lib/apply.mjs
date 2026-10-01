@@ -90,28 +90,54 @@ export function listImages(html) {
   return [...html.matchAll(/(?:\ssrc="|\sdata-portrait-src=")(\/Bilder\/[^"]+)"/g)].map((m) => m[1]);
 }
 
+/** Element (Tag) eines Bildes: <img src="/Bilder/…"> oder <div data-portrait-src="/Bilder/…">. */
+const IMAGE_TAG = /<[a-zA-Z][^>]*?\s(?:src|data-portrait-src)="(\/Bilder\/[^"]+)"[^>]*>/g;
+const HIDDEN_ATTR = /\shidden(?:="[^"]*")?(?=[\s/>])/;
+
 /**
- * Bildpfade in Dokumentreihenfolge ersetzen. Bei Galerie-Bildern wandert das
- * href mit dem src (sonst zeigt die Lightbox das alte Bild, CLAUDE.md Regel 10).
- * Passt die Anzahl nicht, bleibt die Seite unangetastet — lieber nichts tun als
- * Bilder verschieben.
+ * Bilder in Dokumentreihenfolge setzen — je Position Pfad und Sichtbarkeit.
+ * Gearbeitet wird am Element der jeweiligen Position, nicht über den Pfad: steht
+ * dasselbe Bild zweimal in der Seite (People: Portrait), träfe eine Suche nach
+ * dem Pfad sonst die falsche Stelle.
+ *
+ * hidden: true heißt „im CMS entfernt“ — das Element bleibt (sonst verschöbe sich
+ * die Reihenfolge, über die alle Bilder zugeordnet werden) und bekommt das
+ * Attribut hidden; site.css blendet [hidden] aus. Ohne hidden wird es entfernt.
+ *
+ * Bei Galerie-Bildern wandert das href mit dem src (sonst zeigt die Lightbox das
+ * alte Bild, CLAUDE.md Regel 10). Passt die Anzahl nicht, bleibt die Seite
+ * unangetastet — lieber nichts tun als Bilder verschieben.
  */
 export function setImages(html, images) {
-  const current = listImages(html);
-  if (current.length !== images.length) {
-    return { html, changed: 0, skipped: `${current.length} Bilder in der Seite, ${images.length} im Export` };
+  const tags = [...html.matchAll(IMAGE_TAG)];
+  if (tags.length !== images.length) {
+    return { html, changed: 0, skipped: `${tags.length} Bilder in der Seite, ${images.length} im Export` };
   }
   let out = html;
   let changed = 0;
-  images.forEach((img, i) => {
-    const from = current[i];
-    const to = img?.src;
-    if (!to || to === from || !to.startsWith('/Bilder/')) return;
-    const before = out;
+  const moved = [];
+  // Von hinten nach vorn: so bleiben die Fundstellen der vorderen Bilder gültig.
+  for (let i = tags.length - 1; i >= 0; i--) {
+    const { 0: tag, 1: from, index } = tags[i];
+    const img = images[i];
+    if (!img) continue;
+    let next = tag;
+    const to = img.src;
+    if (to && to !== from && to.startsWith('/Bilder/')) {
+      next = next.replace(`"${from}"`, () => `"${to}"`);
+      moved.push([from, to]);
+    }
+    const isHidden = HIDDEN_ATTR.test(next);
+    if (img.hidden && !isHidden) next = next.replace(/\s*\/?>$/, (end) => ` hidden${end.trim() === '/>' ? ' />' : '>'}`);
+    if (!img.hidden && isHidden) next = next.replace(HIDDEN_ATTR, '');
+    if (next !== tag) {
+      out = out.slice(0, index) + next + out.slice(index + tag.length);
+      changed++;
+    }
+  }
+  for (const [from, to] of moved) {
     out = out.replace(new RegExp(`href="${rx(from)}"([^>]*data-lightbox)`), (_, rest) => `href="${to}"${rest}`);
-    out = out.replace(new RegExp(`(\\ssrc="|\\sdata-portrait-src=")${rx(from)}"`), (_, pre) => `${pre}${to}"`);
-    if (out !== before) changed++;
-  });
+  }
   return { html: out, changed, skipped: null };
 }
 

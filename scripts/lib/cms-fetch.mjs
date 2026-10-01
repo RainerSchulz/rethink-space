@@ -24,13 +24,24 @@ async function holeFallsDa(url, key, pfad) {
   }
 }
 
+/** Bilder nach Position, mit „entfernt“ (Spalte hidden); ältere Datenbank ohne die Spalte → ohne. */
+async function holeBilder(url, key) {
+  try {
+    return await hole(url, key, 'cms_images?select=page_slug,position,src,alt,hidden&order=page_slug,position');
+  } catch (err) {
+    if (!/42703|PGRST204|hidden/.test(err.message)) throw err;
+    return hole(url, key, 'cms_images?select=page_slug,position,src,alt&order=page_slug,position');
+  }
+}
+
 export async function ladeInhalt({ url, key }) {
   if (!url || !key) throw new Error('SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY fehlen');
 
   const [seiten, texte, bilder, kacheln] = await Promise.all([
     hole(url, key, 'cms_pages?select=slug,url,title,updated_at&order=slug'),
     hole(url, key, 'cms_texts?select=key,page_slug,tag,position,en,de&order=page_slug,position'),
-    hole(url, key, 'cms_images?select=page_slug,position,src,alt&order=page_slug,position'),
+    // hidden: im CMS entfernt (rethink-cms 0011) — fehlt die Spalte, fällt der Abruf auf ohne zurück
+    holeBilder(url, key),
     holeFallsDa(url, key, 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus&order=page_slug,position'),
   ]);
 
@@ -42,7 +53,7 @@ export async function ladeInhalt({ url, key }) {
   const bilderJeSeite = new Map();
   for (const i of bilder) {
     if (!bilderJeSeite.has(i.page_slug)) bilderJeSeite.set(i.page_slug, []);
-    bilderJeSeite.get(i.page_slug).push({ src: i.src, alt: i.alt ?? '' });
+    bilderJeSeite.get(i.page_slug).push({ src: i.src, alt: i.alt ?? '', hidden: i.hidden === true });
   }
 
   // Kacheln je Seite; Seiten ohne Einträge bekommen keine Liste (sonst hieße

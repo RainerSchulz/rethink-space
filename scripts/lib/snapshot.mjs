@@ -23,7 +23,7 @@ export function toSnapshot(content, applied = () => true) {
     });
     pages[p.slug] = {
       texts,
-      images: (p.images ?? []).map((i) => ({ src: i.src, alt: i.alt ?? '' })),
+      images: (p.images ?? []).map((i) => ({ src: i.src, alt: i.alt ?? '', ...(i.hidden ? { hidden: true } : {}) })),
       bands: (p.bands ?? []).map((b) => ({
         id: b.id, titleKey: b.titleKey, textKey: b.textKey, src: b.image?.src ?? null, focus: b.image?.focus ?? null,
       })),

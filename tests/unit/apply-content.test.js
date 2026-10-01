@@ -211,3 +211,34 @@ describe('Feature: Dollarzeichen im Text bleiben, wie sie sind', () => {
     expect(out).toContain('src="/Bilder/$1-$&.jpg"');
   });
 });
+
+describe('Feature: Bilder im CMS entfernen und wieder einsetzen', () => {
+  const html = '<div class="hero"><img src="/Bilder/a.jpg" alt="" class="bg"></div>'
+    + '<div class="portrait" data-portrait-src="/Bilder/p.jpg" data-portrait-alt="P"></div><img src="/Bilder/p.jpg" alt="P">';
+
+  it('entfernt = Attribut hidden am Element dieser Position, Reihenfolge bleibt', () => {
+    const r = setImages(html, [{ src: '/Bilder/a.jpg', alt: '', hidden: true }, { src: '/Bilder/p.jpg' }, { src: '/Bilder/p.jpg' }]);
+    const doc = new DOMParser().parseFromString(r.html, 'text/html');
+    expect(doc.querySelector('.bg').hidden).toBe(true);
+    expect(doc.querySelector('.portrait').hidden).toBe(false);
+    expect(listImages(r.html)).toEqual(listImages(html)); // Zuordnung bleibt
+    expect(r.changed).toBe(1);
+    // zweimal anwenden ändert nichts mehr
+    expect(setImages(r.html, [{ src: '/Bilder/a.jpg', hidden: true }, { src: '/Bilder/p.jpg' }, { src: '/Bilder/p.jpg' }]).changed).toBe(0);
+    // wieder einsetzen
+    const back = setImages(r.html, [{ src: '/Bilder/neu.jpg' }, { src: '/Bilder/p.jpg' }, { src: '/Bilder/p.jpg' }]);
+    const doc2 = new DOMParser().parseFromString(back.html, 'text/html');
+    expect(doc2.querySelector('.bg').hidden).toBe(false);
+    expect(doc2.querySelector('.bg').getAttribute('src')).toBe('/Bilder/neu.jpg');
+  });
+
+  it('dasselbe Bild zweimal: Tausch und Entfernen treffen genau die Position', () => {
+    const r = setImages(html, [{ src: '/Bilder/a.jpg' }, { src: '/Bilder/p.jpg' }, { src: '/Bilder/q.jpg', hidden: true }]);
+    const doc = new DOMParser().parseFromString(r.html, 'text/html');
+    expect(doc.querySelector('.portrait').getAttribute('data-portrait-src')).toBe('/Bilder/p.jpg');
+    expect(doc.querySelector('.portrait').hidden).toBe(false);
+    const last = doc.querySelectorAll('img')[1];
+    expect(last.getAttribute('src')).toBe('/Bilder/q.jpg');
+    expect(last.hidden).toBe(true);
+  });
+});
