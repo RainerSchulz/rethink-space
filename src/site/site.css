@@ -296,6 +296,10 @@ p { margin: 0 0 18px; color: var(--text-soft); }
    fett, kursiv, Links. Der Abstand zwischen Blöcken entspricht der früheren
    Leerzeile (line-height 1.6). */
 .band-panel .panel-text > * + * { margin-top: 1.6em; }
+/* Weitere Leerzeilen im CMS-Text (rich-text.js data-gap): je eine Zeile (1.6em) mehr — wie im Textfeld getippt */
+.band-panel .panel-text > [data-gap="1"] { margin-top: 3.2em; }
+.band-panel .panel-text > [data-gap="2"] { margin-top: 4.8em; }
+.band-panel .panel-text > [data-gap="3"] { margin-top: 6.4em; }
 .band-panel .panel-text ul { color: #c3c3ca; padding-left: 1.3em; list-style: disc; }
 .band-panel .panel-text li + li { margin-top: .35em; }
 .band-panel .panel-text strong { color: #f2f2f4; font-weight: 700; }

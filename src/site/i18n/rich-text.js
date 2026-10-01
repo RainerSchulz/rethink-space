@@ -4,7 +4,7 @@
  *
  *   **fett**   *kursiv*   [Linktext](https://… | /pages/… | mailto:…)
  *   - Zeile mit Strich am Anfang   → Aufzählung (aufeinanderfolgende Zeilen = eine Liste)
- *   Leerzeile                      → neuer Absatz
+ *   Leerzeile                      → neuer Absatz; jede weitere Leerzeile eine Zeile mehr Abstand (höchstens 3)
  *   einzelner Zeilenumbruch        → Zeilenumbruch im Absatz
  *   \* \[ \] \( \) \- \\           → das Zeichen selbst (z. B. „5\*3“ ist 5*3, nicht kursiv)
  *
@@ -56,15 +56,22 @@ function parseInline(src) {
 }
 
 const LIST_ITEM = /^\s*[-•]\s+/;
+/** Höchstens so viele zusätzliche Leerzeilen zwischen zwei Absätzen (CSS-Regeln für 1–3). */
+export const MAX_GAP = 3;
 
 /**
  * Text → Blöcke: [{ type: 'p', children }, { type: 'ul', items: [children] }]
  */
 export function parseRich(text) {
   const blocks = [];
-  const paragraphs = String(text ?? '').replace(/\r\n?/g, '\n').split(/\n[ \t]*\n/);
-  for (const para of paragraphs) {
-    const lines = para.split('\n');
+  // Leerzeile = neuer Absatz; jede weitere Leerzeile = eine Zeile mehr Abstand (gap, höchstens MAX_GAP),
+  // damit die Seite zeigt, was im Textfeld steht. Ungerade Teile sind die Trenner.
+  const parts = String(text ?? '').replace(/\r\n?/g, '\n').split(/(\n(?:[ \t]*\n)+)/);
+  let gap = 0;
+  for (let p = 0; p < parts.length; p++) {
+    if (p % 2) { gap = Math.min(MAX_GAP, gap + parts[p].split('\n').length - 3); continue; }
+    const first = blocks.length;
+    const lines = parts[p].split('\n');
     let buf = [];
     const flush = () => {
       const body = buf.join('\n').trim();
@@ -81,11 +88,19 @@ export function parseRich(text) {
       } else buf.push(lines[i]);
     }
     flush();
+    if (blocks.length > first) {
+      // Abstand nur zwischen Blöcken, nicht vor dem ersten
+      if (gap > 0 && first > 0) blocks[first].gap = gap;
+      gap = 0;
+    }
   }
   return blocks;
 }
 
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/** Zusätzliche Leerzeilen als Attribut; Abstand in site.css (.panel-text [data-gap]) und im CMS (.rich-preview). */
+const gapAttr = (b) => (b.gap ? ` data-gap="${b.gap}"` : '');
+
+const esc =(s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const external = (href) => href.startsWith('https://');
 
 function inlineHtml(nodes) {
@@ -102,8 +117,8 @@ function inlineHtml(nodes) {
 /** Als HTML-Text (für die statischen Seiten beim Übernehmen aus dem CMS). */
 export function renderRichHtml(text) {
   return parseRich(text).map((b) => (b.type === 'p'
-    ? `<p>${inlineHtml(b.children)}</p>`
-    : `<ul>${b.items.map((it) => `<li>${inlineHtml(it)}</li>`).join('')}</ul>`)).join('');
+    ? `<p${gapAttr(b)}>${inlineHtml(b.children)}</p>`
+    : `<ul${gapAttr(b)}>${b.items.map((it) => `<li>${inlineHtml(it)}</li>`).join('')}</ul>`)).join('');
 }
 
 function inlineDom(doc, nodes, parent) {
@@ -126,19 +141,17 @@ export function renderRichInto(el, text) {
   const doc = el.ownerDocument;
   el.replaceChildren();
   for (const b of parseRich(text)) {
-    if (b.type === 'p') {
-      const p = doc.createElement('p');
-      inlineDom(doc, b.children, p);
-      el.append(p);
-    } else {
-      const ul = doc.createElement('ul');
+    const node = doc.createElement(b.type);
+    if (b.gap) node.setAttribute('data-gap', String(b.gap));
+    if (b.type === 'p') inlineDom(doc, b.children, node);
+    else {
       for (const it of b.items) {
         const li = doc.createElement('li');
         inlineDom(doc, it, li);
-        ul.append(li);
+        node.append(li);
       }
-      el.append(ul);
     }
+    el.append(node);
   }
 }
 
@@ -148,7 +161,7 @@ function inlinePlain(nodes) {
 
 /** Ohne Schreibweise, lesbar (Chatbot-Wissen, Vergleiche): Absätze durch Leerzeilen, Listen mit „- “. */
 export function richToPlain(text) {
-  return parseRich(text).map((b) => (b.type === 'p'
+  return parseRich(text).map((b, i) => (i ? '\n\n' + '\n'.repeat(b.gap ?? 0) : '') + (b.type === 'p'
     ? inlinePlain(b.children)
-    : b.items.map((it) => `- ${inlinePlain(it)}`).join('\n'))).join('\n\n');
+    : b.items.map((it) => `- ${inlinePlain(it)}`).join('\n'))).join('');
 }

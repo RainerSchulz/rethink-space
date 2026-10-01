@@ -82,7 +82,7 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('1290712d2ce770b79e5fc001131eb6988d510b47f16622e73463167a7e51eddd');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('23111ebd1af38a0ca1ecf3e3b1972dd3c67fe285d1f5fdc0a2d2f62587db01e0');
   });
 });
 
@@ -98,5 +98,30 @@ describe('Feature: Fett, auch wenn vor dem schließenden ** Leerraum steht', () 
     expect(renderRichHtml('5 ** 3')).toBe('<p>5 ** 3</p>');
     expect(renderRichHtml('**a** und **b**')).toBe('<p><strong>a</strong> und <strong>b</strong></p>');
     expect(renderRichHtml('2 * 3 * 4')).toBe('<p>2 * 3 * 4</p>');
+  });
+});
+
+describe('Feature: Leerzeilen wie im Textfeld (CMS und Website gleich)', () => {
+  it('eine Leerzeile = Absatz, jede weitere = data-gap (höchstens 3), nicht vor dem ersten Block', () => {
+    expect(renderRichHtml('a\n\nb')).toBe('<p>a</p><p>b</p>');
+    expect(renderRichHtml('Text\n\n\nJuly 2026')).toBe('<p>Text</p><p data-gap="1">July 2026</p>');
+    expect(renderRichHtml('a\n\n\n\n\n\n\nb')).toBe('<p>a</p><p data-gap="3">b</p>');
+    expect(renderRichHtml('\n\n\nstart')).toBe('<p>start</p>');
+    expect(renderRichHtml('a\n\n\n- x\n- y')).toBe('<p>a</p><ul data-gap="1"><li>x</li><li>y</li></ul>');
+    expect(richToPlain('Text\n\n\nJuly 2026')).toBe('Text\n\n\nJuly 2026');
+  });
+
+  it('DOM (Laufzeit, CMS-Vorschau) und HTML (Übernahme) ergeben dasselbe', () => {
+    const el = document.createElement('div');
+    for (const s of ['Text\n\n\nJuly 2026', 'a\n\n\n\n- x\n- y\n\nb', '**f**\n\n\n*k*']) {
+      renderRichInto(el, s);
+      expect(el.innerHTML, s).toBe(renderRichHtml(s));
+    }
+  });
+
+  it('site.css hat für jede mögliche Stufe eine Regel', async () => {
+    const { MAX_GAP } = await import('../../src/site/i18n/rich-text.js');
+    const css = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/site.css'), 'utf8');
+    for (let g = 1; g <= MAX_GAP; g++) expect(css, `data-gap="${g}"`).toContain(`.panel-text > [data-gap="${g}"]`);
   });
 });
