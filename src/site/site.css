@@ -250,14 +250,40 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
 }
 .band--plain .band-title { background: none; text-shadow: none; }
-.band-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.band-media {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  /* Ausschnitt (--fx/--fy) und Zoom (--z) aus dem CMS: Klassen unten (scripts/lib/bands.mjs mediaClass).
+     Gezoomt wird um den gewählten Punkt; .band schneidet ab (overflow: hidden). */
+  --fx: 50%; --fy: 50%; --z: 1;
+  object-position: var(--fx) var(--fy);
+}
+/* transform nur bei Zoom — ungezoomt bleibt alles wie vorher (kein eigener Stapelkontext) */
+.band-media[class*="band-media--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }
 /* Hochformatige Motive im sehr breiten Band: Ausschnitt nach oben ziehen,
    damit nicht der Kopf abgeschnitten wird. */
-.band-media--top { object-position: center 18%; }
-.band-media--bottom { object-position: center 82%; } /* Ausschnitt „unten“ aus dem CMS */
+.band-media--top { --fy: 18%; }
+.band-media--bottom { --fy: 82%; } /* Ausschnitt „unten“ aus dem CMS */
+.band-media--left { --fx: 0%; }
+.band-media--right { --fx: 100%; }
 /* Alle Baender sind gleich gross. Passt ein Motiv nicht ins 64:15-Fenster,
    entscheidet der Ausschnitt (object-position), nie ein Sonderformat. */
-.band-media--partnership { object-position: center 58%; }
+.band-media--partnership { --fy: 58%; }
+/* Zoom aus dem CMS (100–250 %, Zehnerschritte) */
+.band-media--z110 { --z: 1.1; }
+.band-media--z120 { --z: 1.2; }
+.band-media--z130 { --z: 1.3; }
+.band-media--z140 { --z: 1.4; }
+.band-media--z150 { --z: 1.5; }
+.band-media--z160 { --z: 1.6; }
+.band-media--z170 { --z: 1.7; }
+.band-media--z180 { --z: 1.8; }
+.band-media--z190 { --z: 1.9; }
+.band-media--z200 { --z: 2; }
+.band-media--z210 { --z: 2.1; }
+.band-media--z220 { --z: 2.2; }
+.band-media--z230 { --z: 2.3; }
+.band-media--z240 { --z: 2.4; }
+.band-media--z250 { --z: 2.5; }
 /* Ueberschrift steht links unten im Bild, der Knopf dicht darunter. */
 .band-title {
   position: relative; z-index: 1; height: 100%;

@@ -7,7 +7,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import {
   splitRegion, parseBands, applyBands, renderBand, maskRegion,
-  insertDictKeys, removeDictKey, dictEscape, prefixOf,
+  insertDictKeys, removeDictKey, dictEscape, prefixOf, mediaClass, ZOOM,
 } from '../../scripts/lib/bands.mjs';
 import { listImages, setImages } from '../../scripts/lib/apply.mjs';
 
@@ -199,3 +199,38 @@ describe('Feature: Kacheln ohne Bild', () => {
     expect(r.changed).toBe(false);
   });
 });
+
+describe('Feature: Ausschnitt (3×3) und Zoom aus dem CMS', () => {
+  const html = fixture('bands-lunar.html');
+  const bands = asData(parseBands(splitRegion(html).region));
+  const blockOf = (h, id) => parseBands(splitRegion(h).region).find((b) => b.id === id).block;
+  const css = readFileSync(join(ROOT, 'src/site/site.css'), 'utf8');
+
+  it('Klassen aus senkrecht, waagrecht und Zoom — ungültiger Zoom wird ignoriert', () => {
+    expect(mediaClass({})).toBe('band-media');
+    expect(mediaClass({ focus: 'top', focusX: 'right', zoom: 150 })).toBe('band-media band-media--top band-media--right band-media--z150');
+    expect(mediaClass({ focus: 'center', focusX: 'center', zoom: 100 })).toBe('band-media');
+    for (const z of [95, 255, 133, '150', null]) expect(mediaClass({ zoom: z }), String(z)).toBe('band-media');
+  });
+
+  it('site.css hat für jede Zoomstufe und jede Richtung eine Regel', () => {
+    for (let z = ZOOM.min + ZOOM.step; z <= ZOOM.max; z += ZOOM.step) expect(css, `z${z}`).toContain(`.band-media--z${z} { --z: ${z / 100}; }`);
+    for (const c of ['top', 'bottom', 'left', 'right']) expect(css).toContain(`.band-media--${c} {`);
+    expect(css).toContain('.band-media[class*="band-media--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }');
+  });
+
+  it('bestehende Kachel: gewählter Ausschnitt ersetzt die Klasse, „Mitte, 100 %“ setzt zurück', () => {
+    const zoomed = applyBands(html, bands.map((b) => (b.id === 'design' ? { ...b, image: { ...b.image, focus: 'bottom', focusX: 'left', zoom: 180 } } : b)));
+    expect(blockOf(zoomed.html, 'design')).toContain('class="band-media band-media--bottom band-media--left band-media--z180"');
+    const back = applyBands(zoomed.html, bands.map((b) => (b.id === 'design' ? { ...b, image: { ...b.image, focus: 'center', focusX: 'center', zoom: 100 } } : b)));
+    expect(blockOf(back.html, 'design')).toMatch(/<img class="band-media" src=/);
+  });
+
+  it('ohne Wahl im CMS bleibt eine eigene Klasse (etwa band-media--partnership) stehen', () => {
+    const own = html.replace(/<img class="band-media[^"]*"/, '<img class="band-media band-media--partnership"');
+    const first = parseBands(splitRegion(own).region)[0];
+    const r = applyBands(own, asData(parseBands(splitRegion(own).region)).map((b) => (b.id === first.id ? { ...b, image: { src: b.image.src } } : b)));
+    expect(blockOf(r.html, first.id)).toContain('band-media--partnership');
+  });
+});
+

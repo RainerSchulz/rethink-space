@@ -24,6 +24,17 @@ async function holeFallsDa(url, key, pfad) {
   }
 }
 
+/** Kacheln mit Ausschnitt waagrecht und Zoom; fehlen die Spalten, ohne; fehlt die Tabelle, null. */
+async function holeKacheln(url, key) {
+  const pfad = 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus,image_focus_x,image_zoom&order=page_slug,position';
+  try {
+    return await holeFallsDa(url, key, pfad);
+  } catch (err) {
+    if (!/42703|PGRST204|image_focus_x|image_zoom/.test(err.message)) throw err;
+    return holeFallsDa(url, key, pfad.replace(',image_focus_x,image_zoom', ''));
+  }
+}
+
 /** Abruf mit Spalte hidden; fehlt sie (ältere Datenbank), derselbe Abruf ohne. */
 async function holeMitHidden(url, key, pfad) {
   try {
@@ -53,7 +64,8 @@ export async function ladeInhalt({ url, key }) {
     holeMitHidden(url, key, 'cms_texts?select=key,page_slug,tag,position,en,de,hidden&order=page_slug,position'),
     // hidden: im CMS entfernt (rethink-cms 0011) — fehlt die Spalte, fällt der Abruf auf ohne zurück
     holeBilder(url, key),
-    holeFallsDa(url, key, 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus&order=page_slug,position'),
+    // Ausschnitt waagrecht und Zoom (rethink-cms 0017); ältere Datenbank ohne die Spalten → ohne
+    holeKacheln(url, key),
     // Listen (rethink-cms 0016); ältere Datenbank ohne Tabelle → keine (Listen bleiben, wie sie sind)
     holeFallsDa(url, key, 'cms_list_items?select=page_slug,list,id,position&order=page_slug,list,position'),
   ]);
@@ -78,7 +90,8 @@ export async function ladeInhalt({ url, key }) {
   for (const b of kacheln ?? []) {
     if (!kachelnJeSeite.has(b.page_slug)) kachelnJeSeite.set(b.page_slug, []);
     kachelnJeSeite.get(b.page_slug).push({
-      id: b.id, titleKey: b.title_key, textKey: b.text_key, image: { src: b.image_src, focus: b.image_focus ?? undefined },
+      id: b.id, titleKey: b.title_key, textKey: b.text_key,
+      image: { src: b.image_src, focus: b.image_focus ?? undefined, focusX: b.image_focus_x ?? undefined, zoom: b.image_zoom ?? undefined },
     });
   }
 

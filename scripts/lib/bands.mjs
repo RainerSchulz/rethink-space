@@ -21,9 +21,19 @@ import { escapeHtml, escapeJsString } from './apply.mjs';
 export const REGION_START = '<!-- cms:bands -->';
 export const REGION_END = '<!-- /cms:bands -->';
 const GROUP_OPEN = '        <div class="band-group">';
-/** Bildausschnitt aus dem CMS → Klasse (Regel 10: Ausschnitt statt Sonderformat). */
+/**
+ * Bildausschnitt aus dem CMS → Klassen (Regel 10: Ausschnitt statt Sonderformat):
+ * senkrecht (focus), waagrecht (focusX) und Zoom in 10er-Schritten (site.css .band-media--z110 …).
+ * Gleiche Regel im CMS (rethink-cms src/bands.js bandMediaClass) — beide gleich halten.
+ */
 export const FOCUS_CLASS = { top: ' band-media--top', center: '', bottom: ' band-media--bottom' };
-const mediaClass = (focus) => `band-media${FOCUS_CLASS[focus] ?? ''}`;
+export const FOCUS_X_CLASS = { left: ' band-media--left', center: '', right: ' band-media--right' };
+export const ZOOM = { min: 100, max: 250, step: 10 };
+export const zoomOk = (z) => Number.isInteger(z) && z >= ZOOM.min && z <= ZOOM.max && z % ZOOM.step === 0;
+export const mediaClass = (image = {}) => `band-media${FOCUS_CLASS[image?.focus] ?? ''}${FOCUS_X_CLASS[image?.focusX] ?? ''}`
+  + `${zoomOk(image?.zoom) && image.zoom > ZOOM.min ? ` band-media--z${image.zoom}` : ''}`;
+/** Hat das CMS einen Ausschnitt gewählt? Sonst bleibt die vorhandene Klasse (etwa band-media--partnership). */
+const hasCrop = (image) => Boolean(image && (image.focus || image.focusX || image.zoom));
 const GROUP_CLOSE = '        </div>';
 
 /** Seite in Teil vor, im und nach dem verwalteten Bereich zerlegen; null ohne Bereich. */
@@ -72,7 +82,7 @@ export function renderBand({ id, titleKey, textKey, title = '', text = '', image
   return [
     GROUP_OPEN,
     src ? '          <div class="band">' : `          <div class="band ${PLAIN}">`,
-    src ? `            ${bandImg(src, mediaClass(image.focus))}` : null,
+    src ? `            ${bandImg(src, mediaClass(image))}` : null,
     '            <div class="band-title">',
     `              <h2 class="band-h" data-i18n="${titleKey}">${escapeHtml(title)}</h2>`,
     `              <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-${id}" data-i18n="common.more">${escapeHtml(more)}</button>`,
@@ -92,12 +102,12 @@ function setHeading(block, tag) {
 
 /**
  * Bild eines bestehenden Blocks tauschen; aus <picture> wird ein schlichtes <img>.
- * focus (top/center/bottom) setzt den Ausschnitt; ohne Angabe bleibt die
+ * image.focus / focusX / zoom setzen Ausschnitt und Zoom; ohne Angabe bleibt die
  * vorhandene Klasse (etwa band-media--partnership) stehen.
  * src leer = Kachel ohne Bild: Bild raus, Klasse band--plain; kommt wieder ein
  * Bild, wandert es an den Anfang der Kachel und band--plain fällt weg.
  */
-function setImage(block, src, focus) {
+function setImage(block, src, image) {
   const img = /<img class="(band-media[^"]*)" src="([^"]+)"[^>]*>/.exec(block);
   const picture = /\n( *)<picture>[\s\S]*?<\/picture>/.exec(block);
   if (!src) {
@@ -111,9 +121,9 @@ function setImage(block, src, focus) {
     // Kachel hatte kein Bild: Bild vor die Titelzeile, Klasse band--plain weg
     return block
       .replace(`<div class="band ${PLAIN}">`, () => '<div class="band">')
-      .replace(/\n( *)<div class="band-title">/, (all, indent) => `\n${indent}${bandImg(src, mediaClass(focus))}${all}`);
+      .replace(/\n( *)<div class="band-title">/, (all, indent) => `\n${indent}${bandImg(src, mediaClass(image))}${all}`);
   }
-  const cls = focus ? mediaClass(focus) : img[1];
+  const cls = hasCrop(image) ? mediaClass(image) : img[1];
   if (img[2] === src && cls === img[1]) return block;
   const plain = bandImg(src, cls);
   // Ersetzung als Funktion: Pfade und Texte aus dem CMS dürfen $-Zeichen enthalten.
@@ -142,7 +152,7 @@ export function applyBands(html, bands, text = () => undefined) {
     const tag = i === 0 ? firstTag : 'h2';
     const old = byId.get(b.id);
     const block = old
-      ? setImage(old.block, b.image === undefined ? old.image.src : (b.image?.src || null), b.image?.focus)
+      ? setImage(old.block, b.image === undefined ? old.image.src : (b.image?.src || null), b.image)
       : renderBand({ ...b, title: text(b.titleKey) ?? '', text: text(b.textKey) ?? '' }, { more });
     return setHeading(block, tag);
   });
