@@ -28,12 +28,21 @@ function parseInline(src) {
   const out = [];
   // Reihenfolge zählt: erst „\x“ (Zeichen wörtlich), dann fett, kursiv, Link.
   // Ein maskiertes Sternchen schließt kein fett/kursiv ((?<=[^…\\]) vor dem Stern).
-  const re = /\\([\\*[\]()-])|\*\*(?=\S)([\s\S]+?)(?<=[^\s\\])\*\*|\*(?=[^\s*])([\s\S]+?)(?<=[^\s*\\])\*|\[((?:\\.|[^\]\n\\])+)\]\(([^)\s]+)\)|\n/g;
+  // Schließendes ** darf nach Leerraum stehen („**fett **“, „**fett⏎**“ — so entsteht es, wenn die
+  // Markierung ein Leerzeichen oder den Zeilenumbruch mitnimmt); nur nicht maskiert (\**).
+  const re = /\\([\\*[\]()-])|\*\*(?=\S)([\s\S]+?)(?<!\\)\*\*|\*(?=[^\s*])([\s\S]+?)(?<=[^\s*\\])\*|\[((?:\\.|[^\]\n\\])+)\]\(([^)\s]+)\)|\n/g;
   let last = 0;
   for (let m = re.exec(src); m; m = re.exec(src)) {
     if (m.index > last) out.push({ type: 'text', text: src.slice(last, m.index) });
     if (m[1] !== undefined) out.push({ type: 'text', text: m[1] });
-    else if (m[2] !== undefined) out.push({ type: 'strong', children: parseInline(m[2]) });
+    else if (m[2] !== undefined) {
+      // Leerraum am Ende gehört nicht ins Fette: Leerzeichen bleibt dahinter, ein Umbruch
+      // wird einer — außer es folgt ohnehin einer (sonst entstünde eine Leerzeile).
+      const body = m[2].replace(/\s+$/, '');
+      const trail = m[2].slice(body.length);
+      out.push({ type: 'strong', children: parseInline(body) });
+      if (trail.includes('\n')) { if (src[re.lastIndex] !== '\n') out.push({ type: 'br' }); } else if (trail) out.push({ type: 'text', text: ' ' });
+    }
     else if (m[3] !== undefined) out.push({ type: 'em', children: parseInline(m[3]) });
     else if (m[4] !== undefined) {
       out.push(SAFE_HREF.test(m[5])

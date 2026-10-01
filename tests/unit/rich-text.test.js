@@ -82,6 +82,21 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('2076fcf5645d794ce50cf5ffcd3ae9af3ea9e8257640ad349443e88195b638c9');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('1290712d2ce770b79e5fc001131eb6988d510b47f16622e73463167a7e51eddd');
+  });
+});
+
+describe('Feature: Fett, auch wenn vor dem schließenden ** Leerraum steht', () => {
+  it('„**fett **“ und „**fett\n**“ werden fett — Leerraum steht dahinter, keine Leerzeile', () => {
+    expect(renderRichHtml('**Letters of Intent by: **')).toBe('<p><strong>Letters of Intent by:</strong> </p>');
+    expect(renderRichHtml('**-Politecnico study.\n**\nEarly validation:'))
+      .toBe('<p><strong>-Politecnico study.</strong><br>Early validation:</p>');
+    expect(renderRichHtml('**fett\n**weiter')).toBe('<p><strong>fett</strong><br>weiter</p>');
+  });
+
+  it('bleibt wörtlich, wo kein Fett gemeint ist', () => {
+    expect(renderRichHtml('5 ** 3')).toBe('<p>5 ** 3</p>');
+    expect(renderRichHtml('**a** und **b**')).toBe('<p><strong>a</strong> und <strong>b</strong></p>');
+    expect(renderRichHtml('2 * 3 * 4')).toBe('<p>2 * 3 * 4</p>');
   });
 });
