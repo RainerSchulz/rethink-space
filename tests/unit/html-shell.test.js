@@ -128,7 +128,7 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
     expect(html).toMatch(/<meta property="og:title" data-i18n-content="[a-z.-]+" content="[^"]+">/);
     expect(html).toMatch(/<meta property="og:image" content="[^"]+">/);
     expect(html).toMatch(/<meta http-equiv="Content-Security-Policy"/);
-    expect(html).toContain("connect-src 'self' https://*.supabase.co;"); // Chat-Endpoint
+    expect(html).toContain("connect-src 'self' https://*.supabase.co https://helix.stacktrix.de;"); // Chat (Supabase) und Kontaktformular (helix)
     expect(html).toMatch(/<link rel="icon" type="image\/svg\+xml" href="\/favicon\.svg">/);
   });
 

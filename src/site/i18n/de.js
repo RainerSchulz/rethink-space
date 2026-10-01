@@ -114,7 +114,7 @@ export const DE = {
   'contact.form.error': 'Das Senden hat nicht geklappt. Schreiben Sie uns bitte an contact@rethink.space.',
   'contact.form.sent': 'Danke – Ihre Anfrage ist angekommen. Wir melden uns.',
   'contact.form.sending': 'Wird gesendet …',
-  'contact.form.status':      'Dieses Formular ist noch an keinen Versanddienst angebunden – nutzen Sie bis dahin bitte die E-Mail-Adresse.',
+  'contact.form.status':      'Das Formular lässt sich gerade nicht absenden – bitte nutzen Sie die E-Mail-Adresse.',
 
   // ── Rechtliches ───────────────────────────────────────────────────
   'legal.eyebrow':            'Rechtliches',

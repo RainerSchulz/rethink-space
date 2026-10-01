@@ -114,7 +114,7 @@ export const EN = {
   'contact.form.error': 'Sending failed. Please write to contact@rethink.space instead.',
   'contact.form.sent': 'Thank you – your enquiry has arrived. We will get back to you.',
   'contact.form.sending': 'Sending …',
-  'contact.form.status':      'This form is not yet connected to a delivery service – please use the e-mail address in the meantime.',
+  'contact.form.status':      'The form cannot be sent at the moment – please use the e-mail address instead.',
 
   // ── Legal ─────────────────────────────────────────────────────────
   'legal.eyebrow':            'Legal',

@@ -2,6 +2,7 @@
  * Feature: Seiten-Module (nav, bands, contact, portrait)
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { EN } from '../../src/site/i18n/en.js';
 
 const HEADER = `
   <header class="site-header">
@@ -161,7 +162,7 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
     expect(ev.defaultPrevented).toBe(true);
     const note = document.querySelector('.form-status');
     expect(note.hidden).toBe(false);
-    expect(note.textContent).toMatch(/not yet connected/i);
+    expect(note.textContent).toBe(EN['contact.form.status']);
   });
 
   it('Scenario: mit Endpoint wird gesendet, das Formular geleert und gedankt', async () => {
