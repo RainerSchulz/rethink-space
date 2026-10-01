@@ -144,9 +144,18 @@ test.describe('Feature: People-Seite', () => {
   test('Portrait wird im Band „Founder & CEO“ geladen und ersetzt den Platzhalter', async ({ page }) => {
     await page.goto('/pages/people/');
     await page.locator('.band-toggle').first().click();
+    // Im CMS lässt sich das Portrait entfernen (hidden) — dann darf es nicht zu sehen sein.
+    const box = page.locator('.portrait');
+    if (await box.getAttribute('hidden') !== null) {
+      await expect(box).toBeHidden();
+      return;
+    }
     const img = page.locator('.portrait img');
     await expect(img).toBeVisible();
-    await expect(img).toHaveAttribute('alt', 'Dr. Johannes Lierfeld');
+    // Alt-Text kommt aus dem CMS (data-portrait-alt) — kein Zitat, nur: übernommen und nicht leer
+    const alt = await box.getAttribute('data-portrait-alt');
+    expect(alt?.trim()).toBeTruthy();
+    await expect(img).toHaveAttribute('alt', alt);
     expect(await img.evaluate((el) => el.naturalWidth)).toBeGreaterThan(0);
     await expect(page.locator('.portrait .initials')).toHaveCount(0);
   });

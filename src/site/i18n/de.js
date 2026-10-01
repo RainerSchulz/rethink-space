@@ -78,6 +78,7 @@ export const DE = {
   'people.band.team': 'Team',
   'people.panel.team.text': 'RETHINK SPACE arbeitet als Netzwerk: Architektur, Materialforschung und Missionsplanung kommen je Etappe von Partnern, die das jeweilige Fach bereits belegt haben.\n\nDie Menschen hinter den laufenden Etappen stehen hier. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
   'people.portrait.placeholder': 'Portrait einsetzen als public/Bilder/Lierfeld.jpg',
+  'people.profile.name':         'Dr. Johannes Lierfeld',
   'people.profile.p1':           'Dr. Johannes Lierfeld beschäftigt sich seit Jahren mit den Folgen technologischer Umbrüche – von künstlicher Intelligenz über die Schnittstelle von Biologie und Rechnersystemen bis zur Frage, wie Menschen in künstlich geschaffenen Umgebungen leben.',
   'people.profile.p2':           'RETHINK SPACE führt diese Linien zusammen: Der Mond ist der Ort, an dem sich Technik, Architektur und menschliches Maß zum ersten Mal vollständig neu verhandeln lassen.',
   'people.profile.p3':           'Als Autor mehrerer Sachbücher schreibt er über diese Entwicklungen für ein breites Publikum – und arbeitet zugleich an ihrer praktischen Umsetzung.',

@@ -127,6 +127,13 @@ export function setImages(html, images) {
       next = next.replace(`"${from}"`, () => `"${to}"`);
       moved.push([from, to]);
     }
+    // Alt-Text aus dem CMS (vorher kam nur der Pfad an): <img alt>, beim Portrait data-portrait-alt
+    if (typeof img.alt === 'string') {
+      const attr = /\sdata-portrait-src="/.test(next) ? 'data-portrait-alt' : 'alt';
+      const value = ` ${attr}="${escapeAttr(img.alt)}"`;
+      const has = new RegExp(`\\s${attr}="[^"]*"`);
+      next = has.test(next) ? next.replace(has, () => value) : next.replace(/\s*\/?>$/, (end) => `${value}${end}`);
+    }
     const isHidden = HIDDEN_ATTR.test(next);
     if (img.hidden && !isHidden) next = next.replace(/\s*\/?>$/, (end) => ` hidden${end.trim() === '/>' ? ' />' : '>'}`);
     if (!img.hidden && isHidden) next = next.replace(HIDDEN_ATTR, '');

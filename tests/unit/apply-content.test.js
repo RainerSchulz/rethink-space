@@ -242,3 +242,16 @@ describe('Feature: Bilder im CMS entfernen und wieder einsetzen', () => {
     expect(last.hidden).toBe(true);
   });
 });
+
+describe('Feature: Alt-Texte aus dem CMS kommen an', () => {
+  it('setzt alt am Bild und data-portrait-alt am Portrait, maskiert Anführungszeichen', () => {
+    const html = '<img src="/Bilder/a.jpg" alt="alt"><div class="portrait" data-portrait-src="/Bilder/p.jpg" data-portrait-alt="P"></div><img src="/Bilder/b.jpg">';
+    const r = setImages(html, [{ src: '/Bilder/a.jpg', alt: 'Neu "zitiert" & gut' }, { src: '/Bilder/p.jpg', alt: 'Dr. Dr. J. L.' }, { src: '/Bilder/b.jpg', alt: 'B' }]);
+    const doc = new DOMParser().parseFromString(r.html, 'text/html');
+    const imgs = doc.querySelectorAll('img');
+    expect(imgs[0].getAttribute('alt')).toBe('Neu "zitiert" & gut');
+    expect(doc.querySelector('.portrait').getAttribute('data-portrait-alt')).toBe('Dr. Dr. J. L.');
+    expect(imgs[1].getAttribute('alt')).toBe('B'); // fehlte vorher, wird ergänzt
+    expect(setImages(r.html, [{ src: '/Bilder/a.jpg', alt: 'Neu "zitiert" & gut' }, { src: '/Bilder/p.jpg', alt: 'Dr. Dr. J. L.' }, { src: '/Bilder/b.jpg', alt: 'B' }]).changed).toBe(0);
+  });
+});
