@@ -243,4 +243,11 @@ describe('Feature: Autoren-Portrait (modules/portrait.js)', () => {
     setLang('de');
     expect(document.querySelector('.portrait .ph').textContent).toContain('Portrait einsetzen');
   });
+
+  it('Scenario: im CMS entfernt (hidden) → nichts laden, kein Platzhalter', async () => {
+    document.querySelector('.portrait').hidden = true;
+    const { initPortrait } = await fresh('../../src/site/modules/portrait.js');
+    expect(initPortrait()).toBeNull();
+    expect(document.querySelector('.portrait').children).toHaveLength(0);
+  });
 });

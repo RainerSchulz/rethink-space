@@ -148,6 +148,12 @@ test.describe('Feature: People-Seite', () => {
     const box = page.locator('.portrait');
     if (await box.getAttribute('hidden') !== null) {
       await expect(box).toBeHidden();
+      // ohne Portrait nimmt der Text die ganze Breite der Kachel
+      const [text, author] = await Promise.all([
+        page.locator('.author > div:not(.portrait)').evaluate((n) => n.getBoundingClientRect().width),
+        page.locator('.author').evaluate((n) => n.getBoundingClientRect().width),
+      ]);
+      expect(text).toBeGreaterThan(author - 2);
       return;
     }
     const img = page.locator('.portrait img');

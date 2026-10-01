@@ -310,6 +310,8 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 
 /* ---------- 9. Autorenseite ---------- */
 .author { display: grid; grid-template-columns: 340px 1fr; gap: 48px; align-items: start; }
+/* Portrait im CMS entfernt (hidden): der Text nimmt die ganze Breite wie in den anderen Kacheln. */
+.author:has(> [hidden]) { grid-template-columns: 1fr; }
 .portrait {
   border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden;
   background: var(--surface-2); aspect-ratio: 3 / 4;

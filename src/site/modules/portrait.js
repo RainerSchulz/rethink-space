@@ -25,7 +25,8 @@ function showPlaceholder(box) {
 /** Startet das Laden; gibt das Bild-Element zurück (für Tests). */
 export function initPortrait() {
   const box = document.querySelector('[data-portrait-src]');
-  if (!box) return null;
+  // Im CMS entfernt (hidden): nichts laden, nichts zeigen
+  if (!box || box.hidden) return null;
 
   const img = new Image();
   img.alt = box.getAttribute('data-portrait-alt') || '';
