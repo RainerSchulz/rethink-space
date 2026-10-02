@@ -84,16 +84,16 @@ export const EN = {
   'people.profile.p3':           'As the author of several non-fiction books he writes about these developments for a wide audience – while working on their practical implementation.',
   'people.profile.contact':      'Get in touch',
   'people.books.eyebrow':        'Publications',
-  'people.books.1.title':        'Künstliche Intelligenz: Mythos und Wahrheit',
-  'people.books.1.meta':         'Artificial intelligence: myth and truth – non-fiction, in German, Kohlhammer, 2024',
-  'people.books.2.title':        'Ein Log-In für die Matrix',
-  'people.books.2.meta':         'Brain-computer interfaces as bridges between protein and silicon – non-fiction, in German, Projekt Verlag, 2023',
-  'people.books.3.title':        'Digitale Perspektiven',
-  'people.books.3.meta':         'How artificial intelligence and robotics change our world – with Thomas Rusche, in German, Projekt Verlag, 2022',
+  'people.books.1.title':        'Künstliche Intelligenz',
+  'people.books.1.meta':         'Mythos und Wahrheit (Artificial intelligence: Myth and Truth; German) Kohlhammer, 2024',
+  'people.books.2.title':        'A Log-In for the Matrix',
+  'people.books.2.meta':         'Brain-computer interfaces as bridges between protein and silicon (Ein Log-In für die Matrix: Brain-Computer Interfaces als Brücken zwischen Protein und Silizium, German) Projekt Verlag, 2023',
+  'people.books.3.title':        'Digital Perspectives',
+  'people.books.3.meta':         'How artificial intelligence and robotics change our world (Digitale Perspektiven: Wie künstliche Intelligenz und Robotik unsere Welt verändern; with Thomas Rusche; German) Projekt Verlag, 2022',
   'people.books.5.title':        'Artificial Superintelligence',
-  'people.books.5.meta':         'Utopias, Dystopias, Disruptions – non-fiction, in English, Projekt Verlag, 2018',
+  'people.books.5.meta':         'Utopias, Dystopias, Disruptions (English) Projekt Verlag, 2018',
   'people.books.the-conversion-theory-brain-computer-int.title': 'The Conversion Theory',
-  'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; in English; [transcript!] / Columbia University Press, 2026',
+  'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; (English); [transcript!] / Columbia University Press, 2026',
 
   // ── Contact ───────────────────────────────────────────────────────
   'contact.meta.title':       'Contact – RETHINK SPACE',
@@ -114,7 +114,7 @@ export const EN = {
   'contact.form.error': 'Sending failed. Please write to contact@rethink.space instead.',
   'contact.form.sent': 'Thank you – your enquiry has arrived. We will get back to you.',
   'contact.form.sending': 'Sending …',
-  'contact.form.status':      'The form cannot be sent at the moment – please use the e-mail address instead.',
+  'contact.form.status':      'This form is not yet connected to a delivery service – please use the e-mail address in the meantime.',
 
   // ── Legal ─────────────────────────────────────────────────────────
   'legal.eyebrow':            'Legal',

@@ -93,7 +93,7 @@ export const DE = {
   'people.books.5.title':        'Artificial Superintelligence',
   'people.books.5.meta':         'Utopias, Dystopias, Disruptions – Sachbuch auf Englisch, Projekt Verlag, 2018',
   'people.books.the-conversion-theory-brain-computer-int.title': 'The Conversion Theory: Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion',
-  'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; in English; [transcript!] / Columbia University Press, 2026',
+  'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; (English); [transcript!] / Columbia University Press, 2026',
 
   // ── Kontakt ───────────────────────────────────────────────────────
   'contact.meta.title':       'Kontakt – RETHINK SPACE',
@@ -114,7 +114,7 @@ export const DE = {
   'contact.form.error': 'Das Senden hat nicht geklappt. Schreiben Sie uns bitte an contact@rethink.space.',
   'contact.form.sent': 'Danke – Ihre Anfrage ist angekommen. Wir melden uns.',
   'contact.form.sending': 'Wird gesendet …',
-  'contact.form.status':      'Das Formular lässt sich gerade nicht absenden – bitte nutzen Sie die E-Mail-Adresse.',
+  'contact.form.status':      'Dieses Formular ist noch an keinen Versanddienst angebunden – nutzen Sie bis dahin bitte die E-Mail-Adresse.',
 
   // ── Rechtliches ───────────────────────────────────────────────────
   'legal.eyebrow':            'Rechtliches',
