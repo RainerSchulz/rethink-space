@@ -181,7 +181,32 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .moon img {
   position: absolute; left: -.2%; top: -.2%; width: 100.4%; height: 100.4%; max-width: none;
   object-fit: cover; display: block;
+  /* Ausschnitt (--fx/--fy) und Zoom (--z) aus dem CMS (scripts/lib/apply.mjs moonClass); die Scheibe
+     bleibt gleich groß, nur das Bild darin wird vergrößert (.moon schneidet ab). */
+  --fx: 50%; --fy: 50%; --z: 1;
+  object-position: var(--fx) var(--fy);
 }
+.moon .moon-img--top { --fy: 0%; }
+.moon .moon-img--bottom { --fy: 100%; }
+/* .moon ist gespiegelt (scaleX(-1)): links/rechts am Bild tauschen, damit es aussieht wie im CMS gewählt */
+.moon .moon-img--left { --fx: 100%; }
+.moon .moon-img--right { --fx: 0%; }
+.moon img[class*="moon-img--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }
+.moon .moon-img--z110 { --z: 1.1; }
+.moon .moon-img--z120 { --z: 1.2; }
+.moon .moon-img--z130 { --z: 1.3; }
+.moon .moon-img--z140 { --z: 1.4; }
+.moon .moon-img--z150 { --z: 1.5; }
+.moon .moon-img--z160 { --z: 1.6; }
+.moon .moon-img--z170 { --z: 1.7; }
+.moon .moon-img--z180 { --z: 1.8; }
+.moon .moon-img--z190 { --z: 1.9; }
+.moon .moon-img--z200 { --z: 2; }
+.moon .moon-img--z210 { --z: 2.1; }
+.moon .moon-img--z220 { --z: 2.2; }
+.moon .moon-img--z230 { --z: 2.3; }
+.moon .moon-img--z240 { --z: 2.4; }
+.moon .moon-img--z250 { --z: 2.5; }
 .moon::after { content: ""; position: absolute; inset: 0; background: var(--moon-shade); }
 
 .hero { position: relative; }

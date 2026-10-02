@@ -90,6 +90,16 @@ export function listImages(html) {
   return [...html.matchAll(/(?:\ssrc="|\sdata-portrait-src=")(\/Bilder\/[^"]+)"/g)].map((m) => m[1]);
 }
 
+/**
+ * Ausschnitt und Zoom des Mondbilds der Startseite (<img class="moon-img">) → Klassen
+ * (site.css .moon-img--top … --z250). Gleiche Regel im CMS (rethink-cms src/bands.js moonClass).
+ */
+const MOON_Y = { top: ' moon-img--top', bottom: ' moon-img--bottom' };
+const MOON_X = { left: ' moon-img--left', right: ' moon-img--right' };
+export const moonClass = (c = {}) => `moon-img${MOON_Y[c.focus] ?? ''}${MOON_X[c.focusX] ?? ''}`
+  + `${Number.isInteger(c.zoom) && c.zoom > 100 && c.zoom <= 250 && c.zoom % 10 === 0 ? ` moon-img--z${c.zoom}` : ''}`;
+const hasCrop = (img) => Boolean(img && (img.focus || img.focusX || img.zoom));
+
 /** Element (Tag) eines Bildes: <img src="/Bilder/…"> oder <div data-portrait-src="/Bilder/…">. */
 const IMAGE_TAG = /<[a-zA-Z][^>]*?\s(?:src|data-portrait-src)="(\/Bilder\/[^"]+)"[^>]*>/g;
 const HIDDEN_ATTR = /\shidden(?:="[^"]*")?(?=[\s/>])/;
@@ -133,6 +143,10 @@ export function setImages(html, images) {
       const value = ` ${attr}="${escapeAttr(img.alt)}"`;
       const has = new RegExp(`\\s${attr}="[^"]*"`);
       next = has.test(next) ? next.replace(has, () => value) : next.replace(/\s*\/?>$/, (end) => `${value}${end}`);
+    }
+    // Mondbild: Ausschnitt und Zoom als Klassen (nur wenn das CMS etwas gewählt hat)
+    if (/\sclass="moon-img[^"]*"/.test(next) && hasCrop(img)) {
+      next = next.replace(/\sclass="moon-img[^"]*"/, () => ` class="${moonClass(img)}"`);
     }
     const isHidden = HIDDEN_ATTR.test(next);
     if (img.hidden && !isHidden) next = next.replace(/\s*\/?>$/, (end) => ` hidden${end.trim() === '/>' ? ' />' : '>'}`);

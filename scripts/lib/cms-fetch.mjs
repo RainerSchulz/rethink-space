@@ -45,8 +45,13 @@ async function holeMitHidden(url, key, pfad) {
   }
 }
 
-/** Bilder nach Position, mit „entfernt“ (Spalte hidden); ältere Datenbank ohne die Spalte → ohne. */
+/** Bilder nach Position, mit „entfernt“ (Spalte hidden) und Ausschnitt/Zoom (rethink-cms 0018); ältere Datenbank → ohne. */
 async function holeBilder(url, key) {
+  try {
+    return await hole(url, key, 'cms_images?select=page_slug,position,src,alt,hidden,focus,focus_x,zoom&order=page_slug,position');
+  } catch (err) {
+    if (!/42703|PGRST204|focus|zoom/.test(err.message)) throw err;
+  }
   try {
     return await hole(url, key, 'cms_images?select=page_slug,position,src,alt,hidden&order=page_slug,position');
   } catch (err) {
@@ -81,7 +86,10 @@ export async function ladeInhalt({ url, key }) {
   const bilderJeSeite = new Map();
   for (const i of bilder) {
     if (!bilderJeSeite.has(i.page_slug)) bilderJeSeite.set(i.page_slug, []);
-    bilderJeSeite.get(i.page_slug).push({ src: i.src, alt: i.alt ?? '', hidden: i.hidden === true });
+    bilderJeSeite.get(i.page_slug).push({
+      src: i.src, alt: i.alt ?? '', hidden: i.hidden === true,
+      ...(i.focus ? { focus: i.focus } : {}), ...(i.focus_x ? { focusX: i.focus_x } : {}), ...(i.zoom ? { zoom: i.zoom } : {}),
+    });
   }
 
   // Kacheln je Seite; Seiten ohne Einträge bekommen keine Liste (sonst hieße

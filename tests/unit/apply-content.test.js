@@ -8,9 +8,11 @@
  *  - zweimal anwenden darf nichts mehr ändern
  */
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows,
+  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass,
 } from '../../scripts/lib/apply.mjs';
 
 describe('Feature: Wörterbuch-Werte ersetzen', () => {
@@ -280,3 +282,22 @@ describe('Feature: Zeilen im CMS entfernen (data-cms-row)', () => {
     expect(setRows(html, [{ key: 'people.profile.p1', hidden: true }]).changed).toBe(0);
   });
 });
+
+describe('Feature: Mondbild der Startseite — Ausschnitt und Zoom aus dem CMS', () => {
+  const html = '<div class="moon"><img class="moon-img" src="/Bilder/moon-full.jpg" alt="" decoding="async"></div>';
+  const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
+
+  it('setzt die Klassen, „Mitte, 100 %“ setzt zurück, ohne Wahl bleibt alles', () => {
+    const r = setImages(html, [{ src: '/Bilder/moon-full.jpg', alt: '', focus: 'top', focusX: 'left', zoom: 160 }]);
+    expect(r.html).toContain('<img class="moon-img moon-img--top moon-img--left moon-img--z160" src="/Bilder/moon-full.jpg"');
+    expect(setImages(r.html, [{ src: '/Bilder/moon-full.jpg', alt: '', focus: 'center', focusX: 'center', zoom: 100 }]).html).toBe(html);
+    expect(setImages(html, [{ src: '/Bilder/moon-full.jpg', alt: '' }]).changed).toBe(0);
+  });
+
+  it('ungültiger Zoom zählt nicht; site.css hat jede Klasse', () => {
+    expect(moonClass({ zoom: 333 })).toBe('moon-img');
+    for (const c of moonClass({ focus: 'bottom', focusX: 'right', zoom: 250 }).split(' ').slice(1)) expect(css, c).toContain(`.moon .${c} {`);
+    for (let z = 110; z <= 250; z += 10) expect(css).toContain(`.moon .moon-img--z${z} { --z: ${z / 100}; }`);
+  });
+});
+

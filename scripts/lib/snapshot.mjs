@@ -23,7 +23,10 @@ export function toSnapshot(content, applied = () => true) {
     });
     pages[p.slug] = {
       texts,
-      images: (p.images ?? []).map((i) => ({ src: i.src, alt: i.alt ?? '', ...(i.hidden ? { hidden: true } : {}) })),
+      images: (p.images ?? []).map((i) => ({
+        src: i.src, alt: i.alt ?? '', ...(i.hidden ? { hidden: true } : {}),
+        ...(i.focus ? { focus: i.focus } : {}), ...(i.focusX ? { focusX: i.focusX } : {}), ...(i.zoom ? { zoom: i.zoom } : {}),
+      })),
       bands: (p.bands ?? []).map((b) => ({
         id: b.id, titleKey: b.titleKey, textKey: b.textKey, src: b.image?.src ?? null, focus: b.image?.focus ?? null,
         ...(b.image?.focusX ? { focusX: b.image.focusX } : {}), ...(b.image?.zoom ? { zoom: b.image.zoom } : {}),

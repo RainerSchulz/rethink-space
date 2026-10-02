@@ -65,7 +65,7 @@ describe('Feature: Seitenbestand (Muster FORGE: pages/<name>/index.html)', () =>
   it('der Mond ist ein echtes Bild (im CMS austauschbar), Größe und Lage legt allein .moon fest', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
     // genau ein Bild in .moon, aus /Bilder/ — das erste Bild der Seite (Bild nach Position 0 im CMS)
-    const moon = /<div class="moon"><img src="(\/Bilder\/[^"]+)" alt="[^"]*" decoding="async"( hidden)?><\/div>/.exec(html);
+    const moon = /<div class="moon"><img class="moon-img[^"]*" src="(\/Bilder\/[^"]+)" alt="[^"]*" decoding="async"( hidden)?><\/div>/.exec(html);
     expect(moon, '<div class="moon"><img …></div> fehlt oder ist umgebaut').not.toBeNull();
     expect(html.indexOf('<img')).toBe(html.indexOf(moon[0]) + '<div class="moon">'.length);
     // kein Hintergrundbild mehr im CSS: sonst änderte das CMS ein Bild, das niemand sieht
