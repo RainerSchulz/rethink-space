@@ -214,6 +214,11 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .moon .moon-img--up75 { --up: 75%; }
   .moon .moon-img--up80 { --up: 80%; }
 }
+.moon .moon-img--z50 { --z: 0.5; }
+.moon .moon-img--z60 { --z: 0.6; }
+.moon .moon-img--z70 { --z: 0.7; }
+.moon .moon-img--z80 { --z: 0.8; }
+.moon .moon-img--z90 { --z: 0.9; }
 .moon .moon-img--z110 { --z: 1.1; }
 .moon .moon-img--z120 { --z: 1.2; }
 .moon .moon-img--z130 { --z: 1.3; }
@@ -315,7 +320,12 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 /* Alle Baender sind gleich gross. Passt ein Motiv nicht ins 64:15-Fenster,
    entscheidet der Ausschnitt (object-position), nie ein Sonderformat. */
 .band-media--partnership { --fy: 58%; }
-/* Zoom aus dem CMS (100–250 %, Zehnerschritte) */
+/* Zoom aus dem CMS (50–250 %, Zehnerschritte; unter 100 % kleiner, die Kachel zeigt dann Rand) */
+.band-media--z50 { --z: 0.5; }
+.band-media--z60 { --z: 0.6; }
+.band-media--z70 { --z: 0.7; }
+.band-media--z80 { --z: 0.8; }
+.band-media--z90 { --z: 0.9; }
 .band-media--z110 { --z: 1.1; }
 .band-media--z120 { --z: 1.2; }
 .band-media--z130 { --z: 1.3; }

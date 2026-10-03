@@ -28,10 +28,11 @@ const GROUP_OPEN = '        <div class="band-group">';
  */
 export const FOCUS_CLASS = { top: ' band-media--top', center: '', bottom: ' band-media--bottom' };
 export const FOCUS_X_CLASS = { left: ' band-media--left', center: '', right: ' band-media--right' };
-export const ZOOM = { min: 100, max: 250, step: 10 };
+/** 50–250 %, 100 % = Bild füllt die Kachel wie ursprünglich (keine Klasse); darunter ist es kleiner, mit Rand. */
+export const ZOOM = { min: 50, max: 250, step: 10, neutral: 100 };
 export const zoomOk = (z) => Number.isInteger(z) && z >= ZOOM.min && z <= ZOOM.max && z % ZOOM.step === 0;
 export const mediaClass = (image = {}) => `band-media${FOCUS_CLASS[image?.focus] ?? ''}${FOCUS_X_CLASS[image?.focusX] ?? ''}`
-  + `${zoomOk(image?.zoom) && image.zoom > ZOOM.min ? ` band-media--z${image.zoom}` : ''}`;
+  + `${zoomOk(image?.zoom) && image.zoom !== ZOOM.neutral ? ` band-media--z${image.zoom}` : ''}`;
 /** Hat das CMS einen Ausschnitt gewählt? Sonst bleibt die vorhandene Klasse (etwa band-media--partnership). */
 const hasCrop = (image) => Boolean(image && (image.focus || image.focusX || image.zoom));
 const GROUP_CLOSE = '        </div>';

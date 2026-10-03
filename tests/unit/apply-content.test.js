@@ -297,7 +297,9 @@ describe('Feature: Mondbild der Startseite — Ausschnitt und Zoom aus dem CMS',
   it('ungültiger Zoom zählt nicht; site.css hat jede Klasse', () => {
     expect(moonClass({ zoom: 333 })).toBe('moon-img');
     for (const c of moonClass({ focus: 'bottom', focusX: 'right', zoom: 250 }).split(' ').slice(1)) expect(css, c).toContain(`.moon .${c} {`);
-    for (let z = 110; z <= 250; z += 10) expect(css).toContain(`.moon .moon-img--z${z} { --z: ${z / 100}; }`);
+    for (let z = 50; z <= 250; z += 10) if (z !== 100) expect(css).toContain(`.moon .moon-img--z${z} { --z: ${z / 100}; }`);
+    expect(moonClass({ zoom: 70 })).toBe('moon-img moon-img--z70');
+    expect(moonClass({ zoom: 100 })).toBe('moon-img');
   });
 });
 
