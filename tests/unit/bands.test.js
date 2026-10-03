@@ -217,8 +217,8 @@ describe('Feature: Ausschnitt (3×3) und Zoom aus dem CMS', () => {
     for (let z = ZOOM.min; z <= ZOOM.max; z += ZOOM.step) {
       if (z !== ZOOM.neutral) expect(css, `z${z}`).toContain(`.band-media--z${z} { --z: ${z / 100}; }`);
     }
-    expect(mediaClass({ zoom: 60 })).toBe('band-media band-media--z60');
-    expect(mediaClass({ zoom: 40 })).toBe('band-media');
+    expect(mediaClass({ zoom: 60 })).toBe('band-media'); // nie kleiner als eingepasst
+    expect(css).not.toContain('.band-media--z90');
     for (const c of ['top', 'bottom', 'left', 'right']) expect(css).toContain(`.band-media--${c} {`);
     expect(css).toContain('.band-media[class*="band-media--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }');
   });

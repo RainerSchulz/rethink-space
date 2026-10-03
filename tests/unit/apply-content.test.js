@@ -297,26 +297,19 @@ describe('Feature: Mondbild der Startseite — Ausschnitt und Zoom aus dem CMS',
   it('ungültiger Zoom zählt nicht; site.css hat jede Klasse', () => {
     expect(moonClass({ zoom: 333 })).toBe('moon-img');
     for (const c of moonClass({ focus: 'bottom', focusX: 'right', zoom: 250 }).split(' ').slice(1)) expect(css, c).toContain(`.moon .${c} {`);
-    for (let z = 50; z <= 250; z += 10) if (z !== 100) expect(css).toContain(`.moon .moon-img--z${z} { --z: ${z / 100}; }`);
-    expect(moonClass({ zoom: 70 })).toBe('moon-img moon-img--z70');
+    for (let z = 110; z <= 250; z += 10) expect(css).toContain(`.moon .moon-img--z${z} { --z: ${z / 100}; }`);
+    expect(moonClass({ zoom: 70 })).toBe('moon-img');
     expect(moonClass({ zoom: 100 })).toBe('moon-img');
   });
 });
 
-describe('Feature: Mondbild am PC höher zeigen (nur Desktop)', () => {
-  const html = '<div class="moon"><img class="moon-img" src="/Bilder/x.jpg" alt="" decoding="async"></div>';
+describe('Feature: Startbild zeigt am PC und auf dem Handy dasselbe', () => {
   const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
-
-  it('Klasse moon-img--up<n> (5–80, Fünfer), allein oder mit Zoom', () => {
-    expect(setImages(html, [{ src: '/Bilder/x.jpg', alt: '', shiftY: 35 }]).html).toContain('class="moon-img moon-img--up35"');
-    expect(moonClass({ zoom: 150, shiftY: 20 })).toBe('moon-img moon-img--z150 moon-img--up20');
-    for (const v of [0, 3, 85, '20']) expect(moonClass({ shiftY: v })).toBe('moon-img');
-  });
-
-  it('wirkt nur ab 821 px Breite (Handy unverändert), jede Stufe hat eine Regel', () => {
-    const desktop = css.slice(css.indexOf('@media (min-width: 821px) {'));
-    for (let u = 5; u <= 80; u += 5) expect(desktop).toContain(`.moon .moon-img--up${u} { --up: ${u}%; }`);
-    expect(css.slice(0, css.indexOf('@media (min-width: 821px) {'))).not.toContain('moon-img--up');
+  it('das Bild füllt den sichtbaren Bereich (volle Breite, bis zum unteren Rand), nicht die ganze Scheibe', () => {
+    expect(css).toContain('position: absolute; top: 0; left: calc(var(--moon-d) / 2 - var(--moon-x));');
+    expect(css).toContain('width: 100cqw; height: calc(var(--scape-h) - var(--moon-top)); max-width: none;');
+    expect(css).not.toContain('moon-img--up');
+    expect(css).not.toMatch(/\.moon \{[^}]*scaleX\(-1\)/);
   });
 });
 

@@ -28,8 +28,8 @@ const GROUP_OPEN = '        <div class="band-group">';
  */
 export const FOCUS_CLASS = { top: ' band-media--top', center: '', bottom: ' band-media--bottom' };
 export const FOCUS_X_CLASS = { left: ' band-media--left', center: '', right: ' band-media--right' };
-/** 50–250 %, 100 % = Bild füllt die Kachel wie ursprünglich (keine Klasse); darunter ist es kleiner, mit Rand. */
-export const ZOOM = { min: 50, max: 250, step: 10, neutral: 100 };
+/** 100–250 %, 100 % = Bild füllt die Kachel wie eingepasst (keine Klasse). Nie kleiner — sonst entstünde ein Rand. */
+export const ZOOM = { min: 100, max: 250, step: 10, neutral: 100 };
 export const zoomOk = (z) => Number.isInteger(z) && z >= ZOOM.min && z <= ZOOM.max && z % ZOOM.step === 0;
 export const mediaClass = (image = {}) => `band-media${FOCUS_CLASS[image?.focus] ?? ''}${FOCUS_X_CLASS[image?.focusX] ?? ''}`
   + `${zoomOk(image?.zoom) && image.zoom !== ZOOM.neutral ? ` band-media--z${image.zoom}` : ''}`;

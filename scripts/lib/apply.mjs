@@ -95,13 +95,11 @@ export function listImages(html) {
  * (site.css .moon-img--top … --z250). Gleiche Regel im CMS (rethink-cms src/bands.js moonClass).
  */
 const MOON_Y = { top: ' moon-img--top', bottom: ' moon-img--bottom' };
-const MOON_X = { left: ' moon-img--left', right: ' moon-img--right' };
+const MOON_X = { left: ' moon-img--left', right: ' moon-img--right' }; // nicht mehr gespiegelt (03.10.2026)
 export const moonClass = (c = {}) => `moon-img${MOON_Y[c.focus] ?? ''}${MOON_X[c.focusX] ?? ''}`
-  // Zoom 50–250 % in Zehnern, 100 % = keine Klasse (wie ZOOM in bands.mjs)
-  + `${Number.isInteger(c.zoom) && c.zoom >= 50 && c.zoom <= 250 && c.zoom % 10 === 0 && c.zoom !== 100 ? ` moon-img--z${c.zoom}` : ''}`
-  // nur Desktop wirksam (site.css): Bild nach oben schieben, 5–80 % in Fünferschritten
-  + `${Number.isInteger(c.shiftY) && c.shiftY >= 5 && c.shiftY <= 80 && c.shiftY % 5 === 0 ? ` moon-img--up${c.shiftY}` : ''}`;
-const hasCrop = (img) => Boolean(img && (img.focus || img.focusX || img.zoom || img.shiftY));
+  // Zoom 110–250 % in Zehnern, 100 % = keine Klasse (wie ZOOM in bands.mjs)
+  + `${Number.isInteger(c.zoom) && c.zoom > 100 && c.zoom <= 250 && c.zoom % 10 === 0 ? ` moon-img--z${c.zoom}` : ''}`;
+const hasCrop = (img) => Boolean(img && (img.focus || img.focusX || img.zoom));
 
 /** Element (Tag) eines Bildes: <img src="/Bilder/…"> oder <div data-portrait-src="/Bilder/…">. */
 const IMAGE_TAG = /<[a-zA-Z][^>]*?\s(?:src|data-portrait-src)="(\/Bilder\/[^"]+)"[^>]*>/g;

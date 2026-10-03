@@ -156,14 +156,19 @@ p { margin: 0 0 18px; color: var(--text-soft); }
    (moon-full.jpg, LRO-Daten, SVS, gemeinfrei) als Bild. Mittelpunkt und
    Durchmesser sind so gewählt, dass der Kreis unten nie endet, bevor der
    Block endet. Das Bild ist ein echtes <img> in .moon, damit das CMS es
-   tauschen kann (Bild nach Position); Größe und Lage legt allein .moon fest,
-   ein anderes Motiv wird in den Kreis eingepasst (object-fit: cover). */
+   tauschen kann (Bild nach Position). Seit 03.10.2026 füllt das Bild nicht mehr die
+   ganze (riesige) Scheibe, sondern genau den sichtbaren Bereich unter der Überschrift —
+   die Scheibe gibt nur noch den runden Rand. So zeigen PC und Handy dasselbe Bild
+   (vorher am PC nur dessen obersten Streifen, auf dem Handy drei Viertel). */
 .moonscape {
   position: relative; overflow: hidden; isolation: isolate;
   background: #000; container-type: inline-size;
-  min-height: calc(100vh - var(--header-h)); /* Startseite ist nur Claim und Mond */
-  --moon-d: 280cqw;                  /* Durchmesser: so groß, dass der Mond den unteren Bereich füllt */
-  --moon-x: 88cqw;                   /* Mittelpunkt nahe dem rechten Rand (Mond gespiegelt) */
+  --scape-h: calc(100vh - var(--header-h));
+  min-height: var(--scape-h);        /* Startseite ist nur Claim und Mond */
+  /* Durchmesser und Mittelpunkt: flacher Bogen, damit am PC wie auf dem Handy rund 95 % des Bildbereichs
+     zu sehen sind (vorher 280cqw/88cqw: am PC nur 80 %, links kaum die Hälfte). */
+  --moon-d: 500cqw;
+  --moon-x: 65cqw;
   --moon-top: 240px;                 /* Oberkante der Kugel: gleicher Abstand wie Header→Überschrift (56px) */
 }
 .moon {
@@ -174,51 +179,23 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   border-radius: 50%;
   background: #1a1a1c;
   box-shadow: 0 0 140px rgba(215, 220, 240, .16);
-  transform: scaleX(-1);             /* Krater ebenfalls spiegeln */
   --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, .04) 0%, rgba(0, 0, 0, .14) 40%, rgba(0, 0, 0, .3) 100%);
 }
-/* 100.4 %: der Rand des Fotos liegt knapp außerhalb des Kreises (wie zuvor als Hintergrund) */
+/* Bild = sichtbarer Bereich: volle Breite (100cqw der .moonscape), von der Oberkante der Scheibe bis
+   zum unteren Rand des Blocks; eingepasst mit object-fit: cover um den Punkt aus dem CMS (--fx/--fy).
+   Die Scheibe schneidet nur die runde Kante ab. Zoom (--z, 110–250 %) vergrößert um denselben Punkt. */
 .moon img {
-  position: absolute; left: -.2%; top: -.2%; width: 100.4%; height: 100.4%; max-width: none;
+  position: absolute; top: 0; left: calc(var(--moon-d) / 2 - var(--moon-x));
+  width: 100cqw; height: calc(var(--scape-h) - var(--moon-top)); max-width: none;
   object-fit: cover; display: block;
-  /* Ausschnitt (--fx/--fy) und Zoom (--z) aus dem CMS (scripts/lib/apply.mjs moonClass); die Scheibe
-     bleibt gleich groß, nur das Bild darin wird vergrößert (.moon schneidet ab). */
   --fx: 50%; --fy: 50%; --z: 1;
   object-position: var(--fx) var(--fy);
 }
 .moon .moon-img--top { --fy: 0%; }
 .moon .moon-img--bottom { --fy: 100%; }
-/* .moon ist gespiegelt (scaleX(-1)): links/rechts am Bild tauschen, damit es aussieht wie im CMS gewählt */
-.moon .moon-img--left { --fx: 100%; }
-.moon .moon-img--right { --fx: 0%; }
+.moon .moon-img--left { --fx: 0%; }
+.moon .moon-img--right { --fx: 100%; }
 .moon img[class*="moon-img--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }
-/* Nur Desktop: Bild in der Scheibe nach oben schieben (--up, Anteil der Bildhöhe). Auf dem Handy ist
-   gut drei Viertel der Scheibe zu sehen, am PC nur der oberste Streifen — so kommt dort dieselbe
-   Bildmitte ins Bild. Der untere Rand der Scheibe liegt am PC ohnehin außerhalb des Fensters. */
-@media (min-width: 821px) {
-  .moon img[class*="moon-img--up"] { translate: 0 calc(-1 * var(--up)); }
-  .moon .moon-img--up5 { --up: 5%; }
-  .moon .moon-img--up10 { --up: 10%; }
-  .moon .moon-img--up15 { --up: 15%; }
-  .moon .moon-img--up20 { --up: 20%; }
-  .moon .moon-img--up25 { --up: 25%; }
-  .moon .moon-img--up30 { --up: 30%; }
-  .moon .moon-img--up35 { --up: 35%; }
-  .moon .moon-img--up40 { --up: 40%; }
-  .moon .moon-img--up45 { --up: 45%; }
-  .moon .moon-img--up50 { --up: 50%; }
-  .moon .moon-img--up55 { --up: 55%; }
-  .moon .moon-img--up60 { --up: 60%; }
-  .moon .moon-img--up65 { --up: 65%; }
-  .moon .moon-img--up70 { --up: 70%; }
-  .moon .moon-img--up75 { --up: 75%; }
-  .moon .moon-img--up80 { --up: 80%; }
-}
-.moon .moon-img--z50 { --z: 0.5; }
-.moon .moon-img--z60 { --z: 0.6; }
-.moon .moon-img--z70 { --z: 0.7; }
-.moon .moon-img--z80 { --z: 0.8; }
-.moon .moon-img--z90 { --z: 0.9; }
 .moon .moon-img--z110 { --z: 1.1; }
 .moon .moon-img--z120 { --z: 1.2; }
 .moon .moon-img--z130 { --z: 1.3; }
@@ -320,12 +297,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 /* Alle Baender sind gleich gross. Passt ein Motiv nicht ins 64:15-Fenster,
    entscheidet der Ausschnitt (object-position), nie ein Sonderformat. */
 .band-media--partnership { --fy: 58%; }
-/* Zoom aus dem CMS (50–250 %, Zehnerschritte; unter 100 % kleiner, die Kachel zeigt dann Rand) */
-.band-media--z50 { --z: 0.5; }
-.band-media--z60 { --z: 0.6; }
-.band-media--z70 { --z: 0.7; }
-.band-media--z80 { --z: 0.8; }
-.band-media--z90 { --z: 0.9; }
+/* Zoom aus dem CMS (110–250 %, Zehnerschritte; 100 % = wie eingepasst) */
 .band-media--z110 { --z: 1.1; }
 .band-media--z120 { --z: 1.2; }
 .band-media--z130 { --z: 1.3; }
@@ -524,7 +496,6 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .nav a { font-size: 11.5px; }
 }
 @media (max-width: 1000px) {
-  .moonscape { --moon-d: 290cqw; }
   .hero-copy { grid-template-columns: 1fr minmax(0, 460px); }
   .contact-grid, .author { grid-template-columns: 1fr; }
   .author { gap: 32px; }
@@ -555,7 +526,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
      Horizont abfällt und der Mond bis unter die gestapelten Kacheln reicht */
   /* Handy: kleinere Scheibe, Mittelpunkt links – der Rand läuft als deutlicher Bogen
      von links oben nach rechts unten; darunter füllt der Mond die Breite */
-  .moonscape { --moon-d: 240cqw; --moon-x: 78cqw; --moon-top: 129px; min-height: calc(100svh - var(--header-h)); }
+  .moonscape { --moon-d: 240cqw; --moon-x: 78cqw; --moon-top: 129px; --scape-h: calc(100svh - var(--header-h)); }
   .moon { --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%); }
   /* Bänder: höheres Format, Überschrift wie die Startseite auf dem Handy */
   .bands { padding: 20px 0 48px; }
