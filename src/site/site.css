@@ -147,49 +147,31 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .arrow-link::after { content: "⟶"; color: var(--accent); transition: transform .15s ease; }
 .arrow-link:hover::after { transform: translateX(5px); }
 
-/* ---------- 6. Hero & Mondlandschaft (Landing) ----------
-   Nach der Skizze: Der Mond ist eine riesige Scheibe, deren Rand von links
-   oben nach rechts unten durch die ganze Seite läuft. Oben, im Weltall, steht
-   die Überschrift über die volle Breite, rechts daneben Lead und Button; die
-   drei Kacheln liegen tiefer auf der Mondoberfläche.
-   Die Scheibe ist ein kreisrundes Pseudo-Element mit dem NASA-Vollmond
-   (moon-full.jpg, LRO-Daten, SVS, gemeinfrei) als Bild. Mittelpunkt und
-   Durchmesser sind so gewählt, dass der Kreis unten nie endet, bevor der
-   Block endet. Das Bild ist ein echtes <img> in .moon, damit das CMS es
-   tauschen kann (Bild nach Position). Seit 03.10.2026 füllt das Bild nicht mehr die
-   ganze (riesige) Scheibe, sondern genau den sichtbaren Bereich unter der Überschrift —
-   die Scheibe gibt nur noch den runden Rand. So zeigen PC und Handy dasselbe Bild
-   (vorher am PC nur dessen obersten Streifen, auf dem Handy drei Viertel). */
+/* ---------- 6. Hero & Startbild (Landing) ----------
+   Oben die Überschrift, darunter das Startbild (<img class="moon-img"> in .moon, im CMS
+   austauschbar als Bild nach Position 0). Das Bild steht ganz und über die volle Breite —
+   auf jedem Gerät derselbe Inhalt. (Bis 03.10.2026 war es eine große, gespiegelte Mondscheibe,
+   die je nach Bildschirm unterschiedlich viel abschnitt.) */
 .moonscape {
   position: relative; overflow: hidden; isolation: isolate;
   background: #000; container-type: inline-size;
   --scape-h: calc(100vh - var(--header-h));
   min-height: var(--scape-h);        /* Startseite ist nur Claim und Mond */
-  /* Durchmesser und Mittelpunkt: flacher Bogen, damit am PC wie auf dem Handy rund 95 % des Bildbereichs
-     zu sehen sind (vorher 280cqw/88cqw: am PC nur 80 %, links kaum die Hälfte). */
-  --moon-d: 500cqw;
-  --moon-x: 65cqw;
-  --moon-top: 240px;                 /* Oberkante der Kugel: gleicher Abstand wie Header→Überschrift (56px) */
 }
+/* Seit 03.10.2026: das Startbild steht überall GANZ, über die volle Breite, in seinem eigenen
+   Format — unter der Überschrift, nichts abgeschnitten. PC, Handy und CMS-Vorschau zeigen
+   dasselbe (vorher schnitt die Mondscheibe je nach Bildschirm unterschiedlich viel ab).
+   Zoom aus dem CMS (--z, 110–250 %) vergrößert um den gewählten Punkt, der Rahmen bleibt gleich. */
+.moonscape { display: flex; flex-direction: column; }
+.moonscape .hero { order: 0; }
 .moon {
-  position: absolute; z-index: -1; pointer-events: none; overflow: hidden;
-  top: var(--moon-top);
-  left: calc(var(--moon-x) - var(--moon-d) / 2);
-  width: var(--moon-d); height: var(--moon-d);
-  border-radius: 50%;
-  background: #1a1a1c;
-  box-shadow: 0 0 140px rgba(215, 220, 240, .16);
-  --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, .04) 0%, rgba(0, 0, 0, .14) 40%, rgba(0, 0, 0, .3) 100%);
+  order: 1; position: relative; overflow: hidden; pointer-events: none;
+  width: 100%; background: #000;
+  --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, .35) 0%, rgba(0, 0, 0, 0) 18%);
 }
-/* Bild = sichtbarer Bereich: volle Breite (100cqw der .moonscape), von der Oberkante der Scheibe bis
-   zum unteren Rand des Blocks; eingepasst mit object-fit: cover um den Punkt aus dem CMS (--fx/--fy).
-   Die Scheibe schneidet nur die runde Kante ab. Zoom (--z, 110–250 %) vergrößert um denselben Punkt. */
 .moon img {
-  position: absolute; top: 0; left: calc(var(--moon-d) / 2 - var(--moon-x));
-  width: 100cqw; height: calc(var(--scape-h) - var(--moon-top)); max-width: none;
-  object-fit: cover; display: block;
+  display: block; width: 100%; height: auto; max-width: none;
   --fx: 50%; --fy: 50%; --z: 1;
-  object-position: var(--fx) var(--fy);
 }
 .moon .moon-img--top { --fy: 0%; }
 .moon .moon-img--bottom { --fy: 100%; }
@@ -526,8 +508,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
      Horizont abfällt und der Mond bis unter die gestapelten Kacheln reicht */
   /* Handy: kleinere Scheibe, Mittelpunkt links – der Rand läuft als deutlicher Bogen
      von links oben nach rechts unten; darunter füllt der Mond die Breite */
-  .moonscape { --moon-d: 240cqw; --moon-x: 78cqw; --moon-top: 129px; --scape-h: calc(100svh - var(--header-h)); }
-  .moon { --moon-shade: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .4) 100%); }
+  .moonscape { --scape-h: calc(100svh - var(--header-h)); }
   /* Bänder: höheres Format, Überschrift wie die Startseite auf dem Handy */
   .bands { padding: 20px 0 48px; }
   .bands .wrap { gap: 12px; }
@@ -543,15 +524,11 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .wrap { padding: 0 18px; }
   .hero-copy { padding: 18px 0 8px; }
 
-  .moonscape { --moon-top: 85px; }
   .bands .wrap { gap: 10px; }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .hero-copy { padding: 24px 0 12px; }
-  .moonscape { --moon-top: 115px; }
 }
 @media (min-width: 700px) and (max-width: 940px) {
-  /* Tablet: gleicher Abstand Header→Überschrift wie Überschrift→Mond */
-  .moonscape { --moon-top: 129px; }
   .band { aspect-ratio: 2 / 1; }
 }

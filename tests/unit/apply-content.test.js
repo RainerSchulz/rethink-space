@@ -305,11 +305,11 @@ describe('Feature: Mondbild der Startseite — Ausschnitt und Zoom aus dem CMS',
 
 describe('Feature: Startbild zeigt am PC und auf dem Handy dasselbe', () => {
   const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
-  it('das Bild füllt den sichtbaren Bereich (volle Breite, bis zum unteren Rand), nicht die ganze Scheibe', () => {
-    expect(css).toContain('position: absolute; top: 0; left: calc(var(--moon-d) / 2 - var(--moon-x));');
-    expect(css).toContain('width: 100cqw; height: calc(var(--scape-h) - var(--moon-top)); max-width: none;');
+  it('das Bild steht ganz über die volle Breite (eigenes Format, nichts abgeschnitten)', () => {
+    expect(css).toContain('display: block; width: 100%; height: auto; max-width: none;');
     expect(css).not.toContain('moon-img--up');
-    expect(css).not.toMatch(/\.moon \{[^}]*scaleX\(-1\)/);
+    expect(css).not.toMatch(/\.moon \{[^}]*border-radius: 50%/);
+    expect(css).not.toMatch(/@media[^{]*\{[^}]*\.moon img/);
   });
 });
 
