@@ -301,3 +301,20 @@ describe('Feature: Mondbild der Startseite — Ausschnitt und Zoom aus dem CMS',
   });
 });
 
+describe('Feature: Mondbild am PC höher zeigen (nur Desktop)', () => {
+  const html = '<div class="moon"><img class="moon-img" src="/Bilder/x.jpg" alt="" decoding="async"></div>';
+  const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
+
+  it('Klasse moon-img--up<n> (5–80, Fünfer), allein oder mit Zoom', () => {
+    expect(setImages(html, [{ src: '/Bilder/x.jpg', alt: '', shiftY: 35 }]).html).toContain('class="moon-img moon-img--up35"');
+    expect(moonClass({ zoom: 150, shiftY: 20 })).toBe('moon-img moon-img--z150 moon-img--up20');
+    for (const v of [0, 3, 85, '20']) expect(moonClass({ shiftY: v })).toBe('moon-img');
+  });
+
+  it('wirkt nur ab 821 px Breite (Handy unverändert), jede Stufe hat eine Regel', () => {
+    const desktop = css.slice(css.indexOf('@media (min-width: 821px) {'));
+    for (let u = 5; u <= 80; u += 5) expect(desktop).toContain(`.moon .moon-img--up${u} { --up: ${u}%; }`);
+    expect(css.slice(0, css.indexOf('@media (min-width: 821px) {'))).not.toContain('moon-img--up');
+  });
+});
+

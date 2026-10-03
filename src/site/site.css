@@ -192,6 +192,28 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .moon .moon-img--left { --fx: 100%; }
 .moon .moon-img--right { --fx: 0%; }
 .moon img[class*="moon-img--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }
+/* Nur Desktop: Bild in der Scheibe nach oben schieben (--up, Anteil der Bildhöhe). Auf dem Handy ist
+   gut drei Viertel der Scheibe zu sehen, am PC nur der oberste Streifen — so kommt dort dieselbe
+   Bildmitte ins Bild. Der untere Rand der Scheibe liegt am PC ohnehin außerhalb des Fensters. */
+@media (min-width: 821px) {
+  .moon img[class*="moon-img--up"] { translate: 0 calc(-1 * var(--up)); }
+  .moon .moon-img--up5 { --up: 5%; }
+  .moon .moon-img--up10 { --up: 10%; }
+  .moon .moon-img--up15 { --up: 15%; }
+  .moon .moon-img--up20 { --up: 20%; }
+  .moon .moon-img--up25 { --up: 25%; }
+  .moon .moon-img--up30 { --up: 30%; }
+  .moon .moon-img--up35 { --up: 35%; }
+  .moon .moon-img--up40 { --up: 40%; }
+  .moon .moon-img--up45 { --up: 45%; }
+  .moon .moon-img--up50 { --up: 50%; }
+  .moon .moon-img--up55 { --up: 55%; }
+  .moon .moon-img--up60 { --up: 60%; }
+  .moon .moon-img--up65 { --up: 65%; }
+  .moon .moon-img--up70 { --up: 70%; }
+  .moon .moon-img--up75 { --up: 75%; }
+  .moon .moon-img--up80 { --up: 80%; }
+}
 .moon .moon-img--z110 { --z: 1.1; }
 .moon .moon-img--z120 { --z: 1.2; }
 .moon .moon-img--z130 { --z: 1.3; }
