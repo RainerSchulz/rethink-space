@@ -45,6 +45,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           CMS_SNAPSHOT_FILE: ${{ runner.temp }}/cms-snapshot.json
 
+      # Bilder aus dem CMS verkleinern (WebP, höchstens 1920 px, Original bleibt) und Sitemap-Datum nachziehen
+      - name: Bilder verkleinern
+        run: npm run images:optimize
+
       # Gegenprüfung vor dem Commit: ein kaputter Inhalt darf nicht live gehen.
       - run: npm run lint
       - run: npm run test:run
