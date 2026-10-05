@@ -40,6 +40,7 @@ export const DE = {
   // ── Vision ────────────────────────────────────────────────────────
   'habitat.meta.title':       'Lunar Habitato – RETHINK SPACE',
   'habitat.meta.description': 'Der Mond ist kein Ziel. Er ist der erste Ort, an dem sich entscheidet, wie Menschen dauerhaft außerhalb der Erde leben und arbeiten.',
+  'habitat.page.h1': 'Lunar Habitato – Mond-Habitat-Design',
   'habitat.band.space':     'New Space Economy',
   'habitat.band.design':    'Design & IP',
   'habitat.band.research':  'Researching',
@@ -62,6 +63,7 @@ export const DE = {
   // ── Dual-Use ──────────────────────────────────────────────────────
   'dual.meta.title':              'Dual-Use – RETHINK SPACE',
   'dual.meta.description':        'Was extreme Umgebungen aushält, hilft auch dort, wo auf der Erde konventionelles Bauen an Grenzen stößt.',
+  'dual.page.h1': 'Dual-Use: Mond-Habitat-Technik auf der Erde',
   'dual.band.defense': 'Defense Options',
   'dual.band.downstream': 'Down Streaming',
   'dual.panel.defense.text': 'Was auf dem Mond Strahlung, Temperatursprüngen und Einschlägen standhält, trägt auch dort, wo herkömmliches Bauen auf der Erde an Grenzen stößt: geschützte Unterkunft, dichte Strukturen, Versorgung ohne Lieferkette dahinter.\n\nWir prüfen jede Entwicklung auch auf ihren sicherheitsrelevanten Einsatz – und legen offen, wohin diese Prüfung führt. Exportkontrolle und Endverwendung gehören zur Entwurfsentscheidung, nicht ans Ende.',
@@ -74,6 +76,7 @@ export const DE = {
   // ── Autor ─────────────────────────────────────────────────────────
   'people.meta.title':           'People – RETHINK SPACE',
   'people.meta.description':     'Dr. Johannes Lierfeld – Autor, Wissenschaftler und Initiator von RETHINK SPACE.',
+  'people.page.h1': 'Die Menschen hinter RETHINK SPACE',
   'people.band.founder': 'Founder & CEO',
   'people.band.team': 'Team',
   'people.panel.team.text': 'RETHINK SPACE arbeitet als Netzwerk: Architektur, Materialforschung und Missionsplanung kommen je Etappe von Partnern, die das jeweilige Fach bereits belegt haben.\n\nDie Menschen hinter den laufenden Etappen stehen hier. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',

@@ -38,8 +38,9 @@ export const EN = {
   'home.hero.lead2':       'Lunar Infrastructure',
 
   // ── Vision ────────────────────────────────────────────────────────
-  'habitat.meta.title':       'LUNAR HABITATO – RETHINK SPACE',
+  'habitat.meta.title':       'Lunar Habitato – Modular Moon Habitat Design | RETHINK SPACE',
   'habitat.meta.description': 'The Moon is not a destination. It is the first place where it will be decided how humans live and work permanently beyond Earth.',
+  'habitat.page.h1': 'Lunar Habitato – Moon Habitat Design',
   'habitat.band.space':     'New Space Economy',
   'habitat.band.design':    'Design & IP',
   'habitat.band.research':  'Researching',
@@ -60,8 +61,9 @@ export const EN = {
   // ── Deployment ────────────────────────────────────────────────────
 
   // ── Dual-Use ──────────────────────────────────────────────────────
-  'dual.meta.title':              'Dual-Use – RETHINK SPACE',
+  'dual.meta.title':              'Dual-Use – Lunar Habitat Technology on Earth | RETHINK SPACE',
   'dual.meta.description':        'What withstands extreme environments also helps where conventional construction reaches its limits on Earth.',
+  'dual.page.h1': 'Dual-Use: Lunar Habitat Technology on Earth',
   'dual.band.defense': 'Defense Options',
   'dual.band.downstream': 'DownStream',
   'dual.panel.defense.text': '**“Almost all technology is dual-use at its core.”**\n\nThe dynamics of world politics are unpredictable.\n\nThe safety demands of many nations are rising.\n\nOur lunar **Matryoshka Shell Design (MaSh)** is a perfect blueprint for habitat designs that suit any harsh conditions, like deserts, battlefields, or even the deep sea!\n\nMaSh\'s double-layered architecture translates directly to terrestrial defense, combining multi-material composite layers to provide maximum structural resistance against dynamic energy and kinetic impacts.\n\nSemi-autonomous deployment through **BCI-supervised swarm robotics**, a **30% ISRU** degree and a **deployment duration time** of a few weeks make our defense shelters a game-changing, modular solution.',
@@ -72,8 +74,9 @@ export const EN = {
   // ── News ──────────────────────────────────────────────────────────
 
   // ── Author ────────────────────────────────────────────────────────
-  'people.meta.title':           'People – RETHINK SPACE',
-  'people.meta.description':     'Dr. Johannes Lierfeld – author, scientist and initiator of RETHINK SPACE.',
+  'people.meta.title':           'Dr. Dr. Johannes Lierfeld – Founder & CEO | RETHINK SPACE',
+  'people.meta.description':     'Meet Dr. Dr. Johannes Lierfeld – author, AI and BCI researcher and founder of RETHINK SPACE – and the network behind lunar habitat design.',
+  'people.page.h1': 'People behind RETHINK SPACE',
   'people.band.founder': 'Founder & CEO',
   'people.band.team': 'Team',
   'people.panel.team.text': '**"Everybody is lost in space without the right team." **\n\n**RETHINK SPACE** entertains a growing network of space tech specialists, such as:\n\nProf. Dr. Valentina Sumini (Polytecnico Torino, MIT Media Lab)\n\nDr. Tommy Nilsson (Fraunhofer FIT / ESA)\n\nMuch gratitude to both of you! Our collaboration is a big part of the scientific validation of **RETHINK SPACE.**\n\nHereby I thank my long-time partners in crime, my "unofficial adoptive son" Maximilian Weidmann and my Irish wingman Richard Kayser, who are also my co-founders. \n\n3D printing enthusiast Jonas Grünewald supports **RETHINK SPACE** as a start-up coach. Jonas is also the guy who introduced me into the space tech industry eventually, so forever grateful!\n\nOur head of strategy, Murat Ural, has been shaping our main cooperation strategy - we don´t look for investors, but the right partners - and did an awesome job throughout the re-branding and US flip. Thank you, Murat!\n\nMurat also brought IT and AI specialist Rainer Schulz on board, who implemented this website quick & nice. Excellent work - many thanks, Rainer! \n\nMuch gratitude goes out to to Marco Knieling and Emir Sahin, some of my best students who now support our R&D.\n\n**RETHINK SPACE** aims to stay lean and agile. However, we will grow the team organically. \n\nSuitable positions would be: \n\n- BCI specialist with strong researching experience\n- space scientist (ISRU / swarm robotics experience)\n',
@@ -96,8 +99,8 @@ export const EN = {
   'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; (English); [transcript!] / Columbia University Press, 2026',
 
   // ── Contact ───────────────────────────────────────────────────────
-  'contact.meta.title':       'Contact – RETHINK SPACE',
-  'contact.meta.description': 'Research, industry, press – we answer every serious enquiry.',
+  'contact.meta.title':       'Contact RETHINK SPACE – Research, Industry, Press',
+  'contact.meta.description': 'Contact RETHINK SPACE for research cooperation, industry partnerships and press enquiries on lunar habitats and the new space economy.',
   'contact.hero.eyebrow':     'Contact',
   'contact.hero.title':       'Let’s talk.',
   'contact.hero.lead':        'Research, industry, press – we answer every serious enquiry.',
@@ -119,7 +122,7 @@ export const EN = {
   // ── Legal ─────────────────────────────────────────────────────────
   'legal.eyebrow':            'Legal',
   'imprint.meta.title':       'Legal notice – RETHINK SPACE',
-  'imprint.meta.description': 'Legal notice of RETHINK SPACE Inc., Delaware, USA.',
+  'imprint.meta.description': 'Legal notice of RETHINK SPACE Inc., Delaware, USA – company details, contact and responsibility for content.',
   'imprint.title':             'Legal notice',
   'imprint.operator.title':    'Company information',
   'imprint.operator.body':     'RETHINK SPACE Inc. (C-Corporation in Formation), Delaware, USA. Represented by Dr. Karl Johannes Lierfeld. Registered agent, state file number and taxpayer identification number will be added once the incorporation is complete. Until then Dr. Karl Johannes Lierfeld is personally responsible for this website.',

@@ -269,7 +269,7 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
       it('Bänder mit Bild und Überschrift', () => {
         // Zusatzklassen erlaubt (z. B. band-media--top für hochformatige Motive)
         const plain = [...html.matchAll(/<div class="band band--plain">/g)].length;
-        expect([...html.matchAll(/<img class="band-media[^"]*" src="\/Bilder\/[^"]+" alt="" loading="lazy">/g)]).toHaveLength(count - plain);
+        expect([...html.matchAll(/<img class="band-media[^"]*" src="\/Bilder\/[^"]+" alt="[^"]*" loading="lazy">/g)]).toHaveLength(count - plain);
         expect([...html.matchAll(/class="band-h"/g)]).toHaveLength(count);
       });
 
