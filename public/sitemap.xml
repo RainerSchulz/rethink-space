@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://rethink.space/</loc><lastmod>2026-10-05</lastmod></url>
-  <url><loc>https://rethink.space/pages/lunar-habitato/</loc><lastmod>2026-10-05</lastmod></url>
-  <url><loc>https://rethink.space/pages/dual-use/</loc><lastmod>2026-10-05</lastmod></url>
-  <url><loc>https://rethink.space/pages/people/</loc><lastmod>2026-10-05</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url><loc>https://rethink.space/</loc><lastmod>2026-10-05</lastmod><image:image><image:loc>https://rethink.space/Bilder/cms/1791033495423-chatgpt-bild-3.-okt.-2026-15_05_08.webp</image:loc></image:image></url>
+  <url><loc>https://rethink.space/pages/lunar-habitato/</loc><lastmod>2026-10-05</lastmod><image:image><image:loc>https://rethink.space/Bilder/cms/1790686061798-new-space-economy.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/cms/1790875824067-monochrome-mondbasis-mit-lunar-habitato.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/cms/1791033784603-mondbasis_schnitt_erde_mittig.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/2026-09-Partner-logos.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/cms/1790689176551-matryoshka-mesh-origins.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/cms/1790877493660-partnership.webp</image:loc></image:image></url>
+  <url><loc>https://rethink.space/pages/dual-use/</loc><lastmod>2026-10-05</lastmod><image:image><image:loc>https://rethink.space/Bilder/cms/1790686840793-defense-armor.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/cms/1790687310843-downstream.webp</image:loc></image:image></url>
+  <url><loc>https://rethink.space/pages/people/</loc><lastmod>2026-10-05</lastmod><image:image><image:loc>https://rethink.space/Bilder/cms/1790876932406-gemini_generated_image_p4f4fep4f4fep4f4.webp</image:loc></image:image><image:image><image:loc>https://rethink.space/Bilder/cms/1790878454322-team-pic.webp</image:loc></image:image></url>
   <url><loc>https://rethink.space/pages/contact/</loc><lastmod>2026-10-05</lastmod></url>
   <url><loc>https://rethink.space/pages/legal-notice/</loc><lastmod>2026-09-15</lastmod></url>
   <url><loc>https://rethink.space/pages/privacy/</loc><lastmod>2026-09-15</lastmod></url>

@@ -57,6 +57,40 @@ export function rewriteImages(html, lookup) {
  * @param {string} today  JJJJ-MM-TT
  */
 export function touchSitemap(xml, isChanged, today) {
-  return String(xml).replace(/<url><loc>([^<]+)<\/loc><lastmod>[^<]*<\/lastmod><\/url>/g,
-    (all, loc) => (isChanged(loc) ? `<url><loc>${loc}</loc><lastmod>${today}</lastmod></url>` : all));
+  return String(xml).replace(/<url><loc>([^<]+)<\/loc><lastmod>[^<]*<\/lastmod>(.*?)<\/url>/g,
+    (all, loc, rest) => (isChanged(loc) ? `<url><loc>${loc}</loc><lastmod>${today}</lastmod>${rest}</url>` : all));
+}
+
+/**
+ * Sichtbare Bilder einer Seite (für die Bilder-Sitemap): src/data-portrait-src unter /Bilder/,
+ * ohne ausgeblendete (hidden) — in Dokumentreihenfolge, ohne Doppelte.
+ */
+export function visibleImages(html) {
+  const out = [];
+  for (const tag of String(html).match(/<(?:img|div)\b[^>]*\s(?:src|data-portrait-src)="\/Bilder\/[^"]+"[^>]*>/g) ?? []) {
+    if (/\shidden(?:[\s=>])/.test(tag)) continue;
+    const path = /\s(?:src|data-portrait-src)="(\/Bilder\/[^"]+)"/.exec(tag)[1];
+    if (!out.includes(path)) out.push(path);
+  }
+  return out;
+}
+
+/**
+ * Bilder-Sitemap (Google): je Seite <image:image><image:loc> für jedes sichtbare Bild.
+ * Bestehende Bildeinträge werden ersetzt, lastmod bleibt; der Namensraum kommt einmal an urlset.
+ * @param {string} xml
+ * @param {(loc:string) => string[]|null} imagesOf  absolute Bildadressen je Seite (null = unverändert lassen)
+ */
+export function sitemapImages(xml, imagesOf) {
+  let out = String(xml);
+  if (!out.includes('xmlns:image=')) {
+    out = out.replace('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">');
+  }
+  return out.replace(/<url><loc>([^<]+)<\/loc>(<lastmod>[^<]*<\/lastmod>)?(.*?)<\/url>/g, (all, loc, lastmod = '') => {
+    const imgs = imagesOf(loc);
+    if (!imgs) return all;
+    const entries = imgs.map((u) => `<image:image><image:loc>${u.replace(/&/g, '&amp;')}</image:loc></image:image>`).join('');
+    return `<url><loc>${loc}</loc>${lastmod}${entries}</url>`;
+  });
 }

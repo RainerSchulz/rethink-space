@@ -13,7 +13,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
 import sharp from 'sharp';
-import { MAX_WIDTH, QUALITY, imagePaths, rewriteImages, touchSitemap, webpPath } from './lib/optimize-images.mjs';
+import { MAX_WIDTH, QUALITY, imagePaths, rewriteImages, touchSitemap, sitemapImages, visibleImages, webpPath } from './lib/optimize-images.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLIC = join(ROOT, 'public');
@@ -86,7 +86,13 @@ if (existsSync(sitemap)) {
     } catch { return true; } // Unterschied (oder kein git) → als geändert werten
   };
   const xml = readFileSync(sitemap, 'utf8');
-  const next = touchSitemap(xml, isChanged, new Date().toISOString().slice(0, 10));
+  // Bilder-Sitemap: sichtbare Bilder je Seite (für die Google-Bildersuche), danach das Datum
+  const imagesOf = (loc) => {
+    const file = fileOf(loc);
+    if (!existsSync(file)) return null;
+    return visibleImages(readFileSync(file, 'utf8')).map((p) => new URL(p, loc).href);
+  };
+  const next = touchSitemap(sitemapImages(xml, imagesOf), isChanged, new Date().toISOString().slice(0, 10));
   if (next !== xml) writeFileSync(sitemap, next);
 }
 
