@@ -39,7 +39,7 @@ export const EN = {
 
   // ── Vision ────────────────────────────────────────────────────────
   'habitat.meta.title':       'Lunar Habitato – Modular Moon Habitat Design | RETHINK SPACE',
-  'habitat.meta.description': 'The Moon is not a destination. It is the first place where it will be decided how humans live and work permanently beyond Earth.',
+  'habitat.meta.description': 'LUNAR HABITATO by RETHINK SPACE: modular lunar habitat design and licensing for a permanent, ultra-resilient Moon base, aiming for 80–90 % ISRU.',
   'habitat.page.h1': 'Lunar Habitato – Moon Habitat Design',
   'habitat.band.space':     'New Space Economy',
   'habitat.band.design':    'Design & IP',
