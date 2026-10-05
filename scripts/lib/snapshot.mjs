@@ -31,6 +31,7 @@ export function toSnapshot(content, applied = () => true) {
       bands: (p.bands ?? []).map((b) => ({
         id: b.id, titleKey: b.titleKey, textKey: b.textKey, src: b.image?.src ?? null, focus: b.image?.focus ?? null,
         ...(b.image?.focusX ? { focusX: b.image.focusX } : {}), ...(b.image?.zoom ? { zoom: b.image.zoom } : {}),
+        ...(b.image?.alt ? { alt: b.image.alt } : {}),
       })),
       // Listen (cms:list): je Name die Kennungen in Reihenfolge
       ...(p.lists ? { lists: Object.fromEntries(Object.entries(p.lists).map(([n, items]) => [n, items.map((i) => i.id)])) } : {}),

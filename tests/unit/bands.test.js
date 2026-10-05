@@ -238,3 +238,30 @@ describe('Feature: Ausschnitt (3×3) und Zoom aus dem CMS', () => {
   });
 });
 
+describe('Feature: Alt-Text der Kachelbilder aus dem CMS', () => {
+  const html = fixture('bands-lunar.html');
+  const bands = asData(parseBands(splitRegion(html).region));
+  const blockOf = (h, id) => parseBands(splitRegion(h).region).find((b) => b.id === id).block;
+
+  it('setzt, ändert und leert den Alt-Text (maskiert), Bild und Klasse bleiben', () => {
+    const r = applyBands(html, bands.map((b) => (b.id === 'design' ? { ...b, image: { ...b.image, alt: 'Habitat "Matryoshka" & more' } } : b)));
+    const block = blockOf(r.html, 'design');
+    expect(block).toContain('alt="Habitat &quot;Matryoshka&quot; &amp; more" loading="lazy">');
+    expect(parseBands(splitRegion(r.html).region).find((b) => b.id === 'design').image.alt).toBe('Habitat "Matryoshka" & more');
+    const cleared = applyBands(r.html, asData(parseBands(splitRegion(r.html).region)).map((b) => (b.id === 'design' ? { ...b, image: { ...b.image, alt: '' } } : b)));
+    expect(blockOf(cleared.html, 'design')).toContain('alt="" loading="lazy">');
+  });
+
+  it('ohne Angabe (ältere Datenbank) bleibt der vorhandene Alt-Text; zweimal anwenden ändert nichts', () => {
+    const withAlt = applyBands(html, bands.map((b) => (b.id === 'design' ? { ...b, image: { ...b.image, alt: 'X' } } : b))).html;
+    const again = applyBands(withAlt, asData(parseBands(splitRegion(withAlt).region)).map((b) => ({ ...b, image: { src: b.image.src } })));
+    expect(blockOf(again.html, 'design')).toContain('alt="X"');
+    expect(applyBands(withAlt, asData(parseBands(splitRegion(withAlt).region))).changed).toBe(false);
+  });
+
+  it('neue Kachel mit Alt-Text', () => {
+    const neu = { id: 'neu', titleKey: 'habitat.band.neu', textKey: 'habitat.panel.neu.text', image: { src: '/Bilder/cms/n.webp', alt: 'Neues Motiv' } };
+    expect(blockOf(applyBands(html, [...bands, neu], () => 'T').html, 'neu')).toContain('src="/Bilder/cms/n.webp" alt="Neues Motiv" loading="lazy">');
+  });
+});
+

@@ -16,7 +16,7 @@
  * Reine Umformungen ohne Dateizugriff, getestet in tests/unit/bands.test.js.
  */
 import { renderRichHtml } from '../../src/site/i18n/rich-text.js';
-import { escapeHtml, escapeJsString } from './apply.mjs';
+import { escapeHtml, escapeAttr, escapeJsString } from './apply.mjs';
 
 export const REGION_START = '<!-- cms:bands -->';
 export const REGION_END = '<!-- /cms:bands -->';
@@ -68,14 +68,17 @@ export function parseBands(region) {
     const titleKey = /class="band-h" data-i18n="([^"]+)"/.exec(block)?.[1];
     const textKey = /class="panel-text" data-i18n="([^"]+)"/.exec(block)?.[1];
     const src = /<img class="band-media[^"]*" src="([^"]+)"/.exec(block)?.[1];
+    const alt = /<img class="band-media[^"]*" src="[^"]+" alt="([^"]*)"/.exec(block)?.[1];
     const more = /data-i18n="common\.more">([^<]*)</.exec(block)?.[1];
-    return { id, titleKey, textKey, image: { src }, more, block };
+    return { id, titleKey, textKey, image: { src, ...(alt ? { alt: unescapeAttr(alt) } : {}) }, more, block };
   });
 }
 
 /** Kachel ohne Bild: dunkle Fläche in gleicher Höhe (site.css .band--plain). */
 const PLAIN = 'band--plain';
-const bandImg = (src, cls) => `<img class="${cls}" src="${escapeHtml(src)}" alt="" loading="lazy">`;
+/** Alt-Text aus dem CMS (cms_bands.image_alt): erscheint nur, wenn das Bild nicht lädt; Screenreader und Suche lesen ihn. */
+const bandImg = (src, cls, alt = '') => `<img class="${cls}" src="${escapeHtml(src)}" alt="${escapeAttr(alt ?? '')}" loading="lazy">`;
+const unescapeAttr = (s) => s.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
 /** Neue Kachel aus der Vorlage (derselbe Aufbau wie die bestehenden); ohne Bild mit Klasse band--plain. */
 export function renderBand({ id, titleKey, textKey, title = '', text = '', image }, { more = 'Learn more' } = {}) {
@@ -83,7 +86,7 @@ export function renderBand({ id, titleKey, textKey, title = '', text = '', image
   return [
     GROUP_OPEN,
     src ? '          <div class="band">' : `          <div class="band ${PLAIN}">`,
-    src ? `            ${bandImg(src, mediaClass(image))}` : null,
+    src ? `            ${bandImg(src, mediaClass(image), image?.alt)}` : null,
     '            <div class="band-title">',
     `              <h2 class="band-h" data-i18n="${titleKey}">${escapeHtml(title)}</h2>`,
     `              <button class="arrow-link band-toggle" type="button" aria-expanded="false" aria-controls="band-${id}" data-i18n="common.more">${escapeHtml(more)}</button>`,
@@ -122,11 +125,21 @@ function setImage(block, src, image) {
     // Kachel hatte kein Bild: Bild vor die Titelzeile, Klasse band--plain weg
     return block
       .replace(`<div class="band ${PLAIN}">`, () => '<div class="band">')
-      .replace(/\n( *)<div class="band-title">/, (all, indent) => `\n${indent}${bandImg(src, mediaClass(image))}${all}`);
+      .replace(/\n( *)<div class="band-title">/, (all, indent) => `\n${indent}${bandImg(src, mediaClass(image), image?.alt)}${all}`);
   }
   const cls = hasCrop(image) ? mediaClass(image) : img[1];
-  if (img[2] === src && cls === img[1]) return block;
-  const plain = bandImg(src, cls);
+  // Alt-Text: aus dem CMS, wenn angegeben (auch leer), sonst der vorhandene
+  const oldAlt = /\salt="([^"]*)"/.exec(img[0])?.[1];
+  const alt = typeof image?.alt === 'string' ? image.alt : (oldAlt === undefined ? '' : unescapeAttr(oldAlt));
+  if (img[2] === src && cls === img[1]) {
+    // Bild und Ausschnitt gleich: höchstens den Alt-Text am vorhandenen <img> ändern (<picture> bleibt)
+    if (oldAlt !== undefined && unescapeAttr(oldAlt) === alt) return block;
+    const tag = oldAlt === undefined
+      ? img[0].replace(/\s*\/?>$/, (end) => ` alt="${escapeAttr(alt)}"${end}`)
+      : img[0].replace(/\salt="[^"]*"/, () => ` alt="${escapeAttr(alt)}"`);
+    return block.replace(img[0], () => tag);
+  }
+  const plain = bandImg(src, cls, alt);
   // Ersetzung als Funktion: Pfade und Texte aus dem CMS dürfen $-Zeichen enthalten.
   if (picture) return block.replace(picture[0], () => `\n${picture[1]}${plain}`);
   return block.replace(img[0], () => plain);
