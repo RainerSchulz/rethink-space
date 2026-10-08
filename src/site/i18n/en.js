@@ -62,7 +62,7 @@ export const EN = {
 
   // ── Dual-Use ──────────────────────────────────────────────────────
   'dual.meta.title':              'Dual-Use – Lunar Habitat Technology on Earth | RETHINK SPACE',
-  'dual.meta.description':        'What withstands extreme environments also helps where conventional construction reaches its limits on Earth.',
+  'dual.meta.description':        'Dual-use by RETHINK SPACE: our lunar Matryoshka Shell Design as resilient, rapidly deployable shelters on Earth – for defense, deserts and the deep sea.',
   'dual.page.h1': 'Dual-Use: Lunar Habitat Technology on Earth',
   'dual.band.defense': 'Defense Options',
   'dual.band.downstream': 'DownStream',
