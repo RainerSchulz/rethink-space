@@ -28,13 +28,25 @@ const GROUP_OPEN = '        <div class="band-group">';
  */
 export const FOCUS_CLASS = { top: ' band-media--top', center: '', bottom: ' band-media--bottom' };
 export const FOCUS_X_CLASS = { left: ' band-media--left', center: '', right: ' band-media--right' };
-/** 100–250 %, 100 % = Bild füllt die Kachel wie eingepasst (keine Klasse). Nie kleiner — sonst entstünde ein Rand. */
+/** „Kachel füllen“: 100–250 %, 100 % = Bild füllt die Kachel (keine Klasse). Kleiner ginge nicht ohne Rand. */
 export const ZOOM = { min: 100, max: 250, step: 10, neutral: 100 };
-export const zoomOk = (z) => Number.isInteger(z) && z >= ZOOM.min && z <= ZOOM.max && z % ZOOM.step === 0;
+/**
+ * „Ganzes Bild zeigen“ (image.fit, CMS-Migration 0029): das Bild passt sich in jede Kachel ein, nichts wird
+ * abgeschnitten; freie Fläche schwarz ('contain') oder weiß ('contain-white'). Zoom dann 50–250 %.
+ */
+export const FITS = ['contain', 'contain-white'];
+export const FIT_ZOOM = { min: 50, max: 250, step: 10, neutral: 100 };
+export const fitOk = (f) => FITS.includes(f);
+export const zoomOk = (z, fit = null) => {
+  const r = fitOk(fit) ? FIT_ZOOM : ZOOM;
+  return Number.isInteger(z) && z >= r.min && z <= r.max && z % r.step === 0;
+};
+const FIT_CLASS = { contain: ' band-media--fit', 'contain-white': ' band-media--fit band-media--fit-white' };
 export const mediaClass = (image = {}) => `band-media${FOCUS_CLASS[image?.focus] ?? ''}${FOCUS_X_CLASS[image?.focusX] ?? ''}`
-  + `${zoomOk(image?.zoom) && image.zoom !== ZOOM.neutral ? ` band-media--z${image.zoom}` : ''}`;
+  + `${FIT_CLASS[image?.fit] ?? ''}`
+  + `${zoomOk(image?.zoom, image?.fit) && image.zoom !== ZOOM.neutral ? ` band-media--z${image.zoom}` : ''}`;
 /** Hat das CMS einen Ausschnitt gewählt? Sonst bleibt die vorhandene Klasse (etwa band-media--partnership). */
-const hasCrop = (image) => Boolean(image && (image.focus || image.focusX || image.zoom));
+const hasCrop = (image) => Boolean(image && (image.focus || image.focusX || image.zoom || image.fit));
 const GROUP_CLOSE = '        </div>';
 
 /** Seite in Teil vor, im und nach dem verwalteten Bereich zerlegen; null ohne Bereich. */

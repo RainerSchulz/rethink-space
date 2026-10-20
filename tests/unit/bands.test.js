@@ -7,7 +7,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import {
   splitRegion, parseBands, applyBands, renderBand, maskRegion,
-  insertDictKeys, removeDictKey, dictEscape, prefixOf, mediaClass, ZOOM,
+  insertDictKeys, removeDictKey, dictEscape, prefixOf, mediaClass, ZOOM, FIT_ZOOM,
 } from '../../scripts/lib/bands.mjs';
 import { listImages, setImages } from '../../scripts/lib/apply.mjs';
 
@@ -213,12 +213,21 @@ describe('Feature: Ausschnitt (3×3) und Zoom aus dem CMS', () => {
     for (const z of [95, 255, 133, '150', null]) expect(mediaClass({ zoom: z }), String(z)).toBe('band-media');
   });
 
+  it('„Ganzes Bild zeigen“: eingepasst, Rand schwarz oder weiß, verkleinern 50–90 %', () => {
+    expect(mediaClass({ fit: 'contain' })).toBe('band-media band-media--fit');
+    expect(mediaClass({ fit: 'contain-white', zoom: 70, focusX: 'left' })).toBe('band-media band-media--left band-media--fit band-media--fit-white band-media--z70');
+    expect(mediaClass({ fit: 'cover', zoom: 70 })).toBe('band-media'); // unbekannt: wie füllen, also kein Verkleinern
+    expect(mediaClass({ fit: 'contain', zoom: 40 })).toBe('band-media band-media--fit');
+    for (let z = FIT_ZOOM.min; z < ZOOM.min; z += FIT_ZOOM.step) expect(css, `z${z}`).toContain(`.band-media--z${z} { --z: ${z / 100}; }`);
+    expect(css).toContain('.band-media--fit { object-fit: contain; }');
+    expect(css).toContain('.band:has(.band-media--fit-white) { background: #fff; }');
+  });
+
   it('site.css hat für jede Zoomstufe und jede Richtung eine Regel', () => {
     for (let z = ZOOM.min; z <= ZOOM.max; z += ZOOM.step) {
       if (z !== ZOOM.neutral) expect(css, `z${z}`).toContain(`.band-media--z${z} { --z: ${z / 100}; }`);
     }
-    expect(mediaClass({ zoom: 60 })).toBe('band-media'); // nie kleiner als eingepasst
-    expect(css).not.toContain('.band-media--z90');
+    expect(mediaClass({ zoom: 60 })).toBe('band-media'); // „Kachel füllen“: nie kleiner als eingepasst
     for (const c of ['top', 'bottom', 'left', 'right']) expect(css).toContain(`.band-media--${c} {`);
     expect(css).toContain('.band-media[class*="band-media--z"] { transform: scale(var(--z)); transform-origin: var(--fx) var(--fy); }');
   });

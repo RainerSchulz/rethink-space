@@ -24,9 +24,15 @@ async function holeFallsDa(url, key, pfad) {
   }
 }
 
-/** Kacheln mit Alt-Text (0024), Ausschnitt waagrecht und Zoom (0017); fehlen Spalten, ohne; fehlt die Tabelle, null. */
+/** Kacheln mit Darstellung (0029), Alt-Text (0024), Ausschnitt waagrecht und Zoom (0017); fehlen Spalten, ohne; fehlt die Tabelle, null. */
 async function holeKacheln(url, key) {
-  const pfad = 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus,image_focus_x,image_zoom,image_alt&order=page_slug,position';
+  const mitFit = 'cms_bands?select=page_slug,id,position,title_key,text_key,image_src,image_focus,image_focus_x,image_zoom,image_alt,image_fit&order=page_slug,position';
+  const pfad = mitFit.replace(',image_fit', '');
+  try {
+    return await holeFallsDa(url, key, mitFit);
+  } catch (err) {
+    if (!/42703|PGRST204|image_fit|image_alt|image_focus_x|image_zoom/.test(err.message)) throw err;
+  }
   try {
     return await holeFallsDa(url, key, pfad);
   } catch (err) {
@@ -112,6 +118,7 @@ export async function ladeInhalt({ url, key }) {
       id: b.id, titleKey: b.title_key, textKey: b.text_key,
       image: {
         src: b.image_src, focus: b.image_focus ?? undefined, focusX: b.image_focus_x ?? undefined, zoom: b.image_zoom ?? undefined,
+        fit: b.image_fit ?? undefined,
         // undefined = Spalte fehlt (ältere Datenbank): vorhandenen Alt-Text in der Seite behalten
         ...('image_alt' in b ? { alt: b.image_alt ?? '' } : {}),
       },

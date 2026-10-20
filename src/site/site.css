@@ -279,6 +279,16 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 /* Alle Baender sind gleich gross. Passt ein Motiv nicht ins 64:15-Fenster,
    entscheidet der Ausschnitt (object-position), nie ein Sonderformat. */
 .band-media--partnership { --fy: 58%; }
+/* „Ganzes Bild zeigen“ aus dem CMS: das Bild passt sich in jede Kachel ein (PC 64:15, Tablet 2:1,
+   Handy 3:2), nichts wird abgeschnitten; die freie Fläche ist schwarz (.band) oder weiß (--fit-white). */
+.band-media--fit { object-fit: contain; }
+.band:has(.band-media--fit-white) { background: #fff; }
+/* Verkleinern gibt es nur mit „Ganzes Bild“ (50–90 %) */
+.band-media--z50 { --z: 0.5; }
+.band-media--z60 { --z: 0.6; }
+.band-media--z70 { --z: 0.7; }
+.band-media--z80 { --z: 0.8; }
+.band-media--z90 { --z: 0.9; }
 /* Zoom aus dem CMS (110–250 %, Zehnerschritte; 100 % = wie eingepasst) */
 .band-media--z110 { --z: 1.1; }
 .band-media--z120 { --z: 1.2; }
