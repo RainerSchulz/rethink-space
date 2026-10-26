@@ -18,9 +18,11 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
+  // CI: das vorinstallierte Google Chrome des GitHub-Runners (PW_CHANNEL=chrome) — kein Download, kein apt.
+  // Die Installation mit --with-deps hing am 01.10. und 26.10.2026 in apt und hielt das Veröffentlichen auf.
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'], ...(process.env.PW_CHANNEL ? { channel: process.env.PW_CHANNEL } : {}) } },
+    { name: 'mobile', use: { ...devices['Pixel 7'], ...(process.env.PW_CHANNEL ? { channel: process.env.PW_CHANNEL } : {}) } },
   ],
   webServer: {
     command: 'npm run dev',

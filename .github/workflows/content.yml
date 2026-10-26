@@ -56,17 +56,19 @@ jobs:
       # Wörterbuch an, Navigation, Mobilansicht). Beide Projekte laufen auf Chromium.
       # Schrittnamen enthalten „playwright“/„test:e2e“ — daran erkennt die
       # Fortschrittsanzeige im CMS den Schritt (rethink-cms src/publish-progress.js).
-      - name: npx playwright install --with-deps chromium (Zeitlimit, bis zu 3 Versuche)
-        timeout-minutes: 15
+      # Kein Browser-Download mehr: der GitHub-Runner hat Google Chrome samt Systembibliotheken schon an Bord.
+      # Die Installation mit --with-deps hing am 01.10. und 26.10.2026 in apt (dpkg-Sperre) und hielt das
+      # Veroeffentlichen auf. Nur falls Chrome einmal fehlt: Chromium ohne apt (keine Systempakete) nachladen.
+      - name: playwright – vorinstalliertes Google Chrome des Runners
+        timeout-minutes: 5
         run: |
-          # Hing am 01.10.2026 ueber 45 Minuten (apt auf dem GitHub-Runner) und hielt jedes weitere
-          # Veroeffentlichen in der Warteschlange fest. Je Versuch hoechstens 4 Minuten, bis zu drei Versuche.
-          for i in 1 2 3; do
-            timeout 240 npx playwright install --with-deps chromium && exit 0
-            echo "::warning::Browser-Installation hing oder scheiterte (Versuch $i von 3) - neuer Versuch."
-            sleep 5
-          done
-          exit 1
+          if command -v google-chrome >/dev/null; then
+            google-chrome --version
+            echo "PW_CHANNEL=chrome" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Kein Google Chrome auf dem Runner - lade Chromium (ohne apt)."
+            timeout 240 npx playwright install chromium
+          fi
       - run: npm run test:e2e
       - run: npm run build
         env:
