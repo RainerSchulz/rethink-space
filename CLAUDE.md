@@ -137,7 +137,7 @@ Ladezeit und Auffindbarkeit sind Teil der Aufgabe, nicht Nacharbeit. Vor dem Abs
 | `.github/workflows/ci.yml` | Lint · Test · gitleaks · Build · Deploy (GitHub Pages) |
 | `.github/workflows/content.yml` | Nimmt den Inhaltsstand aus Supabase, prüft ihn und committet — ausgelöst vom „Veröffentlichen“-Knopf im CMS |
 | `supabase/functions/publish/` | Edge Function, die den Knopf im CMS mit GitHub verbindet; hält das GitHub-Token als Secret |
-| `supabase/functions/contact/` | Edge Function hinter dem Kontaktformular: prüft, begrenzt die Rate, speichert in `contact_messages` und benachrichtigt per E-Mail, sobald ein Versanddienst hinterlegt ist |
+| `supabase/functions/contact/` | Edge Function hinter dem Kontaktformular: prüft, begrenzt die Rate, speichert in `contact_messages` und benachrichtigt per E-Mail über den eigenen Mailserver (SMTP, kein Resend), sobald die SMTP-Secrets hinterlegt sind |
 
 ---
 
@@ -150,7 +150,7 @@ Ladezeit und Auffindbarkeit sind Teil der Aufgabe, nicht Nacharbeit. Vor dem Abs
 ## Offen vor Livegang (Stand 15.09.2026)
 - Domain in Canonical/OG (`pages/*/index.html`), `public/sitemap.xml`, `public/robots.txt` prüfen
 - Impressum und Datenschutz sind auf **US-Recht** umgeschrieben (Delaware als anwendbares Recht, US-Urheberrecht und DMCA, Haftungsausschluss statt deutscher Paragrafen). Die Datenschutzerklärung führt beide Seiten: DSGVO für Besucher aus Europa, dazu die Rechte nach US-Bundesstaatenrecht. Offen: Telefonnummer, Registered Agent, State File Number, Steuernummer; ob eine EU-Vertretung nach Art. 27 DSGVO nötig ist; und die **anwaltliche Prüfung auf beiden Seiten** — beides sind Entwürfe.
-- Kontaktformular läuft (25.09.2026): Die Anfrage geht an die Edge Function `contact` und landet in `public.contact_messages`. **Offen: die Benachrichtigung per E-Mail** — dafür `RESEND_API_KEY` und `CONTACT_TO` als Supabase-Secrets setzen und `VITE_CONTACT_ENDPOINT` als GitHub-Variable, sonst sendet die gebaute Seite nichts. Ohne Versanddienst geht nichts verloren, die Anfragen stehen in der Tabelle — nur merkt es niemand von allein.
+- Kontaktformular läuft (25.09.2026): Die Anfrage geht an die Edge Function `contact` und landet in `public.contact_messages`. **Offen: die Benachrichtigung per E-Mail** — dafür `SMTP_HOST` (as8.rajbit-it.de), `SMTP_PORT` (30587, STARTTLS), `SMTP_USER` (Absender-Postfach), `SMTP_PASS` und `CONTACT_TO` als Supabase-Secrets setzen (eigener Mailserver, kein Resend — 28.10.2026) und `VITE_CONTACT_ENDPOINT` als GitHub-Variable, sonst sendet die gebaute Seite nichts. Ohne Versanddienst geht nichts verloren, die Anfragen stehen in der Tabelle — nur merkt es niemand von allein.
 - E-Mail-Postfach `contact@rethink.space` einrichten (Footer, Kontaktseite, JSON-LD verweisen darauf)
 - Bücher (Autorenseite): fünf Titel mit Verlag, Jahr und Amazon-Link (ISBN) gesetzt; Coverbilder optional, Bildzuordnung prüfen
 - Bildnachweis NASA (Vollmond, `moon-full.jpg`) im Impressum nennen

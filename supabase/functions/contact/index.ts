@@ -1,8 +1,8 @@
 // Supabase Edge Function „contact“ — nimmt das Kontaktformular der Website an.
 //
 // Die Anfrage landet in public.contact_messages. Ist zusaetzlich ein
-// Versanddienst hinterlegt (RESEND_API_KEY + CONTACT_TO), geht eine
-// Benachrichtigung per E-Mail raus. Ohne Versanddienst geht nichts verloren:
+// Mailserver hinterlegt (SMTP_HOST/PORT/USER/PASS, eigener Server — kein
+// Resend, Inhaber 28.10.2026), geht eine Benachrichtigung an CONTACT_TO raus. Ohne Versanddienst geht nichts verloren:
 // die Anfrage steht in der Tabelle und ist im CMS lesbar.
 //
 // Warum ueber eine Funktion und nicht direkt in die Tabelle: Die Website
@@ -12,13 +12,27 @@
 // als Secret liegt, und prueft vorher.
 //
 // Deploy: supabase functions deploy contact --project-ref <ref> --no-verify-jwt
-// Secrets: optional RESEND_API_KEY, CONTACT_TO, CONTACT_FROM
+// Secrets: optional SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_TO, CONTACT_FROM
+// (Absender = CONTACT_FROM oder SMTP_USER; der Server nimmt nur das eigene Postfach als Absender)
+
+import nodemailer from "npm:nodemailer@6.9.16";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+// Eigener Mailserver (SMTP, Inhaber 28.10.2026 — kein Resend). Port 465 = TLS sofort, sonst STARTTLS (Pflicht).
+// Supabase sperrt ausgehend Port 25 und 587; der Server hat 30587, das geht.
+const SMTP_HOST = Deno.env.get("SMTP_HOST") ?? "";
+const SMTP_PORT = Number(Deno.env.get("SMTP_PORT") ?? "465");
+const SMTP_USER = Deno.env.get("SMTP_USER") ?? "";
+const SMTP_PASS = Deno.env.get("SMTP_PASS") ?? "";
+const smtp = SMTP_HOST && SMTP_USER && SMTP_PASS
+  ? nodemailer.createTransport({
+    host: SMTP_HOST, port: SMTP_PORT, secure: SMTP_PORT === 465, requireTLS: SMTP_PORT !== 465,
+    auth: { user: SMTP_USER, pass: SMTP_PASS }, connectionTimeout: 10_000, greetingTimeout: 10_000, socketTimeout: 20_000,
+  })
+  : null;
 const CONTACT_TO = Deno.env.get("CONTACT_TO") ?? "contact@rethink.space";
-const CONTACT_FROM = Deno.env.get("CONTACT_FROM") ?? "website@rethink.space";
+const CONTACT_FROM = Deno.env.get("CONTACT_FROM") || SMTP_USER || "contact@rethink.space";
 const ALLOWED_ORIGINS = (Deno.env.get("CONTACT_ALLOWED_ORIGINS") ??
   "https://rethink.space,https://www.rethink.space,http://localhost:3100")
   .split(",").map((s) => s.trim()).filter(Boolean);
@@ -110,23 +124,18 @@ Deno.serve(async (req) => {
   // fehl, ist die Anfrage trotzdem sicher gespeichert — der Besucher soll
   // deshalb keinen Fehler sehen.
   let benachrichtigt = false;
-  if (RESEND_API_KEY) {
+  if (smtp) {
     try {
-      const mail = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: `RETHINK SPACE <${CONTACT_FROM}>`,
-          to: [CONTACT_TO],
-          reply_to: email,
-          subject: `Anfrage von ${name}`,
-          text: `${message}\n\n---\nName:  ${name}\nE-Mail: ${email}\nEingegangen: ${new Date().toISOString()}\nID: ${gespeichert?.id ?? "-"}`,
-        }),
+      await smtp.sendMail({
+        from: `RETHINK SPACE <${CONTACT_FROM}>`,
+        to: CONTACT_TO,
+        replyTo: email,
+        subject: `Anfrage von ${name}`,
+        text: `${message}\n\n---\nName:  ${name}\nE-Mail: ${email}\nEingegangen: ${new Date().toISOString()}\nID: ${gespeichert?.id ?? "-"}`,
       });
-      benachrichtigt = mail.ok;
-      if (!mail.ok) console.error("resend", mail.status, await mail.text());
+      benachrichtigt = true;
     } catch (err) {
-      console.error("resend", err instanceof Error ? err.message : err);
+      console.error("smtp", err instanceof Error ? err.message : err);
     }
     if (benachrichtigt && gespeichert?.id) {
       await fetch(`${SUPABASE_URL}/rest/v1/contact_messages?id=eq.${gespeichert.id}`, {
