@@ -21,16 +21,39 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 // Eigener Mailserver (SMTP, Inhaber 28.10.2026 — kein Resend). Port 465 = TLS sofort, sonst STARTTLS (Pflicht).
 // Supabase sperrt ausgehend Port 25 und 587; der Server hat 30587, das geht.
-const SMTP_HOST = Deno.env.get("SMTP_HOST") ?? "";
-const SMTP_PORT = Number(Deno.env.get("SMTP_PORT") ?? "465");
-const SMTP_USER = Deno.env.get("SMTP_USER") ?? "";
+const SMTP_HOST = (Deno.env.get("SMTP_HOST") ?? "").trim();
+const SMTP_PORT = Number((Deno.env.get("SMTP_PORT") ?? "465").trim());
+const SMTP_USER = (Deno.env.get("SMTP_USER") ?? "").trim();
 const SMTP_PASS = Deno.env.get("SMTP_PASS") ?? "";
-const smtp = SMTP_HOST && SMTP_USER && SMTP_PASS
-  ? nodemailer.createTransport({
-    host: SMTP_HOST, port: SMTP_PORT, secure: SMTP_PORT === 465, requireTLS: SMTP_PORT !== 465,
+const SMTP_READY = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+
+/**
+ * IPv4 des Mailservers. nodemailer löst Namen über node:dns auf, das in Supabase Edge Functions scheitert
+ * („queryA UNKNOWN …“, 28.10.2026) — deshalb selbst: Deno.resolveDns, sonst DNS über HTTPS (Cloudflare).
+ */
+async function smtpAddress(): Promise<string> {
+  if (/^\d+\.\d+\.\d+\.\d+$/.test(SMTP_HOST)) return SMTP_HOST;
+  try {
+    const [ip] = await Deno.resolveDns(SMTP_HOST, "A");
+    if (ip) return ip;
+  } catch { /* weiter über DNS über HTTPS */ }
+  try {
+    const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(SMTP_HOST)}&type=A`, { headers: { accept: "application/dns-json" } });
+    const data = await res.json() as { Answer?: { type: number; data: string }[] };
+    const ip = data.Answer?.find((a) => a.type === 1)?.data;
+    if (ip) return ip;
+  } catch { /* zuletzt den Namen selbst versuchen */ }
+  return SMTP_HOST;
+}
+
+/** Verbindung mit der IP, das Zertifikat wird weiter für den Namen geprüft (servername). */
+async function smtpTransport() {
+  return nodemailer.createTransport({
+    host: await smtpAddress(), port: SMTP_PORT, secure: SMTP_PORT === 465, requireTLS: SMTP_PORT !== 465,
+    tls: { servername: SMTP_HOST }, name: "rethink.space",
     auth: { user: SMTP_USER, pass: SMTP_PASS }, connectionTimeout: 10_000, greetingTimeout: 10_000, socketTimeout: 20_000,
-  })
-  : null;
+  });
+}
 const CONTACT_TO = Deno.env.get("CONTACT_TO") ?? "contact@rethink.space";
 const CONTACT_FROM = Deno.env.get("CONTACT_FROM") || SMTP_USER || "contact@rethink.space";
 const ALLOWED_ORIGINS = (Deno.env.get("CONTACT_ALLOWED_ORIGINS") ??
@@ -124,9 +147,9 @@ Deno.serve(async (req) => {
   // fehl, ist die Anfrage trotzdem sicher gespeichert — der Besucher soll
   // deshalb keinen Fehler sehen.
   let benachrichtigt = false;
-  if (smtp) {
+  if (SMTP_READY) {
     try {
-      await smtp.sendMail({
+      await (await smtpTransport()).sendMail({
         from: `RETHINK SPACE <${CONTACT_FROM}>`,
         to: CONTACT_TO,
         replyTo: email,
