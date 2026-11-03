@@ -237,7 +237,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 /* Der Inhalt schließt dicht an das Kopfbild an */
 .hero-sub + section { padding-top: 44px; }
-.hero-sub .wrap { grid-area: 1 / 1; align-self: end; position: relative; z-index: 2; width: 100%; padding-top: 90px; padding-bottom: 52px; }
+.hero-sub .wrap { grid-area: 1 / 1; align-self: end; position: relative; z-index: 2; width: 100%; padding-top: 90px; padding-bottom: 22px; }
 .hero-sub h1 { font-size: clamp(34px, 5.5vw, 64px); }
 
 /* ---------- 7b. Bänder: vier gleich große Flächen untereinander ----------
@@ -518,7 +518,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   .hero-sub { display: block; }
   .hero-sub-bg { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: none; }
   .hero-sub::after { display: none; }
-  .hero-sub .wrap { padding-top: 28px; padding-bottom: 36px; }
+  .hero-sub .wrap { padding-top: 28px; padding-bottom: 16px; }
 
   /* Schmale Seite: sehr großer Kreis weit links, damit der Rand als schräger
      Horizont abfällt und der Mond bis unter die gestapelten Kacheln reicht */
