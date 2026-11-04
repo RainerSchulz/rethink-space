@@ -88,7 +88,15 @@ jobs:
 
           Erzeugt von .github/workflows/content.yml aus den CMS-Tabellen in
           Supabase. Texte und Bildpfade stammen aus dem Editor, nicht von Hand."
-          git push
+          # GitHub lehnt Pushes bei Störungen gelegentlich ab („fatal error in commit_refs“,
+          # „Internal Server Error“, 04.11.2026) — dann bis zu fünfmal mit wachsender Pause versuchen
+          for TRY in 1 2 3 4 5; do
+            git push && exit 0
+            echo "Push fehlgeschlagen (Versuch $TRY) — neuer Versuch in $((TRY * 30)) s"
+            sleep $((TRY * 30))
+            git pull --rebase || true
+          done
+          exit 1
 
       # Erst jetzt — nach Prüfung und Push — gilt der Stand als veröffentlicht.
       # Das CMS nimmt damit die Markierung „noch nicht online“ von allem, was
