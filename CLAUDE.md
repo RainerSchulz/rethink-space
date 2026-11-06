@@ -60,7 +60,7 @@ Eine Kachel ist ein `<a class="card" href="/pages/<ziel>/">` mit `<span class="a
 **Listen, die das CMS verwaltet:** Bereich `<!-- cms:list <name> -->` … `<!-- /cms:list -->` (People: `people.books`), je Zeile ein Eintrag mit Schlüsseln `<name>.<id>.<feld>` (Bücher: `title`, `meta`). Reihenfolge, neue und gelöschte Einträge kommen aus `cms_list_items` (`scripts/lib/lists.mjs`, wie Kacheln: Bestehende behalten ihr Markup, neue entstehen aus dem ersten Eintrag als Vorlage; Schlüssel neuer Einträge legt `content:apply` in beiden Wörterbüchern an, gelöschter entfernt es). Die Liste braucht immer mindestens einen Eintrag im Markup als Vorlage.
 
 ### 9. Chatbot: Schlüssel nur im Backend, Wissen nur generiert
-Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge Function. Die Website kennt nur die öffentliche Endpoint-URL (`VITE_CHAT_ENDPOINT` in `.env`, gitignored; in CI als Repository-Variable). Ohne Endpoint bleibt das Widget aus. Die Wissensbasis liegt in der Tabelle `public.chat_knowledge` (Supabase-Projekt Re-Think-Space, ref `bdkvdufrdkxezutktzlt`); nach Textänderungen `npm run knowledge` (baut `knowledge.txt`, gitignored) und `npm run knowledge:push` (Admin-Login, kein Redeploy nötig). Buchmanuskripte (NAS: `W:/Projekte/Re-Think/Doku`) nie ins Repo, nur die Zusammenfassungen unter `knowledge/books/`.
+Der Anthropic-Schlüssel liegt ausschließlich als Supabase-Secret in der Edge Function. Die Website kennt nur die öffentliche Endpoint-URL (`VITE_CHAT_ENDPOINT` in `.env`, gitignored; in CI als Repository-Variable). Ohne Endpoint bleibt das Widget aus. Die Wissensbasis liegt in der Tabelle `public.chat_knowledge` (Supabase-Projekt Re-Think-Space, ref `bdkvdufrdkxezutktzlt`); beim Veröffentlichen aktualisiert `content.yml` sie automatisch (seit 06.11.2026); von Hand `npm run knowledge` (baut `knowledge.txt`, gitignored) und `npm run knowledge:push` (Service-Schlüssel oder Admin-Login, kein Redeploy nötig), etwa nach Änderungen an `knowledge/` oder Texten im Code. Buchmanuskripte (NAS: `W:/Projekte/Re-Think/Doku`) nie ins Repo, nur die Zusammenfassungen unter `knowledge/books/`.
 
 ### 10. Bilder und Kacheln — feste Gestaltungsregeln (gilt ohne Nachfrage)
 - **Bilder füllen ihre Fläche immer aus** (`object-fit: cover`). Keine schwarzen Ränder, kein Letterboxing — gilt für `.band-media`, `.hero-sub-bg`, `.portrait` und für jede Bildfläche, die später dazukommt.
@@ -81,7 +81,7 @@ npm run lint && npm run test:run && npm run build
 npm run test:e2e   # bei HTML/Nav/Sprache/Formular
 ```
 Seit 29.09.2026 laufen die Browser-Tests auch automatisch: als eigener Job in `ci.yml` (der Build wartet darauf) und in `content.yml` vor jedem CMS-Commit. Vorher lief E2E nirgends von allein — so kam ein roter Test unbemerkt auf `main`.
-Nach Textänderungen zusätzlich: `npm run knowledge && npm run knowledge:push` (Chatbot) und im CMS `npm run import`.
+Nach Textänderungen im Code zusätzlich: `npm run knowledge && npm run knowledge:push` (Chatbot; beim Veröffentlichen aus dem CMS geschieht das automatisch) und im CMS `npm run import`.
 Committen und pushen nur auf ausdrückliche Aufforderung.
 
 ### 12. Kontaktformular: die Website schreibt nie direkt in die Datenbank
