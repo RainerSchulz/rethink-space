@@ -150,6 +150,10 @@ export function setImages(html, images) {
     if (/\sclass="moon-img[^"]*"/.test(next) && hasCrop(img)) {
       next = next.replace(/\sclass="moon-img[^"]*"/, () => ` class="${moonClass(img)}"`);
     }
+    // Kachel-Bild außerhalb von cms:bands (People: „Founder & CEO“): Klassen wie alle Kacheln (nur wenn das CMS etwas gewählt hat)
+    if (/\sclass="band-media[^"]*"/.test(next) && hasCrop(img)) {
+      next = next.replace(/\sclass="band-media[^"]*"/, () => ` class="${mediaClass(img)}"`);
+    }
     // Porträt: dieselben Klassen wie Kachel-Bilder; das Bild lädt portrait.js und setzt sie dort
     if (/\sdata-portrait-src="/.test(next) && hasCrop(img)) {
       const value = ` data-portrait-class="${mediaClass(img)}"`;

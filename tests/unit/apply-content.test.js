@@ -315,6 +315,19 @@ describe('Feature: Startbild zeigt am PC und auf dem Handy dasselbe', () => {
 });
 
 
+describe('Kachel-Bild außerhalb von cms:bands (People: Founder & CEO)', () => {
+  const html = '<img class="band-media band-media--top" src="/Bilder/f.jpg" alt="F" loading="lazy">';
+
+  it('setzt Ausschnitt, Zoom und ganzes Bild als Klassen; ohne Wahl bleibt die Klasse der Seite; zweimal ändert nichts', () => {
+    const crop = { src: '/Bilder/f.jpg', alt: 'F', focus: 'bottom', focusX: 'left', zoom: 150 };
+    const one = setImages(html, [crop]).html;
+    expect(one).toContain('class="band-media band-media--bottom band-media--left band-media--z150"');
+    expect(setImages(one, [crop]).html).toBe(one);
+    expect(setImages(html, [{ src: '/Bilder/f.jpg', alt: 'F', fit: 'contain-white', zoom: 70 }]).html).toContain('class="band-media band-media--fit band-media--fit-white band-media--z70"');
+    expect(setImages(html, [{ src: '/Bilder/f.jpg', alt: 'F' }]).html).toContain('class="band-media band-media--top"');
+  });
+});
+
 describe('Porträt: Ausschnitt und Zoom wie die Kachel-Bilder', () => {
   const html = '<div class="portrait" data-portrait-src="/Bilder/p.jpg" data-portrait-alt="P"></div>';
   const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
