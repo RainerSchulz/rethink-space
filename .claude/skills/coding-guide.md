@@ -128,6 +128,8 @@ Die 404-Seite trägt zusätzlich `<meta name="robots" content="noindex">`. Am ei
 
 ---
 
+- **Im CMS bearbeitbare Bilder: immer wie die Kacheln in Lunar Habitato** (Inhaber, 06.11.2026, ohne Nachfrage): „füllen“ oder „Ganzes Bild zeigen“, 3×3-Ausschnitt, Zoom, Alt-Text — im CMS der Baustein `cropControl`, hier die Klassen aus `mediaClass` (`scripts/lib/bands.mjs`, Regeln `.band-media` in `site.css`). Keine eigene Variante; Einzelheiten und Stand der Abweichungen: `../rethink-cms/CLAUDE.md`, Regel 21.
+
 ## ⚡ REGEL #8 — Kommentare (minimal)
 
 Kommentare erklären das **Warum**, nicht das Was. Datei-Kopf mit einem Satz zur Verantwortung. Keine auskommentierten Code-Reste.

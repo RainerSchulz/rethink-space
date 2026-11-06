@@ -379,11 +379,14 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 /* Portrait im CMS entfernt (hidden): der Text nimmt die ganze Breite wie in den anderen Kacheln. */
 .author:has(> [hidden]) { grid-template-columns: 1fr; }
 .portrait {
+  position: relative; /* .band-media (Ausschnitt und Zoom aus dem CMS) liegt absolut darin */
   border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden;
   background: var(--surface-2); aspect-ratio: 3 / 4;
   display: flex; align-items: center; justify-content: center;
 }
 .portrait img { width: 100%; height: 100%; object-fit: cover; }
+.portrait .band-media--fit { object-fit: contain; }
+.portrait:has(.band-media--fit-white) { background: #fff; }
 .portrait .ph { text-align: center; color: var(--muted); font-size: 13px; padding: 24px; }
 .portrait .ph .initials {
   font-size: 52px; font-weight: 800; color: var(--accent); letter-spacing: -.03em;

@@ -225,6 +225,13 @@ describe('Feature: Autoren-Portrait (modules/portrait.js)', () => {
       '<div class="portrait" data-portrait-src="Bilder/Lierfeld.jpg" data-portrait-alt="Dr. Johannes Lierfeld"></div>';
   });
 
+  it('Scenario: Ausschnitt und Zoom aus dem CMS → Klassen am Bild, ohne Angabe keine', async () => {
+    const { initPortrait } = await fresh('../../src/site/modules/portrait.js');
+    expect(initPortrait().className).toBe('');
+    document.querySelector('.portrait').setAttribute('data-portrait-class', 'band-media band-media--top band-media--z150');
+    expect(initPortrait().className).toBe('band-media band-media--top band-media--z150');
+  });
+
   it('Scenario: Bild lädt → wird eingesetzt', async () => {
     const { initPortrait } = await fresh('../../src/site/modules/portrait.js');
     const img = initPortrait();

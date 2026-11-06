@@ -4,6 +4,7 @@
  */
 
 import { isRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
+import { mediaClass } from './bands.mjs';
 
 const rx = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -99,7 +100,7 @@ const MOON_X = { left: ' moon-img--left', right: ' moon-img--right' }; // nicht 
 export const moonClass = (c = {}) => `moon-img${MOON_Y[c.focus] ?? ''}${MOON_X[c.focusX] ?? ''}`
   // Zoom 50–250 % in Zehnern, 100 % = keine Klasse; verkleinert steht das Bild mit schwarzem Rand im gleich hohen Rahmen
   + `${Number.isInteger(c.zoom) && c.zoom >= 50 && c.zoom <= 250 && c.zoom !== 100 && c.zoom % 10 === 0 ? ` moon-img--z${c.zoom}` : ''}`;
-const hasCrop = (img) => Boolean(img && (img.focus || img.focusX || img.zoom));
+const hasCrop = (img) => Boolean(img && (img.focus || img.focusX || img.zoom || img.fit));
 
 /** Element (Tag) eines Bildes: <img src="/Bilder/…"> oder <div data-portrait-src="/Bilder/…">. */
 const IMAGE_TAG = /<[a-zA-Z][^>]*?\s(?:src|data-portrait-src)="(\/Bilder\/[^"]+)"[^>]*>/g;
@@ -148,6 +149,12 @@ export function setImages(html, images) {
     // Mondbild: Ausschnitt und Zoom als Klassen (nur wenn das CMS etwas gewählt hat)
     if (/\sclass="moon-img[^"]*"/.test(next) && hasCrop(img)) {
       next = next.replace(/\sclass="moon-img[^"]*"/, () => ` class="${moonClass(img)}"`);
+    }
+    // Porträt: dieselben Klassen wie Kachel-Bilder; das Bild lädt portrait.js und setzt sie dort
+    if (/\sdata-portrait-src="/.test(next) && hasCrop(img)) {
+      const value = ` data-portrait-class="${mediaClass(img)}"`;
+      const has = /\sdata-portrait-class="[^"]*"/;
+      next = has.test(next) ? next.replace(has, () => value) : next.replace(/\s*\/?>$/, (end) => `${value}${end}`);
     }
     const isHidden = HIDDEN_ATTR.test(next);
     if (img.hidden && !isHidden) next = next.replace(/\s*\/?>$/, (end) => ` hidden${end.trim() === '/>' ? ' />' : '>'}`);

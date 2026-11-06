@@ -25,7 +25,7 @@ export function toSnapshot(content, applied = () => true) {
       texts,
       images: (p.images ?? []).map((i) => ({
         src: i.src, alt: i.alt ?? '', ...(i.hidden ? { hidden: true } : {}),
-        ...(i.focus ? { focus: i.focus } : {}), ...(i.focusX ? { focusX: i.focusX } : {}), ...(i.zoom ? { zoom: i.zoom } : {}),
+        ...(i.focus ? { focus: i.focus } : {}), ...(i.focusX ? { focusX: i.focusX } : {}), ...(i.zoom ? { zoom: i.zoom } : {}), ...(i.fit ? { fit: i.fit } : {}),
         ...(i.shiftY ? { shiftY: i.shiftY } : {}),
       })),
       bands: (p.bands ?? []).map((b) => ({

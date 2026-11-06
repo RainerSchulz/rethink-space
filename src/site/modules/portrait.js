@@ -30,6 +30,9 @@ export function initPortrait() {
 
   const img = new Image();
   img.alt = box.getAttribute('data-portrait-alt') || '';
+  // Ausschnitt und Zoom aus dem CMS (Klassen wie bei den Kachel-Bildern)
+  const crop = box.getAttribute('data-portrait-class');
+  if (crop) img.className = crop;
   img.addEventListener('load', () => { box.innerHTML = ''; box.append(img); });
   img.addEventListener('error', () => showPlaceholder(box));
   img.src = box.getAttribute('data-portrait-src');

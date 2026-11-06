@@ -314,3 +314,24 @@ describe('Feature: Startbild zeigt am PC und auf dem Handy dasselbe', () => {
   });
 });
 
+
+describe('Porträt: Ausschnitt und Zoom wie die Kachel-Bilder', () => {
+  const html = '<div class="portrait" data-portrait-src="/Bilder/p.jpg" data-portrait-alt="P"></div>';
+  const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
+
+  it('schreibt die Klassen in data-portrait-class; zweimal anwenden ändert nichts; ohne Wahl kein Attribut', () => {
+    const one = setImages(html, [{ src: '/Bilder/p.jpg', alt: 'P', focus: 'top', zoom: 150 }]).html;
+    expect(one).toContain('data-portrait-class="band-media band-media--top band-media--z150"');
+    const again = setImages(one, [{ src: '/Bilder/p.jpg', alt: 'P', focus: 'top', zoom: 150 }]);
+    expect(again.html).toBe(one);
+    expect(setImages(one, [{ src: '/Bilder/p.jpg', alt: 'P', focus: 'bottom', fit: 'contain-white', zoom: 70 }]).html)
+      .toContain('data-portrait-class="band-media band-media--bottom band-media--fit band-media--fit-white band-media--z70"');
+    expect(setImages(html, [{ src: '/Bilder/p.jpg', alt: 'P' }]).html).not.toContain('data-portrait-class');
+  });
+
+  it('site.css: das Porträt trägt die absoluten Klassen, „ganzes Bild“ schlägt das Füllen', () => {
+    expect(css).toMatch(/\.portrait \{\s*position: relative;/);
+    expect(css).toContain('.portrait .band-media--fit { object-fit: contain; }');
+    expect(css).toContain('.portrait:has(.band-media--fit-white) { background: #fff; }');
+  });
+});
