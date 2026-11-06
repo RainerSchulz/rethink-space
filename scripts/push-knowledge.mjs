@@ -32,7 +32,7 @@ const email = env.CMS_ADMIN_EMAIL || 'admin@rethink.space';
 const password = env.CMS_ADMIN_PASSWORD;
 const file = join(ROOT, 'supabase/functions/chat/knowledge.txt');
 
-if (!url || !anon || (!serviceKey && !password)) {
+if (!url || (!serviceKey && (!anon || !password))) {
   console.error('Fehlt: SUPABASE_URL (oder VITE_CHAT_ENDPOINT), SUPABASE_ANON_KEY und entweder');
   console.error('SUPABASE_SERVICE_ROLE_KEY oder CMS_ADMIN_PASSWORD (Umgebung oder .env).');
   console.error('Dienstschlüssel holen: npx supabase projects api-keys --project-ref <ref>');

@@ -106,3 +106,12 @@ jobs:
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      # Chatbot auf denselben Stand bringen: Wissensbasis aus den eben übernommenen
+      # Texten bauen und nach public.chat_knowledge laden (05.11.2026 — vorher nur von
+      # Hand mit npm run knowledge:push, der Chatbot hing deshalb hinter der Website her)
+      - name: Wissensbasis des Chatbots aktualisieren
+        run: npm run knowledge && npm run knowledge:push
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
