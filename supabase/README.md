@@ -29,7 +29,7 @@ Nach jeder Textänderung an der Website oder an `knowledge/`: `npm run knowledge
    supabase secrets set ANTHROPIC_API_KEY=<Schlüssel aus console.anthropic.com>
    supabase secrets set CHAT_ALLOWED_ORIGINS=https://rethink.space,https://www.rethink.space,http://localhost:3100
    ```
-   Optional: `CHAT_MODEL` (Standard `claude-opus-5`), `CHAT_FALLBACK_MODEL` (Standard `claude-opus-4-8`), `CHAT_RATE_LIMIT` (Standard 20 Anfragen je 10 Minuten und IP).
+   Optional: `CHAT_MODEL` (Standard `claude-opus-5-5`), `CHAT_FALLBACK_MODEL` (Standard `claude-opus-4-8`), `CHAT_RATE_LIMIT` (Standard 20 Anfragen je 10 Minuten und IP).
 5. Wissensbasis bauen, hochladen und Funktion deployen:
    ```bash
    npm run knowledge && npm run knowledge:push

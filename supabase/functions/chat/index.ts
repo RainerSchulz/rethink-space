@@ -6,7 +6,7 @@
 // Deploy: supabase functions deploy chat --no-verify-jwt   (siehe supabase/README.md)
 import Anthropic from "npm:@anthropic-ai/sdk";
 
-const MODEL = Deno.env.get("CHAT_MODEL") ?? "claude-opus-5";
+const MODEL = Deno.env.get("CHAT_MODEL") ?? "claude-opus-5-5";
 const FALLBACK_MODEL = Deno.env.get("CHAT_FALLBACK_MODEL") ?? "claude-opus-4-8";
 const ALLOWED_ORIGINS = (Deno.env.get("CHAT_ALLOWED_ORIGINS") ??
   "https://rethink.space,https://www.rethink.space,https://rainerschulz.github.io," +
