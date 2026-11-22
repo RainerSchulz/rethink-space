@@ -6,7 +6,7 @@
 export const EN = {
   // ── Navigation & frame ────────────────────────────────────────────
   'nav.menu':        'Menu',
-  'nav.habitat':      'Lunar Habitato',
+  'nav.habitat':      'LUNAR HABITATO',
   'nav.dual-use':    'Dual Use',
   'nav.people':      'People',
   'nav.contact':     'Contact',
