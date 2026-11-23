@@ -211,10 +211,11 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   padding: 56px 0 24px; text-shadow: 0 2px 28px rgba(0, 0, 0, .6);
 }
 /* Überschrift: ein Text (home.hero.lead1), Standard eine Zeile über die Wrap-Breite; jede neue Zeile im CMS (Enter)
-   wird eine neue Zeile hier (pre-line, Inhaber 23.11.2026 — vorher fest zwei Schlüssel, zwei Zeilen) */
+   wird eine neue Zeile hier (pre-line, Inhaber 23.11.2026 — vorher fest zwei Schlüssel, zwei Zeilen). Schriftgröße wie
+   vorher (Inhaber: nicht ändern); passt der Text nicht in eine Zeile, bricht er ausgeglichen um (balance). */
 .hero h1 {
   grid-column: 1 / -1; white-space: pre-line; margin: 0 0 26px; text-transform: uppercase;
-  font-size: min(3.4vw, 41px); letter-spacing: -.005em; word-spacing: .16em; line-height: 1.1;
+  font-size: min(5.1vw - 2px, 58px); letter-spacing: -.005em; word-spacing: .16em; line-height: 1.1; text-wrap: balance;
 }
 .hero h1 span { display: block; }
 /* Unterüberschrift der Startseite: formatierbar im CMS (fett, kursiv, Link, Liste — rich-text.js),
