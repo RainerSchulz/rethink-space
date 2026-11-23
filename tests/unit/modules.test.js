@@ -180,9 +180,28 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
     expect(gesendet).toHaveLength(1);
     expect(gesendet[0].body).toMatchObject({ name: 'Ada', email: 'ada@example.com', message: 'Hallo' });
     expect(gesendet[0].body).toHaveProperty('website', ''); // Honigtopf wird mitgeschickt
+    expect(gesendet[0].body).toHaveProperty('area', ''); // kein Geschäftsbereich gewählt
     // form.reset() stellt die Vorgabewerte wieder her, es leert nicht.
     expect(document.querySelector('[name="message"]').value).toBe('Hallo');
     expect(document.querySelector('.form-status').dataset.art).toBe('erfolg');
+  });
+
+  it('Scenario: gewählter Geschäftsbereich geht als lesbare Bezeichnung mit', async () => {
+    document.body.innerHTML = FORM.replace('<button', '<fieldset class="areas">'
+      + '<label class="area" data-cms-row="contact.areas.isru.label"><input type="radio" name="area" value="contact.areas.isru.label"><span data-i18n="contact.areas.isru.label">Space / ISRU Licensing</span></label>'
+      + '<label class="area" data-cms-row="contact.areas.defense.label"><input type="radio" name="area" value="contact.areas.defense.label" checked><span data-i18n="contact.areas.defense.label">Dual-Use Defense Shelters</span></label>'
+      + '</fieldset><button');
+    window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
+    const gesendet = [];
+    vi.stubGlobal('fetch', (url, opts) => {
+      gesendet.push(JSON.parse(opts.body));
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+    });
+    const { initContact } = await fresh('../../src/site/modules/contact.js');
+    initContact();
+    absenden();
+    await warte();
+    expect(gesendet[0].area).toBe('Dual-Use Defense Shelters');
   });
 
   it('Scenario: Fehlercodes der Funktion werden übersetzt, nicht roh gezeigt', async () => {

@@ -63,6 +63,7 @@ const ALLOWED_ORIGINS = (Deno.env.get("CONTACT_ALLOWED_ORIGINS") ??
 const MAX_NAME = 120;
 const MAX_EMAIL = 200;
 const MAX_MESSAGE = 5000;
+const MAX_AREA = 120;                    // Geschäftsbereich (optional), gepflegt im CMS (Liste contact.areas)
 const RATE_LIMIT = 5;                    // Anfragen …
 const RATE_WINDOW_MS = 10 * 60 * 1000;   // … je 10 Minuten und Herkunft
 
@@ -115,19 +116,22 @@ Deno.serve(async (req) => {
   const name = String(body.name ?? "").trim().slice(0, MAX_NAME);
   const email = String(body.email ?? "").trim().slice(0, MAX_EMAIL);
   const message = String(body.message ?? "").trim().slice(0, MAX_MESSAGE);
+  // deno-lint-ignore no-control-regex
+  const area = String(body.area ?? "").replace(/[\u0000-\u001F\u007F]+/g, " ").trim().slice(0, MAX_AREA);
 
   if (!name || !email || !message) return json({ error: "fields_missing" }, 400, cors);
   if (!istEmail(email)) return json({ error: "email_invalid" }, 400, cors);
 
-  const zeile = {
+  const zeile: Record<string, unknown> = {
     name,
     email,
     message,
+    ...(area ? { area } : {}),
     ip_hash: await hash(ip),
     user_agent: (req.headers.get("user-agent") ?? "").slice(0, 300),
   };
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
+  const speichern = (daten: Record<string, unknown>) => fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
     method: "POST",
     headers: {
       apikey: SERVICE_KEY,
@@ -135,8 +139,14 @@ Deno.serve(async (req) => {
       "Content-Type": "application/json",
       Prefer: "return=representation",
     },
-    body: JSON.stringify(zeile),
+    body: JSON.stringify(daten),
   });
+  let res = await speichern(zeile);
+  // Ältere Datenbank ohne Spalte area (rethink-cms Migration 0039): Bereich in die Nachricht, damit nichts verloren geht
+  if (!res.ok && area && res.status === 400) {
+    const { area: _ohne, ...rest } = zeile;
+    res = await speichern({ ...rest, message: `[${area}]\n\n${message}` });
+  }
   if (!res.ok) {
     console.error("contact_messages", res.status, await res.text());
     return json({ error: "storage_failed" }, 502, cors);
@@ -153,8 +163,8 @@ Deno.serve(async (req) => {
         from: `RETHINK SPACE <${CONTACT_FROM}>`,
         to: CONTACT_TO,
         replyTo: email,
-        subject: `Anfrage von ${name}`,
-        text: `${message}\n\n---\nName:  ${name}\nE-Mail: ${email}\nEingegangen: ${new Date().toISOString()}\nID: ${gespeichert?.id ?? "-"}`,
+        subject: `Anfrage von ${name}${area ? ` · ${area}` : ""}`,
+        text: `${message}\n\n---\nName:  ${name}\nE-Mail: ${email}\n${area ? `Geschäftsbereich: ${area}\n` : ""}Eingegangen: ${new Date().toISOString()}\nID: ${gespeichert?.id ?? "-"}`,
       });
       benachrichtigt = true;
     } catch (err) {

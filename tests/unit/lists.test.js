@@ -74,3 +74,31 @@ describe('Feature: Listen im CMS (cms:list)', () => {
     expect(setRows(line, [{ key: 'people.books.neu.title', hidden: true }]).html).toContain('<li data-cms-row="people.books.neu.title" hidden>');
   });
 });
+
+describe('Feature: Geschäftsbereiche der Kontaktseite (Liste contact.areas)', () => {
+  const contact = readFileSync(resolve(process.cwd(), 'pages/contact/index.html'), 'utf8');
+
+  it('die Kontaktseite hat die Liste mit drei Bereichen, Feld „label“', () => {
+    const list = findLists(contact).find((l) => l.name === 'contact.areas');
+    expect(list.items.map((i) => i.id)).toEqual(['isru', 'data-centers', 'defense']);
+    expect(list.items[0].fields).toEqual(['label']);
+  });
+
+  it('neuer Bereich aus der Vorlage: eigene Kennung in Schlüssel, Wert und Zeile, sichtbar, eigener Text', () => {
+    const list = findLists(contact).find((l) => l.name === 'contact.areas');
+    const hiddenTemplate = { ...list.items[0], line: list.items[0].line.replace('<label class="area"', '<label class="area" hidden') };
+    const line = renderItem('contact.areas', hiddenTemplate, 'mining', () => 'Lunar Mining');
+    expect(line).toContain('data-cms-row="contact.areas.mining.label"');
+    expect(line).toContain('value="contact.areas.mining.label"');
+    expect(line).toContain('<span data-i18n="contact.areas.mining.label">Lunar Mining</span>');
+    expect(line).not.toMatch(/\shidden/);
+  });
+
+  it('umsortieren, löschen und ausblenden wie bei den Publikationen', () => {
+    const r = applyLists(contact, { 'contact.areas': [{ id: 'defense' }, { id: 'isru' }] }, () => undefined);
+    const ids2 = findLists(r.html).find((l) => l.name === 'contact.areas').items.map((i) => i.id);
+    expect(ids2).toEqual(['defense', 'isru']);
+    expect(setRows(contact, [{ key: 'contact.areas.defense.label', hidden: true }]).html)
+      .toContain('<label class="area" data-cms-row="contact.areas.defense.label" hidden>');
+  });
+});

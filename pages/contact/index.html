@@ -100,6 +100,14 @@
         <form data-contact novalidate>
           <label class="field"><span data-i18n="contact.form.name">Name</span><input type="text" name="name" autocomplete="name" required></label>
           <label class="field"><span data-i18n="contact.form.email">E-mail</span><input type="email" name="email" autocomplete="email" required></label>
+          <fieldset class="areas">
+            <legend data-i18n="contact.form.area">Business area (optional)</legend>
+            <!-- cms:list contact.areas -->
+            <label class="area" data-cms-row="contact.areas.isru.label"><input type="radio" name="area" value="contact.areas.isru.label"><span data-i18n="contact.areas.isru.label">Space / ISRU Licensing</span></label>
+            <label class="area" data-cms-row="contact.areas.data-centers.label"><input type="radio" name="area" value="contact.areas.data-centers.label"><span data-i18n="contact.areas.data-centers.label">Lunar Data Centers</span></label>
+            <label class="area" data-cms-row="contact.areas.defense.label"><input type="radio" name="area" value="contact.areas.defense.label"><span data-i18n="contact.areas.defense.label">Dual-Use Defense Shelters</span></label>
+            <!-- /cms:list -->
+          </fieldset>
           <label class="field"><span data-i18n="contact.form.message">Message</span><textarea name="message" required></textarea></label>
           <p class="trap" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
           <button class="btn" type="submit" data-i18n="contact.form.submit">Send message</button>

@@ -57,7 +57,8 @@ export function findLists(html) {
 /** Neuer Eintrag aus der Vorlage: andere Kennung, eigene Texte, sichtbar, ohne Sprachangabe. */
 export function renderItem(name, template, id, text = () => undefined) {
   let line = template.line.split(`${name}.${template.id}.`).join(`${name}.${id}.`);
-  line = line.replace(/(<li\b[^>]*?)\shidden(?:="[^"]*")?(?=[\s>])/, '$1');
+  // Die Zeile selbst wird sichtbar (<li> bei People, <label> bei den Geschäftsbereichen der Kontaktseite)
+  line = line.replace(/^(\s*<[a-z][a-z0-9-]*\b[^>]*?)\shidden(?:="[^"]*")?(?=[\s>])/, '$1');
   line = line.replace(/\slang="[a-zA-Z-]+"/g, '');
   for (const f of template.fields) {
     const key = `${name}.${id}.${f}`;

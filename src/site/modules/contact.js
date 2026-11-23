@@ -59,6 +59,8 @@ export function initContact() {
           name: daten.name ?? '',
           email: daten.email ?? '',
           message: daten.message ?? '',
+          // Geschäftsbereich (optional): die sichtbare Bezeichnung, nicht der Schlüssel — so steht sie lesbar in der Anfrage
+          area: form.querySelector('input[name="area"]:checked')?.closest('label')?.textContent.trim() ?? '',
           website: daten.website ?? '', // Honigtopf, siehe Markup
         }),
       });
