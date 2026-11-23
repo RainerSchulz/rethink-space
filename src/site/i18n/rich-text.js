@@ -3,12 +3,14 @@
  * Schreibweise statt HTML:
  *
  *   **fett**   *kursiv*   [Linktext](https://… | /pages/… | mailto:…)
+ *   {s}klein{/s}   {l}groß{/l}   {xl}sehr groß{/xl}   → Schriftgröße einzelner Wörter (Inhaber 23.11.2026)
  *   - Zeile mit Strich am Anfang   → Aufzählung (aufeinanderfolgende Zeilen = eine Liste)
  *   Leerzeile                      → neuer Absatz; jede weitere Leerzeile eine Zeile mehr Abstand (höchstens 3)
  *   einzelner Zeilenumbruch        → Zeilenumbruch im Absatz
- *   \* \[ \] \( \) \- \\           → das Zeichen selbst (z. B. „5\*3“ ist 5*3, nicht kursiv)
+ *   \* \[ \] \( \) \- \{ \} \\     → das Zeichen selbst (z. B. „5\*3“ ist 5*3, nicht kursiv)
  *
- * Es entsteht nie freies HTML: nur p, ul/li, strong, em, a, br. Links nur mit
+ * Es entsteht nie freies HTML: nur p, ul/li, strong, em, a, br und span mit fester Klasse (rt-s, rt-l, rt-xl;
+ * Größen in site.css). Links nur mit
  * https://, mailto: oder auf eigene Seiten (/…); alles andere bleibt Text.
  *
  * Diese Datei gibt es zweimal — hier und im CMS (rethink-cms src/rich-text.js).
@@ -27,14 +29,17 @@ export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$|\.profile\.p[0-9]+
 // „//fremd.example“ und „/\fremd.example“ lösen Browser als fremde Domain auf.
 const SAFE_HREF = /^(https:\/\/[^\s<>"]+|mailto:[^\s<>"]+|\/(?![/\\])[^\s<>"\\]*)$/;
 
-/** Inline: Maskierung, fett, kursiv, Links, Zeilenumbruch. */
+/** Schriftgrößen einzelner Wörter: {s}…{/s}, {l}…{/l}, {xl}…{/xl} → <span class="rt-…">. */
+export const RICH_SIZES = ['s', 'l', 'xl'];
+
+/** Inline: Maskierung, fett, kursiv, Links, Größe, Zeilenumbruch. */
 function parseInline(src) {
   const out = [];
-  // Reihenfolge zählt: erst „\x“ (Zeichen wörtlich), dann fett, kursiv, Link.
+  // Reihenfolge zählt: erst „\x“ (Zeichen wörtlich), dann fett, kursiv, Link, Größe.
   // Ein maskiertes Sternchen schließt kein fett/kursiv ((?<=[^…\\]) vor dem Stern).
   // Schließendes ** darf nach Leerraum stehen („**fett **“, „**fett⏎**“ — so entsteht es, wenn die
   // Markierung ein Leerzeichen oder den Zeilenumbruch mitnimmt); nur nicht maskiert (\**).
-  const re = /\\([\\*[\]()-])|\*\*(?=\S)([\s\S]+?)(?<!\\)\*\*|\*(?=[^\s*])([\s\S]+?)(?<=[^\s*\\])\*|\[((?:\\.|[^\]\n\\])+)\]\(([^)\s]+)\)|\n/g;
+  const re = /\\([\\*[\](){}-])|\*\*(?=\S)([\s\S]+?)(?<!\\)\*\*|\*(?=[^\s*])([\s\S]+?)(?<=[^\s*\\])\*|\[((?:\\.|[^\]\n\\])+)\]\(([^)\s]+)\)|\{(s|l|xl)\}([\s\S]+?)\{\/\6\}|\n/g;
   let last = 0;
   for (let m = re.exec(src); m; m = re.exec(src)) {
     if (m.index > last) out.push({ type: 'text', text: src.slice(last, m.index) });
@@ -52,7 +57,8 @@ function parseInline(src) {
       out.push(SAFE_HREF.test(m[5])
         ? { type: 'a', href: m[5], children: parseInline(m[4]) }
         : { type: 'text', text: m[0] });
-    } else out.push({ type: 'br' });
+    } else if (m[6] !== undefined) out.push({ type: 'size', size: m[6], children: parseInline(m[7]) });
+    else out.push({ type: 'br' });
     last = re.lastIndex;
   }
   if (last < src.length) out.push({ type: 'text', text: src.slice(last) });
@@ -113,6 +119,7 @@ function inlineHtml(nodes) {
     if (n.type === 'br') return '<br>';
     if (n.type === 'strong') return `<strong>${inlineHtml(n.children)}</strong>`;
     if (n.type === 'em') return `<em>${inlineHtml(n.children)}</em>`;
+    if (n.type === 'size') return `<span class="rt-${n.size}">${inlineHtml(n.children)}</span>`;
     const extra = external(n.href) ? ' target="_blank" rel="noopener"' : '';
     return `<a href="${esc(n.href)}"${extra}>${inlineHtml(n.children)}</a>`;
   }).join('');
@@ -129,8 +136,9 @@ function inlineDom(doc, nodes, parent) {
   for (const n of nodes) {
     if (n.type === 'text') { parent.append(doc.createTextNode(n.text)); continue; }
     if (n.type === 'br') { parent.append(doc.createElement('br')); continue; }
-    const tag = n.type === 'a' ? 'a' : n.type;
+    const tag = n.type === 'size' ? 'span' : n.type;
     const node = doc.createElement(tag);
+    if (n.type === 'size') node.className = `rt-${n.size}`;
     if (n.type === 'a') {
       node.setAttribute('href', n.href);
       if (external(n.href)) { node.setAttribute('target', '_blank'); node.setAttribute('rel', 'noopener'); }

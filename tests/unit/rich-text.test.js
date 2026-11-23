@@ -9,6 +9,32 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isRichKey, parseRich, renderRichHtml, renderRichInto, richToPlain } from '../../src/site/i18n/rich-text.js';
 
+describe('Feature: Schriftgröße einzelner Wörter (Inhaber 23.11.2026)', () => {
+  it('{s} {l} {xl} → span mit fester Klasse, verschachtelt mit fett; ohne Marken als Text', () => {
+    expect(renderRichHtml('Ein {l}großes{/l} Wort')).toBe('<p>Ein <span class="rt-l">großes</span> Wort</p>');
+    expect(renderRichHtml('{xl}**fett groß**{/xl} und {s}klein{/s}'))
+      .toBe('<p><span class="rt-xl"><strong>fett groß</strong></span> und <span class="rt-s">klein</span></p>');
+    expect(richToPlain('Ein {l}großes{/l} Wort')).toBe('Ein großes Wort');
+  });
+
+  it('falsch geschlossen oder unbekannte Größe bleibt Text; nie freies HTML', () => {
+    expect(renderRichHtml('{l}a{/xl}')).toBe('<p>{l}a{/xl}</p>');
+    expect(renderRichHtml('{m}a{/m}')).toBe('<p>{m}a{/m}</p>');
+    expect(renderRichHtml('{l}<b>x</b>{/l}')).toBe('<p><span class="rt-l">&lt;b&gt;x&lt;/b&gt;</span></p>');
+  });
+
+  it('dieselbe Darstellung im DOM (Laufzeit, CMS-Vorschau)', () => {
+    const box = document.createElement('div');
+    renderRichInto(box, 'a {xl}b{/xl}');
+    expect(box.innerHTML).toBe('<p>a <span class="rt-xl">b</span></p>');
+  });
+
+  it('site.css kennt alle Größen', () => {
+    const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
+    for (const s of ['s', 'l', 'xl']) expect(css, s).toContain(`.rt-${s} { font-size:`);
+  });
+});
+
 describe('Feature: formatierte Kacheltexte', () => {
   it('nur die Texte unter „Learn more“ sind formatierbar', () => {
     expect(isRichKey('habitat.panel.space.text')).toBe(true);
@@ -82,7 +108,7 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('f1d412925c2464e387e0e74e723fe06bc213b8ad55631efedc0011275509ea7c');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('ff5f52c54e29ab7648d12a1e7c8d81d7d4472e31156565fbacc88de033b91a2d');
   });
 });
 

@@ -381,6 +381,10 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .band-panel .panel-text > [data-gap="1"] { margin-top: 3.2em; }
 .band-panel .panel-text > [data-gap="2"] { margin-top: 4.8em; }
 .band-panel .panel-text > [data-gap="3"] { margin-top: 6.4em; }
+/* Schriftgröße einzelner Wörter (rich-text.js {s}/{l}/{xl}, Inhaber 23.11.2026) — gilt in allen formatierten Texten */
+.rt-s { font-size: .85em; }
+.rt-l { font-size: 1.3em; line-height: 1.3; }
+.rt-xl { font-size: 1.7em; line-height: 1.2; }
 .band-panel .panel-text ul { color: #c3c3ca; padding-left: 1.3em; list-style: disc; }
 .band-panel .panel-text li + li { margin-top: .35em; }
 .band-panel .panel-text strong { color: #f2f2f4; font-weight: 700; }

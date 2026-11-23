@@ -38,6 +38,7 @@ export const CATALOG = [
   ['geschütztes Leerzeichen', '10\u00a0km and 5\u202fkg'],
   ['unsichtbar', 'zero\u200bwidth and soft\u00adhyphen'],
   ['Tabulator', 'col1\tcol2'],
+  ['Größenmarke wörtlich', 'type \\{l\\}big\\{/l\\} or {xl} alone'],
   ['Absätze', 'Eins.\n\nZwei.\nDrei.'],
   ['Windows-Umbruch', 'Eins.\r\nZwei.'],
   ['alter Mac-Umbruch', 'Eins.\rZwei.'],
@@ -147,6 +148,9 @@ describe('Feature: Schreibweise wörtlich schreiben (Backslash)', () => {
     expect(renderRichHtml('\\- kein Punkt')).toBe('<p>- kein Punkt</p>');
     expect(renderRichHtml('**fett \\* mit Stern**')).toBe('<p><strong>fett * mit Stern</strong></p>');
     expect(richToPlain('5\\*3')).toBe('5*3');
+    // Schriftgröße (23.11.2026): \{ \} schreiben die Klammer, eine Marke allein bleibt Text
+    expect(renderRichHtml('\\{l\\}x\\{/l\\}')).toBe('<p>{l}x{/l}</p>');
+    expect(renderRichHtml('{xl} allein')).toBe('<p>{xl} allein</p>');
   });
 
   it('ein einzelner Backslash vor anderen Zeichen bleibt stehen', () => {
