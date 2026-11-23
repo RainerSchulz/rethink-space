@@ -87,7 +87,7 @@ main.is-leaving, main.is-entering { opacity: 0; }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 .wrap.narrow { max-width: 820px; }
 section { padding: 88px 0; }
-section.legal-page { padding-top: 120px; }
+section.legal-page { padding-top: 56px; } /* Impressum/Datenschutz: weniger Platz unter dem Kopf (Inhaber 23.11.2026, vorher 120px) */
 
 .eyebrow {
   color: var(--accent);
