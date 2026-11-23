@@ -3,7 +3,7 @@
  * Ohne Dateizugriff, damit tests/unit/apply-content.test.js sie prüfen kann.
  */
 
-import { isRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
+import { isRichKey, isInlineRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
 import { mediaClass } from './bands.mjs';
 
 const rx = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -58,10 +58,10 @@ export function hasDictKey(lines, key) {
 export function setElementText(html, key, value) {
   const re = new RegExp(`(<([a-zA-Z][a-zA-Z0-9]*)\\b[^>]*\\sdata-i18n="${rx(key)}"[^>]*>)([\\s\\S]*?)(</\\2>)`, 'g');
   const rich = isRichKey(key);
-  const next = rich ? renderRichHtml(value) : escapeHtml(value);
+  const next = rich ? renderRichHtml(value, { inline: isInlineRichKey(key) }) : escapeHtml(value);
   let changed = false;
   const out = html.replace(re, (all, open, tag, text, close) => {
-    const asDiv = rich && tag.toLowerCase() === 'p';
+    const asDiv = rich && !isInlineRichKey(key) && tag.toLowerCase() === 'p';
     if (text === next && !asDiv) return all;
     changed = true;
     return asDiv ? `${open.replace(/^<p\b/i, '<div')}${next}</div>` : open + next + close;

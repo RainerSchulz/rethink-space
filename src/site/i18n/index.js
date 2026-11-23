@@ -7,7 +7,7 @@
  */
 import { DE } from './de.js';
 import { EN } from './en.js';
-import { isRichKey, renderRichInto } from './rich-text.js';
+import { isRichKey, isInlineRichKey, renderRichInto } from './rich-text.js';
 
 const DICT = { de: DE, en: EN };
 export const LANG_EVENT = 'rethink:langchange';
@@ -40,7 +40,7 @@ export function applyLang(root = document) {
 
   root.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
-    if (isRichKey(key)) renderRichInto(el, t(key));
+    if (isRichKey(key)) renderRichInto(el, t(key), { inline: isInlineRichKey(key) });
     else el.textContent = t(key);
   });
   root.querySelectorAll('[data-i18n-content]').forEach((el) => {

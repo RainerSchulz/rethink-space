@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url';
 import { describe, it, expect } from 'vitest';
 import { DE } from '../../src/site/i18n/de.js';
 import { EN } from '../../src/site/i18n/en.js';
-import { isRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
+import { isRichKey, isInlineRichKey, renderRichHtml } from '../../src/site/i18n/rich-text.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const deKeys = Object.keys(DE);
@@ -123,7 +123,7 @@ describe('Feature: Schlüssel-Abdeckung (HTML + src)', () => {
         // vergleichen (dieselbe Umformung auf beiden Seiten). Leerraum zählt
         // dabei nicht — zwischen <p>-Absätzen gibt es keinen.
         if (isRichKey(key)) {
-          const want = new DOMParser().parseFromString(`<div>${renderRichHtml(EN[key] ?? '')}</div>`, 'text/html').body.textContent;
+          const want = new DOMParser().parseFromString(`<div>${renderRichHtml(EN[key] ?? '', { inline: isInlineRichKey(key) })}</div>`, 'text/html').body.textContent;
           const squash = (s) => String(s ?? '').replace(/\s+/g, '');
           if (squash(el.textContent) !== squash(want)) mismatches.push(`${file}: ${key} → "${text}"`);
         } else if (text !== norm(EN[key])) mismatches.push(`${file}: ${key} → "${text}"`);

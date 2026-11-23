@@ -23,7 +23,15 @@
  * Kacheltexte (*.panel.<id>.text) und die Absätze der Founder-Kachel (*.profile.p<n>).
  * Überschriften, Knöpfe und Listenzeilen bleiben schlichter Text.
  */
-export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$|\.profile\.p[0-9]+$/.test(String(key ?? ''));
+export const isRichKey = (key) => /\.panel\.[a-z0-9-]+\.text$|\.profile\.p[0-9]+$/.test(String(key ?? '')) || isInlineRichKey(key);
+
+/**
+ * Überschriften mit Werkzeugleiste (Inhaber 23.11.2026, Hauptüberschrift der Startseite): nur fett, kursiv, Link und
+ * Schriftgröße; jede Zeile wird ein <br>, keine Absätze und Listen (ein <p> darf nicht in einem <h1> stehen).
+ * Aufrufer geben dann { inline: true } an renderRichHtml/renderRichInto.
+ */
+export const INLINE_RICH_KEYS = ['home.hero.lead1'];
+export const isInlineRichKey = (key) => INLINE_RICH_KEYS.includes(String(key ?? ''));
 
 // Eigene Seite = ein Schrägstrich, dann KEIN zweiter und kein Backslash:
 // „//fremd.example“ und „/\fremd.example“ lösen Browser als fremde Domain auf.
@@ -125,8 +133,12 @@ function inlineHtml(nodes) {
   }).join('');
 }
 
+/** Nur Inline-Formate, Zeilen als <br> (Überschriften, isInlineRichKey). */
+const inlineNodes = (text) => parseInline(String(text ?? '').replace(/\r\n?/g, '\n').trim());
+
 /** Als HTML-Text (für die statischen Seiten beim Übernehmen aus dem CMS). */
-export function renderRichHtml(text) {
+export function renderRichHtml(text, { inline = false } = {}) {
+  if (inline) return inlineHtml(inlineNodes(text));
   return parseRich(text).map((b) => (b.type === 'p'
     ? `<p${gapAttr(b)}>${inlineHtml(b.children)}</p>`
     : `<ul${gapAttr(b)}>${b.items.map((it) => `<li>${inlineHtml(it)}</li>`).join('')}</ul>`)).join('');
@@ -149,9 +161,10 @@ function inlineDom(doc, nodes, parent) {
 }
 
 /** In ein Element schreiben (Laufzeit der Website, Vorschau im CMS) — ohne innerHTML. */
-export function renderRichInto(el, text) {
+export function renderRichInto(el, text, { inline = false } = {}) {
   const doc = el.ownerDocument;
   el.replaceChildren();
+  if (inline) { inlineDom(doc, inlineNodes(text), el); return; }
   for (const b of parseRich(text)) {
     const node = doc.createElement(b.type);
     if (b.gap) node.setAttribute('data-gap', String(b.gap));

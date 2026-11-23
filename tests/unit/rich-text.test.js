@@ -108,7 +108,7 @@ describe('Feature: Bedingungen, an denen die Übernahme hängt', () => {
   it('ist unverändert gegenüber der Kopie im CMS (Prüfsumme)', () => {
     const file = resolve(dirname(fileURLToPath(import.meta.url)), '../../src/site/i18n/rich-text.js');
     const src = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-    expect(createHash('sha256').update(src).digest('hex')).toBe('ff5f52c54e29ab7648d12a1e7c8d81d7d4472e31156565fbacc88de033b91a2d');
+    expect(createHash('sha256').update(src).digest('hex')).toBe('2b8ffa45b56ac52045511a4603fc4d8fdf88aa52528bde0bb29d192ea20ea15b');
   });
 });
 
@@ -182,4 +182,20 @@ describe('Feature: jeder Fließtext in einer Kachel ist formatierbar (Werkzeugle
       }
     });
   }
+});
+
+describe('Feature: Hauptüberschrift der Startseite formatierbar (Inhaber 23.11.2026)', () => {
+  it('nur Inline-Formate: Zeilen als <br>, keine Absätze und Listen — ein <p> darf nicht ins <h1>', async () => {
+    const { isInlineRichKey } = await import('../../src/site/i18n/rich-text.js');
+    expect(isInlineRichKey('home.hero.lead1') && isRichKey('home.hero.lead1')).toBe(true);
+    const html = renderRichHtml('New Space Economy for\nLunar {l}Infrastructure{/l}\n\n**WE ORCHESTRATE**\n- kein Punkt', { inline: true });
+    expect(html).toBe('New Space Economy for<br>Lunar <span class="rt-l">Infrastructure</span><br><br><strong>WE ORCHESTRATE</strong><br>- kein Punkt');
+    expect(html).not.toMatch(/<(p|ul|li|div)\b/);
+  });
+
+  it('beim Übernehmen landet die Überschrift formatiert im <h1>, ohne <p>', async () => {
+    const { setElementText } = await import('../../scripts/lib/apply.mjs');
+    const r = setElementText('<h1 data-i18n="home.hero.lead1">Alt</h1>', 'home.hero.lead1', 'A\n**B** {xl}C{/xl}');
+    expect(r.html).toBe('<h1 data-i18n="home.hero.lead1">A<br><strong>B</strong> <span class="rt-xl">C</span></h1>');
+  });
 });
