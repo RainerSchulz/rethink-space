@@ -181,3 +181,29 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # ─── Chatbot auf den Stand der Website (Inhaber 23.11.2026) ───────
+  # Auch Code-Änderungen (neue Texte, Seiten, Faktendatei) gehen sofort in die Wissensbasis — nicht erst
+  # beim nächsten Veröffentlichen aus dem CMS (content.yml macht dasselbe nach jedem Übernehmen).
+  # Scheitert es, bleibt die Website trotzdem online; der Lauf zeigt dann eine Warnung.
+  chat-knowledge:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Wissensbasis des Chatbots bauen und hochladen
+        id: knowledge
+        continue-on-error: true
+        run: npm run knowledge && npm run knowledge:push
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: Hinweis, falls der Chatbot nicht nachgezogen wurde
+        if: steps.knowledge.outcome != 'success'
+        run: echo "::warning::Wissensbasis des Chatbots nicht aktualisiert (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY prüfen) — er antwortet mit dem vorigen Stand."

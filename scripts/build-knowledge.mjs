@@ -23,7 +23,8 @@ const read = (p) => (existsSync(p) ? readFileSync(p, 'utf8').trim() : '');
 //    Meta-Texte und Navigation sind für Antworten unerheblich.
 // Bedienelemente statt Inhalt: der Chatbot soll ueber die Website reden,
 // nicht ueber ihre Knoepfe. gate = Anmeldemaske der Testphase.
-const skip = /^(nav\.|footer\.|common\.|chat\.|gate\.|.*\.meta\.)/;
+// *.size = Schriftgröße aus dem CMS (s, m, l, xl) — Gestaltung, kein Inhalt
+const skip = /^(nav\.|footer\.|common\.|chat\.|gate\.|.*\.meta\.|.*\.size$)/;
 const groups = new Map();
 for (const key of Object.keys(EN)) {
   if (skip.test(key)) continue;
