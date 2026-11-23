@@ -9,6 +9,7 @@ export const PAGES = {
   'lunar-habitato': 'pages/lunar-habitato/index.html',
   'dual-use':  'pages/dual-use/index.html',
   people:      'pages/people/index.html',
+  'founders-journal': 'pages/founders-journal/index.html',
   contact:     'pages/contact/index.html',
   'legal-notice': 'pages/legal-notice/index.html',
   privacy:     'pages/privacy/index.html',

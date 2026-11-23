@@ -45,6 +45,7 @@ Ein direktes Öffnen von `index.html` per Doppelklick funktioniert nicht (ES-Mod
 | `/pages/ip/` | IP & Schutzrechte |
 | `/pages/news/` | News & Presse |
 | `/pages/people/` | Dr. Johannes Lierfeld |
+| `/pages/founders-journal/` | Founder’s Journal (Kacheln, aus Lunar Habitato umgezogen 23.11.2026) |
 | `/pages/contact/` | Kontakt |
 | `/pages/legal-notice/` | Impressum (Platzhalter) |
 | `/pages/privacy/` | Datenschutz (Platzhalter) |

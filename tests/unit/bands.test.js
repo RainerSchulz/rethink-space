@@ -29,7 +29,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('jede echte Kachel-Seite hat einen sauber lesbaren Bereich (unabhängig vom Inhalt)', () => {
-    for (const slug of ['lunar-habitato', 'dual-use', 'people']) {
+    for (const slug of ['lunar-habitato', 'dual-use', 'people', 'founders-journal']) {
       const bands = parseBands(splitRegion(page(slug)).region);
       const found = bands.map((b) => b.id);
       expect(new Set(found).size, `${slug}: doppelte Kachel-IDs`).toBe(found.length);
@@ -44,7 +44,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('lässt jede Seite unverändert, wenn das CMS nichts geändert hat', () => {
-    for (const slug of ['lunar-habitato', 'dual-use', 'people']) {
+    for (const slug of ['lunar-habitato', 'dual-use', 'people', 'founders-journal']) {
       const h = page(slug);
       const r = applyBands(h, asData(parseBands(splitRegion(h).region)));
       expect(r.changed, slug).toBe(false);

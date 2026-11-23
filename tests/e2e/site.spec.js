@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
 import { EN } from '../../src/site/i18n/en.js';
 
 const PAGES = [
-  'lunar-habitato', 'dual-use', 'people', 'contact',
+  'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'contact',
   'legal-notice', 'privacy', '404',
 ];
 
@@ -44,11 +44,11 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
     await expect(page.locator('.lang')).toHaveCount(0);
   });
 
-  test('Kopfnavigation führt genau vier Punkte', async ({ page, isMobile }) => {
+  test('Kopfnavigation führt genau fünf Punkte', async ({ page, isMobile }) => {
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
     await expect(page.locator('#site-nav a')).toHaveText(
-      ['nav.habitat', 'nav.dual-use', 'nav.people', 'nav.contact'].map((k) => EN[k]),
+      ['nav.habitat', 'nav.dual-use', 'nav.people', 'nav.journal', 'nav.contact'].map((k) => EN[k]),
     );
   });
 });
@@ -188,7 +188,7 @@ test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
 });
 
 test.describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
-  for (const slug of ['lunar-habitato', 'dual-use', 'people']) {
+  for (const slug of ['lunar-habitato', 'dual-use', 'people', 'founders-journal']) {
     test(`/pages/${slug}/: "Learn more" öffnet den Bereich darunter, ohne Seitenwechsel`, async ({ page }) => {
       await page.goto(`/pages/${slug}/`);
       await expect(page.locator('.band-panel:visible')).toHaveCount(0); // alles zu beim Laden

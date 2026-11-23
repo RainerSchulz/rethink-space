@@ -38,6 +38,7 @@ for (const key of Object.keys(EN)) {
 // Pfad in der Wissensbasis wird vom Chatbot weitergereicht und endet im 404.
 const PAGE_URL = {
   home: '/', habitat: '/pages/lunar-habitato/', dual: '/pages/dual-use/', people: '/pages/people/',
+  journal: '/pages/founders-journal/',
   contact: '/pages/contact/', imprint: '/pages/legal-notice/', legal: '/pages/legal-notice/',
   privacy: '/pages/privacy/', notfound: '/pages/404/',
 };

@@ -26,7 +26,7 @@ const SITE = 'https://rethink.space';
 // index.html in der Wurzel, damit die Adresse rethink.space/ und nicht
 // rethink.space/pages/landing/ lautet.
 const EXPECTED_PAGES = [
-  'lunar-habitato', 'dual-use', 'people', 'contact',
+  'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'contact',
   'legal-notice', 'privacy', '404',
 ];
 
@@ -238,7 +238,7 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
   // sie aus dem Markup — mit Untergrenze, damit ein versehentlich geleerter
   // Bereich <!-- cms:bands --> nicht still durchgeht. Die Fläche ist
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
-  const BAND_PAGES = [['lunar-habitato', 2], ['dual-use', 1], ['people', 2]];
+  const BAND_PAGES = [['lunar-habitato', 2], ['dual-use', 1], ['people', 2], ['founders-journal', 1]];
   // Obergrenze: redaktionell großzügig, fängt aber einen Fehler, der Kacheln
   // vervielfacht. Seit der Kachel-Bereich nicht mehr in die 300-Zeilen-Regel
   // zählt, ist sie die einzige Bremse. Das CMS prüft dieselbe Zahl beim Anlegen

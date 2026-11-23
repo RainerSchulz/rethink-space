@@ -9,6 +9,7 @@ export const DE = {
   'nav.habitat':      'Lunar Habitato',
   'nav.dual-use':    'Dual Use',
   'nav.people':      'Menschen',
+  'nav.journal':     'Founder’s Journal',
   'nav.contact':     'Kontakt',
   'footer.imprint':  'Impressum',
   'footer.privacy':  'Datenschutz',
@@ -48,14 +49,18 @@ export const DE = {
   'habitat.band.research':  'Researching',
   'habitat.band.partnership': 'Partnership',
   'habitat.panel.partnership.text': 'Mondinfrastruktur baut keine Organisation allein. Agenturen, Forschungsinstitute und Industrie halten je ein Stück des Problems — Werkstoffe, Robotik, Lebenserhaltung, Missionsentwurf — und die Stücke passen nur zusammen, wenn sie von Anfang an gemeinsam entwickelt werden.\n\nWir arbeiten deshalb im offenen Netzwerk statt hinter verschlossenen Türen: gemeinsame Studien, geteilte Testkampagnen, Ergebnisse, die jede Seite auch für sich nutzen kann. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
-  'habitat.band.history':   'History',
   'habitat.panel.space.text': 'Regolith bedeckt die Mondoberfläche meterdick. Er ist Abschirmung, Baustoff und Rohstoffquelle zugleich – wenn man ihn verarbeiten kann.\n\nGenau dort beginnt unsere Arbeit: Verfahren, die aus örtlichem Material tragende Strukturen machen, mit wenig Energie und ohne Handarbeit vor Ort.',
   'habitat.panel.design.text': 'Die Kuppel verteilt Lasten gleichmäßig und lässt sich aus vielen kleinen, gleichen Elementen fügen – ideal für robotische Fertigung vor Ort.\n\nJeder Schritt ist durch eigene Schutzrechte gesichert: Geometrie, Fügeverfahren und der Innenraum, der aus einem Schutzbau einen Ort zum Leben macht.',
   'habitat.panel.research.text': 'Wir arbeiten in Etappen: Konzeptstudie, Materialqualifizierung, Demonstrator, Missionsintegration. Jede Etappe liefert Ergebnisse, die auch für sich stehen.\n\nDie Wahl des Standorts nach Sonneneinstrahlung, Untergrund und Nähe zu Rohstoffen entscheidet die halbe Missionsrechnung – lange vor dem ersten Bauwerk.',
-  'habitat.panel.history.text': 'Am Anfang stand eine Frage: Wie sieht ein Ort aus, an dem Menschen jenseits der Erde nicht nur überleben, sondern arbeiten, forschen und sich erholen?\n\nAus der ersten Skizze wurden Studien, Demonstratoren und Partnerschaften. Die Meilensteine dieses Weges entstehen hier.',
   'habitat.band.lunar-habitato': 'LUNAR HABITATO',
   'habitat.panel.lunar-habitato.text': 'LUNAR HABITATO',
 
+  // ── Founder’s Journal ─────────────────────────────────────────────
+  'journal.meta.title':       'Founder’s Journal – RETHINK SPACE',
+  'journal.meta.description': 'Das Founder’s Journal von Dr. Dr. Johannes Lierfeld: Markenmanifest von RETHINK SPACE und die Stationen von LUNAR HABITATO, von Tiny Houses zu Mond-Habitaten.',
+  'journal.page.h1': 'Founder’s Journal – von Tiny Houses zu Mond-Habitaten',
+  'journal.band.history':   'History',
+  'journal.panel.history.text': 'Am Anfang stand eine Frage: Wie sieht ein Ort aus, an dem Menschen jenseits der Erde nicht nur überleben, sondern arbeiten, forschen und sich erholen?\n\nAus der ersten Skizze wurden Studien, Demonstratoren und Partnerschaften. Die Meilensteine dieses Weges entstehen hier.',
   // ── Design ────────────────────────────────────────────────────────
 
   // ── Space ─────────────────────────────────────────────────────────
