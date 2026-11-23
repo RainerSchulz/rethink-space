@@ -210,6 +210,87 @@ export function setRows(html, keys) {
   return { html: out, changed };
 }
 
+/* ---------- Blöcke ausblenden (rethink-cms, Inhaber 23.11.2026): Überschrift + alles bis zur nächsten ---------- */
+
+const VOID_TAGS = new Set(['area', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Anfang jedes Elements eines Blocks: die Überschrift (h2–h4) und ihre folgenden Geschwister bis zur nächsten
+ * Überschrift gleicher oder höherer Ebene, bis zu einem Geschwister, das selbst eine Überschrift enthält, oder bis
+ * das Elternelement endet. Dieselbe Regel hat das CMS (rethink-cms src/preview.js blockMembers) — beide gleich halten.
+ * @returns {number[]} Positionen der Start-Tags
+ */
+export function blockStarts(html, headingAt) {
+  const open = /^<(h([2-4]))\b/i.exec(html.slice(headingAt, headingAt + 4));
+  if (!open) return [];
+  const level = Number(open[2]);
+  const close = html.indexOf(`</${open[1].toLowerCase()}>`, headingAt);
+  if (close < 0) return [];
+  const starts = [headingAt];
+  let pos = close + open[1].length + 3;
+  for (;;) {
+    while (pos < html.length) {
+      const ws = /^\s+/.exec(html.slice(pos, pos + 200));
+      if (ws) { pos += ws[0].length; continue; }
+      if (html.startsWith('<!--', pos)) { const e = html.indexOf('-->', pos); if (e < 0) return starts; pos = e + 3; continue; }
+      if (html[pos] !== '<') { const lt = html.indexOf('<', pos); if (lt < 0) return starts; pos = lt; continue; }
+      break;
+    }
+    if (pos >= html.length || html.startsWith('</', pos)) return starts;
+    const tag = /^<([a-zA-Z][\w-]*)\b[^>]*>/.exec(html.slice(pos, pos + 2000));
+    if (!tag) return starts;
+    const name = tag[1].toLowerCase();
+    const h = /^h([1-6])$/.exec(name);
+    if (h && Number(h[1]) <= level) return starts;
+    let end;
+    if (VOID_TAGS.has(name) || tag[0].endsWith('/>')) end = pos + tag[0].length;
+    else {
+      const re = new RegExp(`<(/?)${escRe(name)}\\b[^>]*>`, 'gi');
+      re.lastIndex = pos + tag[0].length;
+      let depth = 1;
+      let m;
+      while (depth > 0 && (m = re.exec(html))) depth += m[1] ? -1 : 1;
+      if (depth > 0) return starts;
+      end = re.lastIndex;
+    }
+    if (/<h[1-6]\b/i.test(html.slice(pos + tag[0].length, end))) return starts;
+    starts.push(pos);
+    pos = end;
+  }
+}
+
+/**
+ * Im CMS ausgeblendete Blöcke: hidden am Schlüssel einer Überschrift (h2–h4, nicht die Kachel-Titel `*.band.*` und
+ * nichts im Bereich <!-- cms:bands -->) → Attribut hidden an der Überschrift und an jedem Element des Blocks, markiert
+ * mit data-cms-block="<schlüssel>". Wieder einblenden nimmt nur, was so markiert ist — ein aus anderem Grund
+ * verborgenes Element (entferntes Bild, zugeklapptes Panel) bleibt verborgen. Das Markup bleibt stehen.
+ */
+export function setBlocks(html, keys) {
+  let out = html;
+  let changed = 0;
+  for (const k of keys) {
+    if (String(k.key).includes('.band.')) continue;
+    const m = new RegExp(`<h[2-4]\\b[^>]*\\sdata-i18n="${escRe(k.key)}"[^>]*>`, 'i').exec(out);
+    if (!m) continue;
+    const region = out.indexOf('<!-- cms:bands -->');
+    if (region >= 0 && m.index > region && m.index < out.indexOf('<!-- /cms:bands -->', region)) continue;
+    const marker = ` data-cms-block="${k.key}"`;
+    for (const s of blockStarts(out, m.index).reverse()) {
+      const e = out.indexOf('>', s) + 1;
+      const tag = out.slice(s, e);
+      const mine = tag.includes(marker);
+      let next = tag;
+      if (k.hidden === true && !mine && !HIDDEN_ATTR.test(tag)) next = tag.replace(/\s*(\/?)>$/, (_, slash) => ` hidden${marker}${slash ? ' /' : ''}>`);
+      if (k.hidden !== true && mine) next = tag.replace(marker, '').replace(HIDDEN_ATTR, '');
+      if (next === tag) continue;
+      out = out.slice(0, s) + next + out.slice(e);
+      changed++;
+    }
+  }
+  return { html: out, changed };
+}
+
 /**
  * Mehrere Schlüssel in einer Seite setzen; `enOf(key)` liefert den Text oder
  * undefined (dann bleibt die Stelle, wie sie ist). Schlüssel, die nur das

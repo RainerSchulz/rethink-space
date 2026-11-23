@@ -12,8 +12,10 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass,
+  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass, setBlocks, blockStarts,
 } from '../../scripts/lib/apply.mjs';
+
+const ROOT = resolve(import.meta.dirname, '../..');
 
 describe('Feature: Wörterbuch-Werte ersetzen', () => {
   it('ersetzt den Wert und lässt Einrückung und Schlüssel stehen', () => {
@@ -280,6 +282,65 @@ describe('Feature: Zeilen im CMS entfernen (data-cms-row)', () => {
     const back = setRows(hidden, [{ key: 'people.books.1.title', hidden: false }]);
     expect(back.html).toBe(html);
     expect(setRows(html, [{ key: 'people.profile.p1', hidden: true }]).changed).toBe(0);
+  });
+});
+
+describe('Feature: Blöcke im CMS ausblenden (Überschrift + alles bis zur nächsten)', () => {
+  const html = [
+    '<section class="legal"><div class="wrap">',
+    '<h2 data-i18n="privacy.host.title">2. Hosting</h2>',
+    '<p data-i18n="privacy.host.body">GitHub …</p>',
+    '<h2 data-i18n="privacy.storage.title">3. Storage</h2>',
+    '<p data-i18n="privacy.storage.body">While the site …</p>',
+    '<!-- Hinweis -->',
+    '<ul><li>a</li><li><ul><li>b</li></ul></li></ul>',
+    '<img src="/x.webp" alt="" hidden>',
+    '<h3 data-i18n="privacy.storage.sub">Unterpunkt</h3>',
+    '<p>noch dazu</p>',
+    '<h2 data-i18n="privacy.contact.title">4. Contact</h2>',
+    '<p data-i18n="privacy.contact.body">If you …</p>',
+    '</div></section>',
+  ].join('\n');
+
+  it('blendet Überschrift und alle Elemente bis zur nächsten gleich großen Überschrift aus, markiert', () => {
+    const r = setBlocks(html, [{ key: 'privacy.storage.title', hidden: true }]);
+    expect(r.changed).toBe(5); // h2, p, ul, h3, p — das schon verborgene Bild bleibt unmarkiert
+    expect(r.html).toContain('<h2 data-i18n="privacy.storage.title" hidden data-cms-block="privacy.storage.title">3. Storage</h2>');
+    expect(r.html).toContain('<p data-i18n="privacy.storage.body" hidden data-cms-block="privacy.storage.title">');
+    expect(r.html).toContain('<ul hidden data-cms-block="privacy.storage.title"><li>a</li>');
+    expect(r.html).toContain('<img src="/x.webp" alt="" hidden>');
+    expect(r.html).toContain('<h3 data-i18n="privacy.storage.sub" hidden data-cms-block="privacy.storage.title">');
+    expect(r.html).toContain('<p hidden data-cms-block="privacy.storage.title">noch dazu</p>');
+    expect(r.html).toContain('<h2 data-i18n="privacy.contact.title">4. Contact</h2>');
+    expect(r.html).toContain('<p data-i18n="privacy.host.body">GitHub …</p>');
+  });
+
+  it('Unterüberschrift nur bis zur nächsten gleich großen; einblenden stellt genau her, zweimal ändert nichts', () => {
+    const sub = setBlocks(html, [{ key: 'privacy.storage.sub', hidden: true }]).html;
+    expect(sub).toContain('<p hidden data-cms-block="privacy.storage.sub">noch dazu</p>');
+    expect(sub).toContain('<h2 data-i18n="privacy.contact.title">4. Contact</h2>');
+    const hidden = setBlocks(html, [{ key: 'privacy.storage.title', hidden: true }]).html;
+    expect(setBlocks(hidden, [{ key: 'privacy.storage.title', hidden: true }]).changed).toBe(0);
+    expect(setBlocks(hidden, [{ key: 'privacy.storage.title', hidden: false }]).html).toBe(html);
+    expect(setBlocks(hidden, [{ key: 'privacy.storage.title' }]).html).toBe(html);
+  });
+
+  it('nicht für Kachel-Titel, nicht im Kachel-Bereich, nicht für Texte, die keine Überschrift sind', () => {
+    const bands = '<h2 class="band-h" data-i18n="people.band.founder">F</h2><p>x</p><!-- cms:bands --><h2 data-i18n="x.title">T</h2><p>y</p><!-- /cms:bands -->';
+    expect(setBlocks(bands, [{ key: 'people.band.founder', hidden: true }, { key: 'x.title', hidden: true }]).changed).toBe(0);
+    expect(setBlocks(html, [{ key: 'privacy.storage.body', hidden: true }]).changed).toBe(0);
+    expect(blockStarts(html, html.indexOf('<h2 data-i18n="privacy.contact.title"'))).toHaveLength(2); // bis das Elternelement endet
+  });
+
+  it('die echten Seiten: jeder Block der Datenschutzerklärung lässt sich aus- und wieder einblenden', () => {
+    const page = readFileSync(resolve(ROOT, 'pages/privacy/index.html'), 'utf8');
+    const keys = [...page.matchAll(/<h2[^>]*data-i18n="([^"]+)"/g)].map((m) => m[1]);
+    expect(keys.length).toBeGreaterThan(5);
+    for (const key of keys) {
+      const off = setBlocks(page, [{ key, hidden: true }]);
+      expect(off.changed, key).toBeGreaterThanOrEqual(2);
+      expect(setBlocks(off.html, [{ key, hidden: false }]).html, key).toBe(page);
+    }
   });
 });
 

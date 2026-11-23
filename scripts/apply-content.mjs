@@ -40,7 +40,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows } from './lib/apply.mjs';
+import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows, setBlocks } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { findLists, applyLists, ID_RE as LIST_ID_RE } from './lib/lists.mjs';
@@ -280,6 +280,10 @@ for (const page of content.pages) {
   const rows = setRows(html, page.keys ?? []);
   html = rows.html;
   htmlChanges += rows.changed;
+  // Im CMS ausgeblendete Blöcke (Überschrift + alles bis zur nächsten, alle Seiten)
+  const blocks = setBlocks(html, page.keys ?? []);
+  html = blocks.html;
+  htmlChanges += blocks.changed;
 
   // Bilder nach Position — ohne die Kachel-Bilder, die gehören zu page.bands.
   const images = [];
