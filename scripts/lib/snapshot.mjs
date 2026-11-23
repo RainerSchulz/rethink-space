@@ -37,5 +37,7 @@ export function toSnapshot(content, applied = () => true) {
       ...(p.lists ? { lists: Object.fromEntries(Object.entries(p.lists).map(([n, items]) => [n, items.map((i) => i.id)])) } : {}),
     };
   }
-  return { version: 1, pages };
+  // Firmendaten, mit denen Platzhalter wie {firma_de_adresse} gefüllt wurden — das CMS erkennt daran, dass eine
+  // geänderte Anschrift noch nicht online ist (rethink-cms src/pending.js)
+  return { version: 1, pages, ...(content.company ? { company: content.company } : {}) };
 }

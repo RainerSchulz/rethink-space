@@ -84,7 +84,7 @@ async function holeBilder(url, key) {
 export async function ladeInhalt({ url, key }) {
   if (!url || !key) throw new Error('SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY fehlen');
 
-  const [seiten, texte, bilder, kacheln, listen] = await Promise.all([
+  const [seiten, texte, bilder, kacheln, listen, firma] = await Promise.all([
     hole(url, key, 'cms_pages?select=slug,url,title,updated_at&order=slug'),
     // hidden: Zeile im CMS entfernt (rethink-cms 0015) — ältere Datenbank ohne die Spalte → ohne
     holeMitHidden(url, key, 'cms_texts?select=key,page_slug,tag,position,en,de,hidden&order=page_slug,position'),
@@ -94,6 +94,8 @@ export async function ladeInhalt({ url, key }) {
     holeKacheln(url, key),
     // Listen (rethink-cms 0016); ältere Datenbank ohne Tabelle → keine (Listen bleiben, wie sie sind)
     holeFallsDa(url, key, 'cms_list_items?select=page_slug,list,id,position&order=page_slug,list,position'),
+    // Firmendaten (rethink-cms „Firma“, 0036) für Platzhalter wie {firma_de_adresse}; ohne Tabelle → keine
+    holeFallsDa(url, key, 'cms_settings?select=value&key=eq.company'),
   ]);
 
   const texteJeSeite = new Map();
@@ -141,6 +143,7 @@ export async function ladeInhalt({ url, key }) {
     generatedAt: null,
     exportedAt: new Date().toISOString(),
     quelle: 'supabase',
+    company: firma?.[0]?.value ?? null,
     pages: seiten.map((p) => ({
       slug: p.slug,
       url: p.url ?? '',
