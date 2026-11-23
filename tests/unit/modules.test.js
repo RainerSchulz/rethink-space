@@ -170,6 +170,7 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
     window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
     const gesendet = [];
     vi.stubGlobal('fetch', (url, opts) => {
+      if (opts?.method === 'GET') return Promise.resolve({ ok: false, json: () => Promise.resolve({}) }); // Auswahl laden
       gesendet.push({ url, body: JSON.parse(opts.body) });
       return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
     });
@@ -194,6 +195,7 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
     window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
     const gesendet = [];
     vi.stubGlobal('fetch', (url, opts) => {
+      if (opts?.method === 'GET') return Promise.resolve({ ok: false, json: () => Promise.resolve({}) }); // Auswahl laden
       gesendet.push(JSON.parse(opts.body));
       return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
     });
@@ -202,6 +204,55 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
     absenden();
     await warte();
     expect(gesendet[0].area).toBe('Dual-Use Defense Shelters');
+  });
+
+  const AREAS = '<fieldset class="areas"><legend data-i18n="contact.form.area">Business area (optional)</legend>'
+    + '<!-- cms:list contact.areas -->'
+    + '<label class="area" data-cms-row="contact.areas.isru.label"><input type="radio" name="area" value="contact.areas.isru.label"><span data-i18n="contact.areas.isru.label">Space / ISRU Licensing</span></label>'
+    + '<label class="area" data-cms-row="contact.areas.old.label" hidden><input type="radio" name="area" value="contact.areas.old.label"><span data-i18n="contact.areas.old.label">Old</span></label>'
+    + '<!-- /cms:list --></fieldset>';
+
+  it('Scenario: die Geschäftsbereiche kommen beim Öffnen frisch aus dem CMS — ohne Veröffentlichen', async () => {
+    document.body.innerHTML = FORM.replace('<button', `${AREAS}<button`);
+    window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
+    const abrufe = [];
+    vi.stubGlobal('fetch', (url, opts) => {
+      abrufe.push(opts?.method);
+      if (opts?.method === 'GET') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({ legend: 'Area of interest', areas: [
+          { id: 'partners', label: 'Partners / Investors' }, { id: 'isru', label: 'Lunar Platform <b>Licensing</b>' }, { id: 'BAD id', label: 'x' },
+        ] }) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+    });
+    const { initContact } = await fresh('../../src/site/modules/contact.js');
+    initContact();
+    await warte(); await warte();
+    const rows = [...document.querySelectorAll('label.area')];
+    expect(rows.map((r) => r.textContent)).toEqual(['Partners / Investors', 'Lunar Platform <b>Licensing</b>']); // nur Text, nie HTML
+    expect(rows.map((r) => r.querySelector('input').value)).toEqual(['contact.areas.partners.label', 'contact.areas.isru.label']);
+    expect(rows.every((r) => !r.hidden && !r.querySelector('[data-i18n]'))).toBe(true);
+    expect(document.querySelector('legend').textContent).toBe('Area of interest');
+    expect(document.body.innerHTML).toContain('<!-- /cms:list -->');
+    rows[0].querySelector('input').checked = true;
+    const gesendet = [];
+    vi.stubGlobal('fetch', (url, opts) => { gesendet.push(JSON.parse(opts.body)); return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) }); });
+    absenden();
+    await warte();
+    expect(gesendet[0].area).toBe('Partners / Investors');
+    expect(abrufe).toEqual(['GET']);
+  });
+
+  it('Scenario: ohne Antwort oder mit leerer Liste bleibt die Auswahl aus dem HTML', async () => {
+    const { renderAreas, loadAreas } = await fresh('../../src/site/modules/contact.js');
+    document.body.innerHTML = FORM.replace('<button', `${AREAS}<button`);
+    const form = document.querySelector('form');
+    const before = document.querySelector('fieldset').innerHTML;
+    expect(renderAreas(form, { areas: [] })).toBe(false);
+    expect(renderAreas(form, null)).toBe(false);
+    vi.stubGlobal('fetch', () => Promise.reject(new Error('offline')));
+    expect(await loadAreas(form, 'https://test.example/contact')).toBe(false);
+    expect(document.querySelector('fieldset').innerHTML).toBe(before);
   });
 
   it('Scenario: Fehlercodes der Funktion werden übersetzt, nicht roh gezeigt', async () => {

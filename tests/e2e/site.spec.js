@@ -86,6 +86,9 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     await page.route(ENDPOINT, async (route) => {
       const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type' };
       if (route.request().method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
+      if (route.request().method() === 'GET') { // Geschäftsbereiche frisch aus dem CMS
+        return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'application/json' }, body: '{"areas":[{"id":"live","label":"Live Area"}]}' });
+      }
       gesendet.push(JSON.parse(route.request().postData()));
       return route.fulfill({ status: 202, headers: { ...cors, 'content-type': 'application/json' }, body: '{"ok":true}' });
     });
@@ -108,6 +111,8 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     expect(lage.tabindex, 'Honigtopf darf kein Tab-Stopp sein').toBe(-1);
     expect(lage.versteckt, 'Honigtopf muss aria-hidden sein').toBe(true);
 
+    await expect(page.locator('label.area')).toHaveText(['Live Area']);
+    await page.locator('label.area').click();
     await page.fill('input[name="name"]', 'Test');
     await page.fill('input[name="email"]', 'test@example.com');
     await page.fill('textarea[name="message"]', 'Hello');
@@ -119,7 +124,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     await expect(status).toHaveAttribute('data-art', 'erfolg');
     await expect(page).toHaveURL(/\/pages\/contact\/$/); // kein Neuladen
     expect(gesendet).toHaveLength(1);
-    expect(gesendet[0]).toMatchObject({ name: 'Test', email: 'test@example.com', message: 'Hello', website: '' });
+    expect(gesendet[0]).toMatchObject({ name: 'Test', email: 'test@example.com', message: 'Hello', website: '', area: 'Live Area' });
   });
 
   test('Bricht das Senden ab, verweist das Formular auf die E-Mail-Adresse', async ({ page }) => {

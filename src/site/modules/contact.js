@@ -33,9 +33,63 @@ function melde(form, text, art) {
   note.focus();
 }
 
+/**
+ * Geschäftsbereiche frisch aus dem CMS einsetzen (Inhaber 23.11.2026: Änderungen unter „Einstellungen“ gelten
+ * sofort, ohne Veröffentlichen). Vorlage ist der erste Eintrag aus dem HTML; die Texte kommen nur per textContent.
+ * Ohne Antwort oder bei einer leeren Liste bleibt die Auswahl aus dem HTML stehen.
+ * @param {HTMLFormElement} form
+ * @param {{ legend?: string, areas?: { id: string, label: string }[] }} data
+ * @returns {boolean} ob die Auswahl ersetzt wurde
+ */
+export function renderAreas(form, data) {
+  const set = form.querySelector('fieldset.areas');
+  const old = [...(set?.querySelectorAll('label.area') ?? [])];
+  const areas = (Array.isArray(data?.areas) ? data.areas : [])
+    .filter((a) => /^[a-z0-9-]+$/.test(a?.id ?? '') && typeof a.label === 'string' && a.label.trim());
+  if (!set || !old.length || !areas.length) return false;
+  const chosen = set.querySelector('input[name="area"]:checked')?.value;
+  const anchor = old.at(-1).nextSibling;
+  const parent = old[0].parentNode;
+  const fresh = areas.map(({ id, label }) => {
+    const key = `contact.areas.${id}.label`;
+    const row = old[0].cloneNode(true);
+    row.hidden = false;
+    row.removeAttribute('hidden');
+    row.setAttribute('data-cms-row', key);
+    const input = row.querySelector('input');
+    input.value = key;
+    input.checked = key === chosen;
+    const span = row.querySelector('span');
+    span.removeAttribute('data-i18n'); // sonst setzte die Übersetzung beim Sprachwechsel den alten Stand
+    span.textContent = label.trim();
+    return row;
+  });
+  old.forEach((row) => row.remove());
+  fresh.forEach((row) => parent.insertBefore(row, anchor));
+  const legend = set.querySelector('legend');
+  if (legend && typeof data.legend === 'string' && data.legend.trim()) {
+    legend.removeAttribute('data-i18n');
+    legend.textContent = data.legend.trim();
+  }
+  return true;
+}
+
+/** Auswahl beim Öffnen der Seite laden (GET an dieselbe Funktion wie das Absenden). */
+export async function loadAreas(form, endpoint = contactEndpoint()) {
+  if (!endpoint || !form.querySelector('fieldset.areas')) return false;
+  try {
+    const res = await fetch(endpoint, { method: 'GET' });
+    if (!res.ok) return false;
+    return renderAreas(form, await res.json());
+  } catch {
+    return false; // die Auswahl aus dem HTML gilt weiter
+  }
+}
+
 export function initContact() {
   const form = document.querySelector('form[data-contact]');
   if (!form) return;
+  loadAreas(form);
 
   form.addEventListener('submit', async (ev) => {
     ev.preventDefault();

@@ -87,17 +87,49 @@ function json(body: unknown, status: number, headers: Record<string, string>): R
   return new Response(JSON.stringify(body), { status, headers: { ...headers, "Content-Type": "application/json" } });
 }
 
+/**
+ * GET: die Geschäftsbereiche, wie sie gerade im CMS stehen (Inhaber 23.11.2026: „nicht nach jeder Änderung
+ * veröffentlichen“). Das Formular lädt sie beim Öffnen der Seite (modules/contact.js) und behält sonst die
+ * Auswahl aus dem HTML. Gibt nur Überschrift und sichtbare Bezeichnungen heraus — dieselben Texte, die ohnehin
+ * auf der Seite stehen; gelesen mit dem Service-Role-Key, kein Leserecht für anon.
+ */
+async function areas(cors: Record<string, string>): Promise<Response> {
+  const headers = { ...cors, "Cache-Control": "public, max-age=60" };
+  if (!SUPABASE_URL || !SERVICE_KEY) return json({ error: "not_configured" }, 503, headers);
+  const hole = async (path: string) => {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } });
+    if (!res.ok) throw new Error(`${res.status} ${path}`);
+    return await res.json();
+  };
+  try {
+    const [items, texts] = await Promise.all([
+      hole("cms_list_items?select=id,position&page_slug=eq.contact&list=eq.contact.areas&order=position"),
+      hole("cms_texts?select=key,en,hidden&or=(key.like.contact.areas.*,key.eq.contact.form.area)"),
+    ]) as [{ id: string }[], { key: string; en: string; hidden?: boolean }[]];
+    const byKey = new Map(texts.map((t) => [t.key, t]));
+    const list = items
+      .map(({ id }) => ({ id, t: byKey.get(`contact.areas.${id}.label`) }))
+      .filter(({ id, t }) => /^[a-z0-9-]+$/.test(id) && t && !t.hidden && t.en.trim())
+      .map(({ id, t }) => ({ id, label: t!.en.trim().slice(0, MAX_AREA) }));
+    return json({ legend: byKey.get("contact.form.area")?.en?.trim() ?? "", areas: list }, 200, headers);
+  } catch (err) {
+    console.error("areas", err);
+    return json({ error: "unavailable" }, 502, headers);
+  }
+}
+
 const istEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
 
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin") ?? "";
   const cors = {
     "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "content-type",
     "Vary": "Origin",
   };
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+  if (req.method === "GET") return areas(cors);
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
   if (origin && !ALLOWED_ORIGINS.includes(origin)) return json({ error: "origin_not_allowed" }, 403, cors);
 
