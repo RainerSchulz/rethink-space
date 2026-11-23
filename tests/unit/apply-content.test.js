@@ -347,6 +347,15 @@ describe('Feature: Blöcke im CMS ausblenden (Überschrift + alles bis zur näch
   });
 });
 
+describe('Feature: Zeilenumbrüche aus dem CMS bleiben sichtbar', () => {
+  it('Absätze mit CMS-Text zeigen Umbrüche wie im CMS (site.css), der Text steht mit Umbrüchen im HTML', () => {
+    const css = readFileSync(resolve(ROOT, 'src/site/site.css'), 'utf8');
+    expect(css).toMatch(/p\[data-i18n\]\s*\{\s*white-space:\s*pre-line;\s*\}/);
+    const { html } = setElementText('<p data-i18n="imprint.operator.body">alt</p>', 'imprint.operator.body', 'RETHINK SPACE\nAn der Hasenkaule 10\n\nInc.');
+    expect(html).toBe('<p data-i18n="imprint.operator.body">RETHINK SPACE\nAn der Hasenkaule 10\n\nInc.</p>');
+  });
+});
+
 describe('Feature: Mondbild der Startseite — Ausschnitt und Zoom aus dem CMS', () => {
   const html = '<div class="moon"><img class="moon-img" src="/Bilder/moon-full.jpg" alt="" decoding="async"></div>';
   const css = readFileSync(resolve(process.cwd(), 'src/site/site.css'), 'utf8');
