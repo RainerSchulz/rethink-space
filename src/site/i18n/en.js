@@ -125,7 +125,7 @@ export const EN = {
   'imprint.meta.description': 'Legal notice of RETHINK SPACE Inc., Delaware, USA – company details, contact and responsibility for content.',
   'imprint.title':             'Legal notice',
   'imprint.operator.title':    'Company information',
-  'imprint.operator.body':     'RETHINK SPACE Inc. (C-Corporation pending), Delaware, USA. Represented by Dr. Dr. Karl Johannes Lierfeld. Registered agent, state file number and taxpayer identification number will be added once the incorporation is complete. Until then Dr. Dr. Karl Johannes Lierfeld is personally responsible for this website.',
+  'imprint.operator.body':     'RETHINK SPACE \nAn der Hasenkaule 10 \n(Studio 6)\n50354 Hürth\n\nRETHINK SPACE Inc. (C-Corporation pending), Delaware, USA. Represented by Dr. Dr. Karl Johannes Lierfeld. Registered agent, state file number and taxpayer identification number will be added once the incorporation is complete. Until then Dr. Dr. Karl Johannes Lierfeld is personally responsible for this website.',
   'imprint.contact.title':     'Contact',
   'imprint.contact.body':      'E-mail: contact@rethink.space. We answer enquiries in writing.',
   'imprint.responsible.title': 'Responsible for the content',
