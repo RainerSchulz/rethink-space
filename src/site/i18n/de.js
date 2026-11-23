@@ -35,8 +35,7 @@ export const DE = {
   // ── Startseite ────────────────────────────────────────────────────
   'home.meta.title':       'RETHINK SPACE – New Space Economy for Lunar Infrastructure',
   'home.meta.description': 'New Space Economy for Lunar Infrastructure: Design, Technologie und Umsetzung für dauerhafte Präsenz auf dem Mond.',
-  'home.hero.lead1':       'New Space Economy for',
-  'home.hero.lead2':       'Lunar Infrastructure',
+  'home.hero.lead1':       'New Space Economy for Lunar Infrastructure',
   'home.panel.subtitle.text': 'Design, Technologie und Umsetzung für eine dauerhafte Präsenz auf dem Mond.',
   'home.hero.subtitle.size': 'm',
 
