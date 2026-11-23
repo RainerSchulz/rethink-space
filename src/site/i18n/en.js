@@ -85,8 +85,8 @@ export const EN = {
   'people.portrait.placeholder': 'Add portrait as public/Bilder/Lierfeld.jpg',
   'people.profile.name':         'Dr. Dr. Johannes Lierfeld',
   'people.profile.p1':           'Dr. Dr. Johannes Lierfeld brings a uniquely multidisciplinary background spanning screenplay narrative skills, AI, neuroscience, and space technology.\n\nAfter penning several non-fiction books about AI, Johannes focused on brain-computer interfaces (BCIs) and published “A Log-In for the Matrix: BCIs as bridges between Protein and Silicon” in 2023. \n\nIn 2026, “The Conversion Theory: BCIs, the Qualia Problem and the Irreversible Subjective Conversion” followed - the publication of Johannes´ second dissertation at the esteemed “Philosophy of Mind” institute at LMU Munich.\n\nNow, in the context of his **LUNAR HABITATO** moon habitation license model, Johannes aims to bridge the gap between inner and outer space – the gap between our neurons and the universe, through BCI-supervised mission control. \nDespite being in space tech only since 2025, Johannes is now working on his third dissertation titled **“Bridging Inner & Outer Space: Resilient Decentralized Robotic Swarms and Hybrid Digital Twins for Autonomous Lunar Construction”.** \n\nJohannes is also the inventor and personal owner of the company´s three WIPO-registered design IPs **“Matryoshka Shell Design”** and the surface protection solutions **“Bug Shield - Single Armor”** and **“Bug Shield - Double Armor”.**\n',
-  'people.profile.p2':           'RETHINK SPACE brings these lines together: the Moon is the place where technology, architecture and human scale can be renegotiated from scratch for the first time.',
-  'people.profile.p3':           'As the author of several non-fiction books he writes about these developments for a wide audience – while working on their practical implementation.',
+  'people.profile.p2':           '',
+  'people.profile.p3':           '',
   'people.profile.contact':      'Get in touch',
   'people.books.eyebrow':        'Publications',
   'people.books.1.title':        'Künstliche Intelligenz',
@@ -103,10 +103,10 @@ export const EN = {
   // ── Contact ───────────────────────────────────────────────────────
   'contact.meta.title':       'Contact RETHINK SPACE – Research, Industry, Press',
   'contact.meta.description': 'Contact RETHINK SPACE for research cooperation, industry partnerships and press enquiries on lunar habitats and the new space economy.',
-  'contact.hero.eyebrow':     'Contact',
+  'contact.hero.eyebrow':     '',
   'contact.hero.title':       'Let’s talk.',
   'contact.hero.lead':        'Research, industry, press – we answer every serious enquiry.',
-  'contact.intro.eyebrow':    'Contact',
+  'contact.intro.eyebrow':    '',
   'contact.intro.title':      'Direct, no detours.',
   'contact.intro.text':       'For cooperations, study requests, talks or press enquiries a short message with your request and preferred timeframe is enough.',
   'contact.form.name':        'Name',
@@ -126,7 +126,7 @@ export const EN = {
   'contact.form.status':      'This form is not yet connected to a delivery service – please use the e-mail address in the meantime.',
 
   // ── Legal ─────────────────────────────────────────────────────────
-  'legal.eyebrow':            'Legal notice',
+  'legal.eyebrow':            '',
   'imprint.meta.title':       'Legal notice – RETHINK SPACE',
   'imprint.meta.description': 'Legal notice of RETHINK SPACE Inc., Delaware, USA – company details, contact and responsibility for content.',
   'imprint.title':             'Legal notice',

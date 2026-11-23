@@ -85,8 +85,8 @@ export const DE = {
   'people.portrait.placeholder': 'Portrait einsetzen als public/Bilder/Lierfeld.jpg',
   'people.profile.name':         'Dr. Johannes Lierfeld',
   'people.profile.p1':           'Dr. Johannes Lierfeld beschäftigt sich seit Jahren mit den Folgen technologischer Umbrüche – von künstlicher Intelligenz über die Schnittstelle von Biologie und Rechnersystemen bis zur Frage, wie Menschen in künstlich geschaffenen Umgebungen leben.',
-  'people.profile.p2':           'RETHINK SPACE führt diese Linien zusammen: Der Mond ist der Ort, an dem sich Technik, Architektur und menschliches Maß zum ersten Mal vollständig neu verhandeln lassen.',
-  'people.profile.p3':           'Als Autor mehrerer Sachbücher schreibt er über diese Entwicklungen für ein breites Publikum – und arbeitet zugleich an ihrer praktischen Umsetzung.',
+  'people.profile.p2':           '',
+  'people.profile.p3':           '',
   'people.profile.contact':      'Kontakt aufnehmen',
   'people.books.eyebrow':        'Veröffentlichungen',
   'people.books.1.title':        'Künstliche Intelligenz: Mythos und Wahrheit',
@@ -103,10 +103,10 @@ export const DE = {
   // ── Kontakt ───────────────────────────────────────────────────────
   'contact.meta.title':       'Kontakt – RETHINK SPACE',
   'contact.meta.description': 'Forschung, Industrie, Presse – wir antworten auf jede ernst gemeinte Anfrage.',
-  'contact.hero.eyebrow':     'Kontakt',
+  'contact.hero.eyebrow':     '',
   'contact.hero.title':       'Sprechen wir.',
   'contact.hero.lead':        'Forschung, Industrie, Presse – wir antworten auf jede ernst gemeinte Anfrage.',
-  'contact.intro.eyebrow':    'Kontakt',
+  'contact.intro.eyebrow':    '',
   'contact.intro.title':      'Direkt und ohne Umweg.',
   'contact.intro.text':       'Für Kooperationen, Studienanfragen, Vorträge oder Presseanfragen genügt eine kurze Nachricht mit Ihrem Anliegen und dem gewünschten Zeitrahmen.',
   'contact.form.name':        'Name',
@@ -126,7 +126,7 @@ export const DE = {
   'contact.form.status':      'Dieses Formular ist noch an keinen Versanddienst angebunden – nutzen Sie bis dahin bitte die E-Mail-Adresse.',
 
   // ── Rechtliches ───────────────────────────────────────────────────
-  'legal.eyebrow':            'Rechtliches',
+  'legal.eyebrow':            '',
   'imprint.meta.title':       'Impressum – RETHINK SPACE',
   'imprint.meta.description': 'Impressum der RETHINK SPACE Inc., Delaware, USA.',
   'imprint.title':             'Impressum',
