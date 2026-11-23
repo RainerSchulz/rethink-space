@@ -36,7 +36,7 @@ export const EN = {
   'home.meta.description': 'New Space Economy for Lunar Infrastructure: design, technology and deployment for lasting presence on the Moon.',
   'home.hero.lead1':       'New Space Economy for',
   'home.hero.lead2':       'Lunar Infrastructure \n\n',
-  'home.panel.subtitle.text': '**WE ORCHESTRATE INDUSTRIES & INNOVATORS.\n\nWE BUILD PLATFORMS.\n\nWE RETHINK SPACE.**',
+  'home.panel.subtitle.text': '**WE ORCHESTRATE INDUSTRIES & INNOVATORS.**\n\n**WE BUILD PLATFORMS.**\n\n**WE RETHINK SPACE.**',
   'home.hero.subtitle.size': 'm',
 
   // ── Vision ────────────────────────────────────────────────────────

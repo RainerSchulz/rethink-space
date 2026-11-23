@@ -47,6 +47,8 @@ import { findLists, applyLists, ID_RE as LIST_ID_RE } from './lib/lists.mjs';
 import { resolveImage } from './lib/cms-images.mjs';
 import { toSnapshot } from './lib/snapshot.mjs';
 import { fillCompany } from './lib/company-text.mjs';
+import { repairEmphasis } from './lib/emphasis.mjs';
+import { isRichKey } from '../src/site/i18n/rich-text.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -241,12 +243,14 @@ for (const page of content.pages) {
     }
     // Platzhalter für Firmendaten ({firma_de_adresse} …) mit den Angaben aus „Firma“ im CMS füllen; der
     // veröffentlichte Stand (Snapshot) behält den Text mit Platzhalter, dazu die Firmendaten (content.company).
-    const en = fillCompany(k.en, content.company);
+    // Formatierte Texte: Fett/Kursiv über mehrere Absätze je Absatz setzen (sonst blieben die Sternchen stehen)
+    const tidy = (v) => (isRichKey(k.key) ? repairEmphasis(v) : v);
+    const en = tidy(fillCompany(k.en, content.company));
     enByKey.set(k.key, en);
     if (setDictValue(dicts.en.lines, k.key, en)) dictChanges++;
     // Kein deutscher Text? Dann den englischen, damit beide Wörterbücher
     // dieselben Schlüssel mit Inhalt tragen (tests/unit/i18n.test.js).
-    const de = typeof k.de === 'string' && k.de.trim() ? fillCompany(k.de, content.company) : en;
+    const de = typeof k.de === 'string' && k.de.trim() ? tidy(fillCompany(k.de, content.company)) : en;
     if (setDictValue(dicts.de.lines, k.key, de)) dictChanges++;
   }
 }
