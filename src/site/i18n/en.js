@@ -35,8 +35,8 @@ export const EN = {
   // ── Home ──────────────────────────────────────────────────────────
   'home.meta.title':       'RETHINK SPACE – New Space Economy for Lunar Infrastructure',
   'home.meta.description': 'New Space Economy for Lunar Infrastructure: design, technology and deployment for lasting presence on the Moon.',
-  'home.hero.lead1':       'New Space Economy for Lunar Infrastructure',
-  'home.panel.subtitle.text': '**WE ORCHESTRATE INDUSTRIES & INNOVATORS.**\n\n**WE BUILD PLATFORMS.**\n\n**WE RETHINK SPACE.**',
+  'home.hero.lead1':       'New Space Economy for \nLunar Infrastructure\n\nWE ORCHESTRATE INDUSTRIES & INNOVATORS.\n\nWE BUILD PLATFORMS.\n\nWE RETHINK SPACE.',
+  'home.panel.subtitle.text': '',
   'home.hero.subtitle.size': 'm',
 
   // ── Vision ────────────────────────────────────────────────────────
@@ -120,7 +120,6 @@ export const EN = {
   'contact.areas.data-centers.label': 'Lunar Data Centers',
   'contact.areas.defense.label': 'Dual-Use Defense Shelters',
   'contact.areas.partners.label': 'Partners / Investors',
-  'contact.areas.others.label': 'Other',
   'contact.form.message':     'Message',
   'contact.form.submit':      'Send message',
   'contact.form.bad-email': 'Please check the e-mail address.',

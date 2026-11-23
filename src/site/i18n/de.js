@@ -36,7 +36,7 @@ export const DE = {
   'home.meta.title':       'RETHINK SPACE – New Space Economy for Lunar Infrastructure',
   'home.meta.description': 'New Space Economy for Lunar Infrastructure: Design, Technologie und Umsetzung für dauerhafte Präsenz auf dem Mond.',
   'home.hero.lead1':       'New Space Economy for Lunar Infrastructure',
-  'home.panel.subtitle.text': 'Design, Technologie und Umsetzung für eine dauerhafte Präsenz auf dem Mond.',
+  'home.panel.subtitle.text': '',
   'home.hero.subtitle.size': 'm',
 
   // ── Vision ────────────────────────────────────────────────────────
@@ -120,7 +120,6 @@ export const DE = {
   'contact.areas.data-centers.label': 'Rechenzentren auf dem Mond',
   'contact.areas.defense.label': 'Dual-Use-Schutzbauten',
   'contact.areas.partners.label': 'Partners',
-  'contact.areas.others.label': 'Others',
   'contact.form.message':     'Nachricht',
   'contact.form.submit':      'Nachricht senden',
   'contact.form.bad-email': 'Bitte die E-Mail-Adresse prüfen.',
