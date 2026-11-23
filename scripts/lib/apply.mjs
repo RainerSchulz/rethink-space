@@ -184,6 +184,32 @@ export function sharedKeys(pages) {
   return (pages ?? []).find((p) => p.slug === 'global')?.keys ?? [];
 }
 
+/**
+ * Im CMS geleerte Texte (Inhaber 23.11.2026): Ein Element mit data-i18n="<schlüssel>", dessen Text im CMS leer ist, wird
+ * ausgeblendet und markiert (hidden data-cms-empty) — sonst bliebe etwa die blaue Überzeile als leere Lücke stehen.
+ * Bekommt der Text wieder Inhalt, nimmt setEmpty nur so Markiertes zurück. Ein aus anderem Grund verborgenes Element
+ * bleibt, wie es ist.
+ * @param {(key: string) => string|undefined} valueOf  Text im CMS ('' = geleert, undefined = nicht übernommen)
+ */
+export function setEmpty(html, keys, valueOf) {
+  let out = html;
+  let changed = 0;
+  for (const k of keys) {
+    const v = valueOf(k.key);
+    if (v === undefined) continue;
+    const re = new RegExp(`<[a-zA-Z][a-zA-Z0-9]*\\b[^>]*\\sdata-i18n="${escRe(k.key)}"[^>]*>`, 'g');
+    out = out.replace(re, (tag) => {
+      const marked = /\sdata-cms-empty(?=[\s>])/.test(tag);
+      let next = tag;
+      if (v === '' && !marked && !HIDDEN_ATTR.test(tag)) next = tag.replace(/\s*>$/, ' hidden data-cms-empty>');
+      if (v !== '' && marked) next = tag.replace(/\sdata-cms-empty(?=[\s>])/, '').replace(HIDDEN_ATTR, '');
+      if (next !== tag) changed++;
+      return next;
+    });
+  }
+  return { html: out, changed };
+}
+
 /** Schriftgrößen, die das CMS wählen lässt (rethink-cms src/text-size.js TEXT_SIZES — beide gleich halten). */
 export const TEXT_SIZES = ['s', 'm', 'l', 'xl'];
 

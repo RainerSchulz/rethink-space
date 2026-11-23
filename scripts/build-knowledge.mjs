@@ -28,6 +28,7 @@ const skip = /^(nav\.|footer\.|common\.|chat\.|gate\.|.*\.meta\.|.*\.size$)/;
 const groups = new Map();
 for (const key of Object.keys(EN)) {
   if (skip.test(key)) continue;
+  if (!String(EN[key] ?? '').trim()) continue; // im CMS geleert: auf der Website ausgeblendet, also kein Wissen
   const page = key.split('.')[0];
   if (!groups.has(page)) groups.set(page, []);
   const plain = (v) => (isRichKey(key) ? richToPlain(v ?? '') : v ?? '');

@@ -40,7 +40,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows, setBlocks, setSizes } from './lib/apply.mjs';
+import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows, setBlocks, setSizes, setEmpty } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { findLists, applyLists, ID_RE as LIST_ID_RE } from './lib/lists.mjs';
@@ -223,12 +223,20 @@ for (const page of content.pages) {
 const enByKey = new Map();
 for (const page of content.pages) {
   for (const k of page.keys ?? []) {
-    if (typeof k.en !== 'string' || !k.en.trim()) {
-      notes.push(`${page.slug}: ${k.key} hat keinen englischen Text — übersprungen`);
-      continue;
-    }
     if (!hasDictKey(dicts.en.lines, k.key)) {
       notes.push(`${page.slug}: Schlüssel ${k.key} gibt es in en.js nicht — übersprungen`);
+      continue;
+    }
+    if (typeof k.en !== 'string' || !k.en.trim()) {
+      // Im CMS geleert (Inhaber 23.11.2026): auf der Website leer und ausgeblendet (setEmpty) — nur sichtbare Texte;
+      // Titel und Beschreibung für Suchmaschinen (*.meta.*) werden nie geleert.
+      if (typeof k.en !== 'string' || /\.meta\./.test(k.key)) {
+        notes.push(`${page.slug}: ${k.key} hat keinen englischen Text — übersprungen`);
+        continue;
+      }
+      enByKey.set(k.key, '');
+      if (setDictValue(dicts.en.lines, k.key, '')) dictChanges++;
+      if (setDictValue(dicts.de.lines, k.key, '')) dictChanges++;
       continue;
     }
     // Platzhalter für Firmendaten ({firma_de_adresse} …) mit den Angaben aus „Firma“ im CMS füllen; der
@@ -280,6 +288,10 @@ for (const page of content.pages) {
   const own = applyKeysToHtml(html, page.keys ?? [], (key) => enByKey.get(key));
   html = own.html;
   htmlChanges += own.changed;
+  // Im CMS geleerte Texte ausblenden, wieder gefüllte einblenden
+  const empty = setEmpty(html, page.keys ?? [], (key) => enByKey.get(key));
+  html = empty.html;
+  htmlChanges += empty.changed;
   // Im CMS entfernte Zeilen (data-cms-row, z. B. Bücher auf People)
   const rows = setRows(html, page.keys ?? []);
   html = rows.html;
@@ -317,8 +329,9 @@ if (shared.length) {
   for (const file of shells) {
     const before = readFileSync(file, 'utf8');
     const r = applyKeysToHtml(before, shared, (key) => enByKey.get(key));
-    htmlChanges += r.changed;
-    if (r.html !== before && !DRY) writeFileSync(file, r.html);
+    const e = setEmpty(r.html, shared, (key) => enByKey.get(key));
+    htmlChanges += r.changed + e.changed;
+    if (e.html !== before && !DRY) writeFileSync(file, e.html);
   }
 }
 

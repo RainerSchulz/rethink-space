@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass, setBlocks, blockStarts, setSizes, TEXT_SIZES,
+  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass, setBlocks, blockStarts, setSizes, TEXT_SIZES, setEmpty,
 } from '../../scripts/lib/apply.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
@@ -436,5 +436,24 @@ describe('Feature: Schriftgröße aus dem CMS (data-cms-size)', () => {
     const page = readFileSync(resolve(ROOT, 'index.html'), 'utf8');
     expect(page).toMatch(/<div class="hero-subtitle" data-i18n="home\.panel\.subtitle\.text" data-cms-size="home\.hero\.subtitle\.size" data-size="(s|m|l|xl)">/);
     expect(TEXT_SIZES).toEqual(['s', 'm', 'l', 'xl']);
+  });
+});
+describe('Feature: im CMS geleerte Texte', () => {
+  const html = '<p class="eyebrow" data-i18n="contact.hero.eyebrow">Contact</p><h1 data-i18n="contact.hero.title">Hi</h1>';
+
+  it('leer → Text leer, Element ausgeblendet und markiert; wieder gefüllt → sichtbar; zweimal ändert nichts', () => {
+    const cleared = applyKeysToHtml(html, [{ key: 'contact.hero.eyebrow' }], () => '').html;
+    const off = setEmpty(cleared, [{ key: 'contact.hero.eyebrow' }, { key: 'contact.hero.title' }], (k) => (k === 'contact.hero.eyebrow' ? '' : 'Hi'));
+    expect(off.html).toBe('<p class="eyebrow" data-i18n="contact.hero.eyebrow" hidden data-cms-empty></p><h1 data-i18n="contact.hero.title">Hi</h1>');
+    expect(setEmpty(off.html, [{ key: 'contact.hero.eyebrow' }], () => '').changed).toBe(0);
+    const back = setEmpty(applyKeysToHtml(off.html, [{ key: 'contact.hero.eyebrow' }], () => 'Contact').html, [{ key: 'contact.hero.eyebrow' }], () => 'Contact');
+    expect(back.html).toBe(html);
+  });
+
+  it('ein aus anderem Grund verborgenes Element bleibt verborgen; nicht übernommene Schlüssel bleiben unberührt', () => {
+    const hidden = '<p data-i18n="x" hidden>A</p>';
+    expect(setEmpty(hidden, [{ key: 'x' }], () => '').html).toBe(hidden);
+    expect(setEmpty(hidden, [{ key: 'x' }], () => 'A').html).toBe(hidden);
+    expect(setEmpty(html, [{ key: 'contact.hero.eyebrow' }], () => undefined).html).toBe(html);
   });
 });

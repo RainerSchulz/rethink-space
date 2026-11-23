@@ -66,8 +66,10 @@ describe('Feature: i18n-Parität (de.js / en.js)', () => {
     expect(invalid, `Ungültige Schlüssel: ${invalid.join(', ')}`).toHaveLength(0);
   });
 
-  it('kein Wert ist leer', () => {
-    const empty = [...deKeys.filter((k) => !DE[k].trim()), ...enKeys.filter((k) => !EN[k].trim())];
+  it('kein Wert ist leer — außer im CMS bewusst geleerten Stellen (Element mit data-cms-empty, ausgeblendet)', () => {
+    // apply.mjs setEmpty: leerer Text im CMS → Element bekommt hidden data-cms-empty (Inhaber 23.11.2026)
+    const emptied = new Set(htmlDocs.flatMap(({ html }) => [...html.matchAll(/<[^>]*\sdata-i18n="([^"]+)"[^>]*\sdata-cms-empty[\s>]/g)].map((m) => m[1])));
+    const empty = [...deKeys.filter((k) => !DE[k].trim()), ...enKeys.filter((k) => !EN[k].trim())].filter((k) => !emptied.has(k));
     expect(empty).toHaveLength(0);
   });
 
