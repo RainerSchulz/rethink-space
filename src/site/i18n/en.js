@@ -125,7 +125,7 @@ export const EN = {
   'imprint.meta.description': 'Legal notice of RETHINK SPACE Inc., Delaware, USA – company details, contact and responsibility for content.',
   'imprint.title':             'Legal notice',
   'imprint.operator.title':    'Company information',
-  'imprint.operator.body':     'RETHINK SPACE Inc. (C-Corporation in Formation), Delaware, USA. Represented by Dr. Dr. Karl Johannes Lierfeld. Registered agent, state file number and taxpayer identification number will be added once the incorporation is complete. Until then Dr. Dr. Karl Johannes Lierfeld is personally responsible for this website.',
+  'imprint.operator.body':     'RETHINK SPACE Inc. (C-Corporation pending), Delaware, USA. Represented by Dr. Dr. Karl Johannes Lierfeld. Registered agent, state file number and taxpayer identification number will be added once the incorporation is complete. Until then Dr. Dr. Karl Johannes Lierfeld is personally responsible for this website.',
   'imprint.contact.title':     'Contact',
   'imprint.contact.body':      'E-mail: contact@rethink.space. We answer enquiries in writing.',
   'imprint.responsible.title': 'Responsible for the content',
@@ -142,7 +142,7 @@ export const EN = {
   'imprint.copyright.body':    'Unless marked otherwise, the content, texts, images and visualisations on this website are protected by United States copyright law and by international copyright treaties. Reproduction, adaptation or distribution beyond what the law permits requires our written consent; downloads and copies are allowed for private, non-commercial use. RETHINK SPACE and the logo are used as trademarks of RETHINK SPACE Inc. The intellectual property rights listed on the IP page remain unaffected. If you believe content on this site infringes your copyright, write to contact@rethink.space with the details required for a notice under the Digital Millennium Copyright Act.',
   'imprint.dispute.title':     'Governing law',
   'imprint.dispute.body':      'This website and this notice are governed by the laws of the State of Delaware, USA, without regard to its conflict-of-law rules. The courts of Delaware have exclusive jurisdiction, as far as the law allows. If you use this site as a consumer from outside the United States, the mandatory consumer protection rules of your country of residence remain unaffected.',
-  'imprint.draft.note':        'Draft as of 23 September 2026, written for a United States company. Registered agent, state file number, taxpayer identification number and a telephone number will follow once the incorporation is complete. This text is not legal advice and should be reviewed by a lawyer admitted in Delaware — and, because the site addresses European partners, by a lawyer for the European side as well.',
+  'imprint.draft.note':        '.',
   'privacy.meta.title':       'Privacy – RETHINK SPACE',
   'privacy.meta.description': 'Privacy policy of RETHINK SPACE Inc. — no cookies, no tracking.',
   'privacy.title':            'Privacy policy',
@@ -169,7 +169,7 @@ export const EN = {
   'privacy.us.body': 'If you live in California, Colorado, Connecticut, Virginia or another state with a comprehensive privacy law, you may ask us what personal information we hold about you, ask us to correct or delete it, and receive a copy. We do not discriminate against anyone who exercises these rights. We do not sell personal information and we do not share it for cross-context behavioural advertising, so there is nothing to opt out of; we also do not process sensitive personal information. Requests go to contact@rethink.space and we answer them within the periods the applicable law sets. This website is not directed at children under 16 and we do not knowingly collect their data.',
   'privacy.changes.title':    '11. Changes to this policy',
   'privacy.changes.body':     'We update this policy when the website or the legal situation changes, for example as soon as the contact form is connected to a delivery service. The version published here applies.',
-  'privacy.draft.note':       'Draft as of 23 September 2026, written for a United States company that addresses European partners. Open points before going live: whether a representative in the European Union under Article 27 GDPR must be appointed, and the review by a lawyer on both sides. This text is not legal advice.',
+  'privacy.draft.note':       '.',
 
   // ── 404 ───────────────────────────────────────────────────────────
   'notfound.meta.title':       'Page not found – RETHINK SPACE',
