@@ -120,6 +120,8 @@ export const DE = {
   'contact.areas.isru.label':  'Space / ISRU-Lizenzierung',
   'contact.areas.data-centers.label': 'Rechenzentren auf dem Mond',
   'contact.areas.defense.label': 'Dual-Use-Schutzbauten',
+  'contact.areas.partners.label': 'Partners',
+  'contact.areas.others.label': 'Others',
   'contact.form.message':     'Nachricht',
   'contact.form.submit':      'Nachricht senden',
   'contact.form.bad-email': 'Bitte die E-Mail-Adresse prüfen.',
