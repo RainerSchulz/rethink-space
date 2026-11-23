@@ -11,7 +11,7 @@ export const EN = {
   'nav.people':      'People',
   'nav.contact':     'Contact',
   'footer.imprint':  'Legal notice',
-  'footer.privacy':  'Privacy',
+  'footer.privacy':  'Privacy policy',
   'footer.project':  'A project by Dr. Dr. Johannes Lierfeld',
   'footer.email':    'E-mail',
   'common.more':     'Learn more',
@@ -124,7 +124,7 @@ export const EN = {
   'contact.form.status':      'This form is not yet connected to a delivery service – please use the e-mail address in the meantime.',
 
   // ── Legal ─────────────────────────────────────────────────────────
-  'legal.eyebrow':            'Legal',
+  'legal.eyebrow':            'Legal notice',
   'imprint.meta.title':       'Legal notice – RETHINK SPACE',
   'imprint.meta.description': 'Legal notice of RETHINK SPACE Inc., Delaware, USA – company details, contact and responsibility for content.',
   'imprint.title':             'Legal notice',
@@ -152,7 +152,7 @@ export const EN = {
   'privacy.title':            'Privacy policy',
   'privacy.intro':            'In short: this website sets no cookies, embeds no third-party content and uses no analytics or advertising services. That is why there is no consent banner. Fonts are served from our own server. Personal data only arises where you write to us yourself or use the AI assistant. We are a United States company; because this site also addresses visitors in Europe, this policy describes both the rights that European data protection law gives you and the rights available under United States law.',
   'privacy.controller.title': '1. Who we are',
-  'privacy.controller.body':  'RETHINK SPACE \nAn der Hasenkaule 10 \n(Studio 6)\n50354 Hürth\n\nRETHINK SPACE Inc. (C-Corporation in Formation), Delaware, USA, represented by Dr. Dr. Karl Johannes Lierfeld, e-mail contact@rethink.space. For visitors in the European Economic Area, Switzerland and the United Kingdom we are the “controller” within the meaning of the General Data Protection Regulation, because this website is directed at people there. No data protection officer has been appointed; the conditions requiring one are not currently met.',
+  'privacy.controller.body':  'RETHINK SPACE \nAn der Hasenkaule 10 \n(Studio 6)\n50354 Hürth\n\nRETHINK SPACE Inc. (C-Corporation pending), Delaware, USA, represented by Dr. Dr. Karl Johannes Lierfeld, e-mail contact@rethink.space. For visitors in the European Economic Area, Switzerland and the United Kingdom we are the “controller” within the meaning of the General Data Protection Regulation, because this website is directed at people there. No data protection officer has been appointed; the conditions requiring one are not currently met.',
   'privacy.hosting.title':    '2. Hosting and log files',
   'privacy.hosting.body':     'The website is hosted on GitHub Pages, a service of GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA. When you open a page, GitHub processes technically necessary connection data, in particular IP address, date and time, the address requested, the amount of data transferred and the browser identifier. This processing is required to deliver the pages and to defend against attacks. The legal basis is our legitimate interest in secure and stable operation under Article 6 (1) (f) GDPR. We have no influence on the retention period or scope of these logs; details are given in GitHub’s privacy statement.',
   'privacy.storage.title':    '3. Storage in your browser',
