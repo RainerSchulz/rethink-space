@@ -217,8 +217,13 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 .hero h1 span { display: block; }
 /* Unterüberschrift der Startseite: formatierbar im CMS (fett, kursiv, Link, Liste — rich-text.js),
-   Schriftgröße S/M/L/XL im CMS (data-size, gesetzt von apply.mjs setSizes) */
-.hero-subtitle { grid-column: 1 / -1; max-width: 62ch; margin: -8px 0 0; font-weight: 400; line-height: 1.35; font-size: clamp(18px, 2.2vw, 26px); }
+   Schriftgröße S/M/L/XL im CMS (data-size, gesetzt von apply.mjs setSizes).
+   Liegt ÜBER dem Mondbild (Inhaber 23.11.2026): Höhe 0 im Seitenaufbau, der Text ragt nach unten hinaus — das Bild steht
+   dort, wo es ohne Unterzeile stand, egal wie lang sie ist. transform statt margin, damit sich nichts verschiebt. */
+.hero-subtitle {
+  grid-column: 1 / -1; max-width: 62ch; height: 0; overflow: visible; position: relative; z-index: 3; transform: translateY(-8px);
+  font-weight: 400; line-height: 1.35; font-size: clamp(18px, 2.2vw, 26px);
+}
 .hero-subtitle[data-size="s"] { font-size: clamp(15px, 1.6vw, 19px); }
 .hero-subtitle[data-size="l"] { font-size: clamp(21px, 3vw, 34px); }
 .hero-subtitle[data-size="xl"] { font-size: clamp(25px, 4.2vw, 48px); }
