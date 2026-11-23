@@ -209,13 +209,18 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 .hero-copy {
   display: grid; grid-template-columns: 1fr minmax(0, 520px); column-gap: 32px;
   padding: 56px 0 24px; text-shadow: 0 2px 28px rgba(0, 0, 0, .6);
+  /* Das Startbild steht immer an derselben Stelle (Inhaber 23.11.2026): der Kopf ist so hoch wie zwei Zeilen
+     Überschrift plus Abstand — mehr Zeilen (Enter im CMS) und die Unterzeile liegen über dem Bild. */
+  --h1-fs: min(5.1vw - 2px, 58px); --h1-lh: 1.1; --h1-mb: 26px;
+  box-sizing: content-box; height: calc(2 * var(--h1-lh) * var(--h1-fs) + var(--h1-mb));
+  align-content: start; position: relative; z-index: 3;
 }
 /* Überschrift: ein Text (home.hero.lead1), Standard eine Zeile über die Wrap-Breite; jede neue Zeile im CMS (Enter)
    wird eine neue Zeile hier (pre-line, Inhaber 23.11.2026 — vorher fest zwei Schlüssel, zwei Zeilen). Schriftgröße wie
    vorher (Inhaber: nicht ändern); passt der Text nicht in eine Zeile, bricht er ausgeglichen um (balance). */
 .hero h1 {
-  grid-column: 1 / -1; white-space: pre-line; margin: 0 0 26px; text-transform: uppercase;
-  font-size: min(5.1vw - 2px, 58px); letter-spacing: -.005em; word-spacing: .16em; line-height: 1.1; text-wrap: balance;
+  grid-column: 1 / -1; white-space: pre-line; margin: 0 0 var(--h1-mb); text-transform: uppercase;
+  font-size: var(--h1-fs); letter-spacing: -.005em; word-spacing: .16em; line-height: var(--h1-lh); text-wrap: balance;
 }
 .hero h1 span { display: block; }
 /* Unterüberschrift der Startseite: formatierbar im CMS (fett, kursiv, Link, Liste — rich-text.js),
@@ -543,8 +548,9 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 @media (max-width: 820px) {
   /* Handy: kleinere Überschrift, Lead und Button nebeneinander, alles kompakter */
-  .hero-copy { grid-template-columns: 1fr auto; column-gap: 14px; align-items: center; padding: 22px 0 10px; }
-  .hero h1 { grid-column: 1 / -1; white-space: pre-line; text-wrap: balance; font-size: clamp(18px, 5.3vw, 38px); line-height: 1.12; margin-bottom: 16px; }
+  .hero-copy { grid-template-columns: 1fr auto; column-gap: 14px; align-items: center; padding: 22px 0 10px;
+    --h1-fs: clamp(18px, 5.3vw, 38px); --h1-lh: 1.12; --h1-mb: 16px; }
+  .hero h1 { grid-column: 1 / -1; white-space: pre-line; text-wrap: balance; }
   /* Unterseiten-Hero auf dem Handy: Bild komplett oben, Text darunter */
   .hero-sub { display: block; }
   .hero-sub-bg { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: none; }
