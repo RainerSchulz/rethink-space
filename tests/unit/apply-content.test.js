@@ -434,7 +434,9 @@ describe('Feature: Schriftgröße aus dem CMS (data-cms-size)', () => {
 
   it('die Startseite hat die Unterüberschrift: formatierbar (Kacheltext-Schlüssel), Größe über einen eigenen Schlüssel', () => {
     const page = readFileSync(resolve(ROOT, 'index.html'), 'utf8');
-    expect(page).toMatch(/<div class="hero-subtitle" data-i18n="home\.panel\.subtitle\.text" data-cms-size="home\.hero\.subtitle\.size" data-size="(s|m|l|xl)">/);
+    // Im CMS geleert = ausgeblendet (hidden data-cms-empty, 23.11.2026 hielt das das Veröffentlichen an) — das Element
+    // bleibt stehen, weitere Attribute dürfen folgen
+    expect(page).toMatch(/<div class="hero-subtitle" data-i18n="home\.panel\.subtitle\.text" data-cms-size="home\.hero\.subtitle\.size" data-size="(s|m|l|xl)"[^>]*>/);
     expect(TEXT_SIZES).toEqual(['s', 'm', 'l', 'xl']);
   });
 });
