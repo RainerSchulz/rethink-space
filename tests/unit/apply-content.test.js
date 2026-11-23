@@ -333,9 +333,12 @@ describe('Feature: Blöcke im CMS ausblenden (Überschrift + alles bis zur näch
   });
 
   it('die echten Seiten: jeder Block der Datenschutzerklärung lässt sich aus- und wieder einblenden', () => {
-    const page = readFileSync(resolve(ROOT, 'pages/privacy/index.html'), 'utf8');
-    const keys = [...page.matchAll(/<h2[^>]*data-i18n="([^"]+)"/g)].map((m) => m[1]);
+    const stored = readFileSync(resolve(ROOT, 'pages/privacy/index.html'), 'utf8');
+    const keys = [...stored.matchAll(/<h2[^>]*data-i18n="([^"]+)"/g)].map((m) => m[1]);
     expect(keys.length).toBeGreaterThan(5);
+    // Ausgangslage: alle Blöcke sichtbar — im CMS schon ausgeblendete Blöcke stehen beim Veröffentlichen bereits so in der Seite
+    const page = setBlocks(stored, keys.map((key) => ({ key, hidden: false }))).html;
+    expect(page).not.toContain('data-cms-block=');
     for (const key of keys) {
       const off = setBlocks(page, [{ key, hidden: true }]);
       expect(off.changed, key).toBeGreaterThanOrEqual(2);
