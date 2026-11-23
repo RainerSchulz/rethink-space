@@ -78,10 +78,15 @@ describe('Feature: Listen im CMS (cms:list)', () => {
 describe('Feature: Geschäftsbereiche der Kontaktseite (Liste contact.areas)', () => {
   const contact = readFileSync(resolve(process.cwd(), 'pages/contact/index.html'), 'utf8');
 
-  it('die Kontaktseite hat die Liste mit drei Bereichen, Feld „label“', () => {
-    const list = findLists(contact).find((l) => l.name === 'contact.areas');
-    expect(list.items.map((i) => i.id)).toEqual(['isru', 'data-centers', 'defense']);
-    expect(list.items[0].fields).toEqual(['label']);
+  // Welche Bereiche es gibt, pflegt der Inhaber unter „Einstellungen“ im CMS (23.11.2026: neue kamen dazu und
+  // hielten das Veröffentlichen an) — geprüft wird hier nur der Aufbau, nie der Bestand.
+  const areas = () => findLists(contact).find((l) => l.name === 'contact.areas');
+
+  it('die Kontaktseite hat die Liste der Bereiche, jeder Eintrag mit eigener Kennung und Feld „label“', () => {
+    const ids = areas().items.map((i) => i.id);
+    expect(ids.length).toBeGreaterThanOrEqual(1);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const it of areas().items) expect(it.fields, it.id).toEqual(['label']);
   });
 
   it('neuer Bereich aus der Vorlage: eigene Kennung in Schlüssel, Wert und Zeile, sichtbar, eigener Text', () => {
@@ -95,10 +100,13 @@ describe('Feature: Geschäftsbereiche der Kontaktseite (Liste contact.areas)', (
   });
 
   it('umsortieren, löschen und ausblenden wie bei den Publikationen', () => {
-    const r = applyLists(contact, { 'contact.areas': [{ id: 'defense' }, { id: 'isru' }] }, () => undefined);
+    // mit den Einträgen, die gerade da sind: der letzte nach vorn, nur zwei bleiben
+    const ids = areas().items.map((i) => i.id);
+    const wanted = ids.length > 1 ? [ids.at(-1), ids[0]] : [ids[0]];
+    const r = applyLists(contact, { 'contact.areas': wanted.map((id) => ({ id })) }, () => undefined);
     const ids2 = findLists(r.html).find((l) => l.name === 'contact.areas').items.map((i) => i.id);
-    expect(ids2).toEqual(['defense', 'isru']);
-    expect(setRows(contact, [{ key: 'contact.areas.defense.label', hidden: true }]).html)
-      .toContain('<label class="area" data-cms-row="contact.areas.defense.label" hidden>');
+    expect(ids2).toEqual(wanted);
+    const key = `contact.areas.${ids[0]}.label`;
+    expect(setRows(contact, [{ key, hidden: true }]).html).toMatch(new RegExp(`<label class="area" data-cms-row="${key.replace(/\./g, '\\.')}" hidden>`));
   });
 });
