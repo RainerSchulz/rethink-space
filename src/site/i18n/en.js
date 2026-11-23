@@ -36,6 +36,8 @@ export const EN = {
   'home.meta.description': 'New Space Economy for Lunar Infrastructure: design, technology and deployment for lasting presence on the Moon.',
   'home.hero.lead1':       'New Space Economy for',
   'home.hero.lead2':       'Lunar Infrastructure \n\n',
+  'home.panel.subtitle.text': 'Design, technology and deployment for lasting presence on the Moon.',
+  'home.hero.subtitle.size': 'm',
 
   // ── Vision ────────────────────────────────────────────────────────
   'habitat.meta.title':       'Lunar Habitato – Modular Moon Habitat Design | RETHINK SPACE',

@@ -34,7 +34,8 @@ function walk(dir) {
 const srcFiles = walk(join(ROOT, 'src'));
 
 const usedInHtml = new Set();
-const I18N_ATTR = /data-i18n(?:-content|-aria-label|-placeholder)?="([^"]+)"/g;
+// data-cms-size: Schriftgröße als Wert im CMS (apply.mjs setSizes), etwa für die Unterüberschrift der Startseite
+const I18N_ATTR = /(?:data-i18n(?:-content|-aria-label|-placeholder)?|data-cms-size)="([^"]+)"/g;
 for (const { html } of htmlDocs) {
   for (const m of html.matchAll(I18N_ATTR)) usedInHtml.add(m[1]);
 }

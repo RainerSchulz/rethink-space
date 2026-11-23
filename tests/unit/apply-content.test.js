@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   setDictValue, hasDictKey, setElementText, setElementAttr,
-  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass, setBlocks, blockStarts,
+  setImages, listImages, applyKeyToHtml, sharedKeys, applyKeysToHtml, setRows, moonClass, setBlocks, blockStarts, setSizes, TEXT_SIZES,
 } from '../../scripts/lib/apply.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
@@ -419,5 +419,22 @@ describe('Porträt: Ausschnitt und Zoom wie die Kachel-Bilder', () => {
     expect(css).toMatch(/\.portrait \{\s*position: relative;/);
     expect(css).toContain('.portrait .band-media--fit { object-fit: contain; }');
     expect(css).toContain('.portrait:has(.band-media--fit-white) { background: #fff; }');
+  });
+});
+
+describe('Feature: Schriftgröße aus dem CMS (data-cms-size)', () => {
+  const html = '<div class="hero-subtitle" data-i18n="home.panel.subtitle.text" data-cms-size="home.hero.subtitle.size" data-size="m"><p>X</p></div>';
+
+  it('setzt data-size nach dem Wert im CMS; unbekannte Werte ändern nichts', () => {
+    expect(setSizes(html, () => 'XL').html).toContain('data-size="xl"');
+    expect(setSizes(html, () => 'm').changed).toBe(0);
+    expect(setSizes(html, () => 'riesig').html).toBe(html);
+    expect(setSizes('<p data-cms-size="a.size">y</p>', () => 's').html).toBe('<p data-cms-size="a.size" data-size="s">y</p>');
+  });
+
+  it('die Startseite hat die Unterüberschrift: formatierbar (Kacheltext-Schlüssel), Größe über einen eigenen Schlüssel', () => {
+    const page = readFileSync(resolve(ROOT, 'index.html'), 'utf8');
+    expect(page).toMatch(/<div class="hero-subtitle" data-i18n="home\.panel\.subtitle\.text" data-cms-size="home\.hero\.subtitle\.size" data-size="(s|m|l|xl)">/);
+    expect(TEXT_SIZES).toEqual(['s', 'm', 'l', 'xl']);
   });
 });

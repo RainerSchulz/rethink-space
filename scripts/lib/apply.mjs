@@ -184,6 +184,26 @@ export function sharedKeys(pages) {
   return (pages ?? []).find((p) => p.slug === 'global')?.keys ?? [];
 }
 
+/** Schriftgrößen, die das CMS wählen lässt (rethink-cms src/text-size.js TEXT_SIZES — beide gleich halten). */
+export const TEXT_SIZES = ['s', 'm', 'l', 'xl'];
+
+/**
+ * Schriftgröße aus dem CMS (Inhaber 23.11.2026, Unterüberschrift der Startseite): ein Element mit
+ * data-cms-size="<schlüssel>" bekommt data-size="<wert>" — der Wert ist ein Text im CMS (s, m, l, xl), die Größe
+ * selbst steht in site.css. Unbekannte Werte lassen das Element, wie es ist.
+ */
+export function setSizes(html, valueOf) {
+  let changed = 0;
+  const out = html.replace(/<[a-z][a-z0-9-]*\b[^>]*\sdata-cms-size="([^"]+)"[^>]*>/gi, (tag, key) => {
+    const v = String(valueOf(key) ?? '').trim().toLowerCase();
+    if (!TEXT_SIZES.includes(v)) return tag;
+    const next = /\sdata-size="[^"]*"/.test(tag) ? tag.replace(/\sdata-size="[^"]*"/, ` data-size="${v}"`) : tag.replace(/\s*>$/, ` data-size="${v}">`);
+    if (next !== tag) changed++;
+    return next;
+  });
+  return { html: out, changed };
+}
+
 /**
  * Zeilen, die das CMS entfernen kann: das Element mit data-cms-row="<schlüssel>"
  * (People: je Buch ein <li>, Schlüssel = sein Titel). hidden am Schlüssel im CMS

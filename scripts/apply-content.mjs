@@ -40,7 +40,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows, setBlocks } from './lib/apply.mjs';
+import { setDictValue, hasDictKey, setImages, sharedKeys, applyKeysToHtml, setRows, setBlocks, setSizes } from './lib/apply.mjs';
 import { ladeInhalt } from './lib/cms-fetch.mjs';
 import { splitRegion, parseBands, applyBands, insertDictKeys, removeDictKey, prefixOf, maskRegion } from './lib/bands.mjs';
 import { findLists, applyLists, ID_RE as LIST_ID_RE } from './lib/lists.mjs';
@@ -284,6 +284,10 @@ for (const page of content.pages) {
   const rows = setRows(html, page.keys ?? []);
   html = rows.html;
   htmlChanges += rows.changed;
+  // Schriftgröße aus dem CMS (data-cms-size, z. B. Unterüberschrift der Startseite)
+  const sizes = setSizes(html, (key) => enByKey.get(key));
+  html = sizes.html;
+  htmlChanges += sizes.changed;
   // Im CMS ausgeblendete Blöcke (Überschrift + alles bis zur nächsten, alle Seiten)
   const blocks = setBlocks(html, page.keys ?? []);
   html = blocks.html;
