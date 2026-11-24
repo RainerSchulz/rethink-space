@@ -4,6 +4,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { EN } from '../../src/site/i18n/en.js';
+import { richToPlain } from '../../src/site/i18n/rich-text.js';
 
 const PAGES = [
   'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'contact',
@@ -39,7 +40,11 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
     // Wortlaut aus dem Woerterbuch, nicht abgeschrieben: der Inhaber aendert
     // diese Texte im CMS, und ein Zitat hier wuerde bei jeder Aenderung brechen.
     await expect(page).toHaveTitle(EN['home.meta.title']);
-    await expect(page.locator('[data-i18n="home.hero.lead1"]')).toHaveText(EN['home.hero.lead1']);
+    // Die Überschrift ist formatierbar (Zeilen als <br>, fett, Größe — 23.11.2026): verglichen wird der sichtbare Text
+    // ohne Formatzeichen und ohne Leerraum, sonst bräche der Test an jedem Zeilenumbruch aus dem CMS
+    const squash = (t) => String(t).replace(/s+/g, '');
+    const shown = await page.locator('[data-i18n="home.hero.lead1"]').textContent();
+    expect(squash(shown)).toBe(squash(richToPlain(EN['home.hero.lead1'])));
     await expect(page.locator('[data-i18n="footer.project"]')).toHaveText(EN['footer.project']);
     await expect(page.locator('.lang')).toHaveCount(0);
   });
