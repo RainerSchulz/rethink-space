@@ -42,7 +42,7 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
     await expect(page).toHaveTitle(EN['home.meta.title']);
     // Die Überschrift ist formatierbar (Zeilen als <br>, fett, Größe — 23.11.2026): verglichen wird der sichtbare Text
     // ohne Formatzeichen und ohne Leerraum, sonst bräche der Test an jedem Zeilenumbruch aus dem CMS
-    const squash = (t) => String(t).replace(/s+/g, '');
+    const squash = (t) => String(t).replace(/\s+/g, '');
     const shown = await page.locator('[data-i18n="home.hero.lead1"]').textContent();
     expect(squash(shown)).toBe(squash(richToPlain(EN['home.hero.lead1'])));
     await expect(page.locator('[data-i18n="footer.project"]')).toHaveText(EN['footer.project']);
