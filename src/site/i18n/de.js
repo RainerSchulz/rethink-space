@@ -83,9 +83,6 @@ export const DE = {
   // ── News ──────────────────────────────────────────────────────────
 
   // ── Autor ─────────────────────────────────────────────────────────
-  'people.meta.title':           'People – RETHINK SPACE',
-  'people.meta.description':     'Dr. Johannes Lierfeld – Autor, Wissenschaftler und Initiator von RETHINK SPACE.',
-  'people.page.h1': 'Die Menschen hinter RETHINK SPACE',
   'people.band.founder': 'Founder & CEO',
   'people.band.team': 'Team',
   'people.panel.team.text': 'RETHINK SPACE arbeitet als Netzwerk: Architektur, Materialforschung und Missionsplanung kommen je Etappe von Partnern, die das jeweilige Fach bereits belegt haben.\n\nDie Menschen hinter den laufenden Etappen stehen hier. Wer ein Fach beisteuern möchte, kommt über das Gespräch am schnellsten weiter.',
@@ -108,8 +105,6 @@ export const DE = {
   'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; (English); [transcript!] / Columbia University Press, 2026',
 
   // ── Kontakt ───────────────────────────────────────────────────────
-  'contact.meta.title':       'Kontakt – RETHINK SPACE',
-  'contact.meta.description': 'Forschung, Industrie, Presse – wir antworten auf jede ernst gemeinte Anfrage.',
   'contact.hero.eyebrow':     '',
   'contact.hero.title':       'Sprechen wir.',
   'contact.hero.lead':        'Forschung, Industrie, Presse – wir antworten auf jede ernst gemeinte Anfrage.',

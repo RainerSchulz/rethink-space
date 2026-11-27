@@ -37,10 +37,10 @@ for (const key of Object.keys(EN)) {
 // Namensraum -> Adresse. Nur Seiten, die es wirklich gibt: ein erfundener
 // Pfad in der Wissensbasis wird vom Chatbot weitergereicht und endet im 404.
 const PAGE_URL = {
-  home: '/', habitat: '/pages/lunar-habitato/', dual: '/pages/dual-use/', people: '/pages/people/',
+  home: '/', habitat: '/pages/lunar-habitato/', dual: '/pages/dual-use/', people: '/pages/about/#band-founder',
   journal: '/pages/founders-journal/',
   about: '/pages/about/',
-  contact: '/pages/contact/', imprint: '/pages/legal-notice/', legal: '/pages/legal-notice/',
+  contact: '/pages/about/#band-contact', imprint: '/pages/legal-notice/', legal: '/pages/legal-notice/',
   privacy: '/pages/privacy/', notfound: '/pages/404/',
 };
 const siteText = [...groups].map(([page, lines]) =>

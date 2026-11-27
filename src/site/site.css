@@ -441,6 +441,10 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 
 /* ---------- 10. Kontakt ---------- */
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+/* Kontakt als Kachel auf About (Inhaber 27.11.2026): Überschrift und Lead über dem Raster */
+.band-panel .contact-head { margin-bottom: 26px; }
+.band-panel .contact-head h3 { font-size: clamp(24px, 3vw, 34px); margin-bottom: 8px; }
+.band-panel .contact-grid h4 { font-size: 18px; margin-bottom: 10px; }
 .field { display: block; margin-bottom: 18px; }
 .field span { display: block; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
 .field input, .field textarea {

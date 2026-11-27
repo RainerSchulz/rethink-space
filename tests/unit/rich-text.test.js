@@ -154,7 +154,7 @@ describe('Feature: Leerzeilen wie im Textfeld (CMS und Website gleich)', () => {
 
 describe('Feature: jeder Fließtext in einer Kachel ist formatierbar (Werkzeugleiste im CMS)', () => {
   const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-  const pages = ['pages/lunar-habitato/index.html', 'pages/dual-use/index.html', 'pages/people/index.html'];
+  const pages = ['pages/lunar-habitato/index.html', 'pages/dual-use/index.html', 'pages/about/index.html'];
 
   it('Founder-Absätze und Kacheltexte sind formatierbar, Überschriften und Listenzeilen nicht', () => {
     expect(isRichKey('people.profile.p1')).toBe(true);
@@ -169,7 +169,7 @@ describe('Feature: jeder Fließtext in einer Kachel ist formatierbar (Werkzeugle
       const html = readFileSync(resolve(root, page), 'utf8');
       const panels = [...html.matchAll(/<div class="band-panel"[\s\S]*?(?=<div class="band-group"|<!-- \/cms:bands -->|<\/section>)/g)].map((m) => m[0]);
       expect(panels.length).toBeGreaterThan(0);
-      for (const panel of panels) {
+      for (const panel of panels.filter((p) => !p.includes('id="band-contact"'))) { // Kontakt: Formular, kein Fließtext
         // Absätze: <p data-i18n> (ohne die Zwischenüberschrift „eyebrow“) müssten formatierbare Texte sein
         for (const m of panel.matchAll(/<p(?![^>]*class="eyebrow")[^>]*\sdata-i18n="([^"]+)"/g)) {
           expect(isRichKey(m[1]), `${m[1]} ist ein Absatz ohne Werkzeugleiste`).toBe(true);

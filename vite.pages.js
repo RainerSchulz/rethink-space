@@ -8,10 +8,8 @@ export const PAGES = {
   root:        'index.html',                    // Startseite, liegt in der Wurzel
   'lunar-habitato': 'pages/lunar-habitato/index.html',
   'dual-use':  'pages/dual-use/index.html',
-  people:      'pages/people/index.html',
   'founders-journal': 'pages/founders-journal/index.html',
-  about:       'pages/about/index.html',            // Kacheln zu People und Contact (Inhaber 27.11.2026)
-  contact:     'pages/contact/index.html',
+  about:       'pages/about/index.html',            // Founder, Team und Contact (Inhaber 27.11.2026: People und Contact gehen darin auf)
   'legal-notice': 'pages/legal-notice/index.html',
   privacy:     'pages/privacy/index.html',
   notfound:    'pages/404/index.html',          // wird zusätzlich nach dist/404.html kopiert

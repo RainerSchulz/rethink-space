@@ -31,5 +31,5 @@ window.addEventListener(PAGE_EVENT, () => {
   // Fokus auf den neuen Inhalt setzen, damit Screenreader und Tastatur beim
   // Seitenwechsel ohne Neuladen nicht im alten Header hängen bleiben.
   document.querySelector('main')?.focus({ preventScroll: true });
-  openFromHash(); // Kacheln auf About: /pages/people/#band-founder klappt Founder auf
+  openFromHash(); // Sprungadresse: /pages/about/#band-contact klappt Contact auf (alte Adressen /pages/contact/ leiten so weiter)
 });

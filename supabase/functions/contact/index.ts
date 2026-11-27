@@ -106,7 +106,7 @@ async function areas(cors: Record<string, string>): Promise<Response> {
   };
   try {
     const [items, texts] = await Promise.all([
-      hole("cms_list_items?select=id,position&page_slug=eq.contact&list=eq.contact.areas&order=position"),
+      hole("cms_list_items?select=id,position&list=eq.contact.areas&order=position"),
       hole("cms_texts?select=key,en,hidden&or=(key.like.contact.areas.*,key.eq.contact.form.area)"),
     ]) as [{ id: string }[], { key: string; en: string; hidden?: boolean }[]];
     const byKey = new Map(texts.map((t) => [t.key, t]));

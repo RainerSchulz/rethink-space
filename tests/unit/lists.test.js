@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
 import { findLists, applyLists, renderItem } from '../../scripts/lib/lists.mjs';
 import { setRows } from '../../scripts/lib/apply.mjs';
 
-const people = readFileSync(resolve(process.cwd(), 'pages/people/index.html'), 'utf8');
+const people = readFileSync(resolve(process.cwd(), 'pages/about/index.html'), 'utf8');
 const NAME = 'people.books';
 const ids = (html) => findLists(html).find((l) => l.name === NAME).items.map((i) => i.id);
 
@@ -21,10 +21,10 @@ const PAGE = [
 ].join('\n');
 
 describe('Feature: Listen im CMS (cms:list)', () => {
-  it('die People-Seite hat die Publikationen als Liste, je Eintrag Titel und Angaben', () => {
+  it('die Seite About hat die Publikationen (Founder) als Liste, je Eintrag Titel und Angaben', () => {
     const lists = findLists(people);
-    expect(lists.map((l) => l.name)).toEqual([NAME]);
-    const [list] = lists;
+    expect(lists.map((l) => l.name)).toEqual([NAME, 'contact.areas']); // dazu die Geschäftsbereiche im Kontakt
+    const list = lists.find((l) => l.name === NAME);
     expect(list.items.length).toBeGreaterThanOrEqual(1);
     for (const it of list.items) {
       expect(it.fields).toEqual(['title', 'meta']);
@@ -76,7 +76,7 @@ describe('Feature: Listen im CMS (cms:list)', () => {
 });
 
 describe('Feature: Geschäftsbereiche der Kontaktseite (Liste contact.areas)', () => {
-  const contact = readFileSync(resolve(process.cwd(), 'pages/contact/index.html'), 'utf8');
+  const contact = readFileSync(resolve(process.cwd(), 'pages/about/index.html'), 'utf8');
 
   // Welche Bereiche es gibt, pflegt der Inhaber unter „Einstellungen“ im CMS (23.11.2026: neue kamen dazu und
   // hielten das Veröffentlichen an) — geprüft wird hier nur der Aufbau, nie der Bestand.

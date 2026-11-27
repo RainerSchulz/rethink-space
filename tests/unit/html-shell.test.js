@@ -26,7 +26,7 @@ const SITE = 'https://rethink.space';
 // index.html in der Wurzel, damit die Adresse rethink.space/ und nicht
 // rethink.space/pages/landing/ lautet.
 const EXPECTED_PAGES = [
-  'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'about', 'contact',
+  'lunar-habitato', 'dual-use', 'founders-journal', 'about',
   'legal-notice', 'privacy', '404',
 ];
 
@@ -154,8 +154,8 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
     expect(branded, `${file}: Originale mit Schriftzug – zugeschnittene Fassung (…-clean/…-wide) verwenden: ${branded.join(', ')}`).toHaveLength(0);
   });
 
-  it('Bücher auf der People-Seite: schlichte Zeilen ohne Link, je Zeile im CMS entfernbar', () => {
-    if (slug !== 'people') return;
+  it('Bücher (Founder auf About): schlichte Zeilen ohne Link, je Zeile im CMS entfernbar', () => {
+    if (slug !== 'about') return;
     // data-cms-row = Titel-Schlüssel (ausgeblendet per hidden) — das Markup bleibt, gezählt wird es deshalb auch ausgeblendet
     const items = [...html.matchAll(/<li data-cms-row="(people\.books\.[a-z0-9-]+\.title)"(?: hidden)?><div class="book"><span class="t" data-i18n="([^"]+)"[^>]*>[^<]+<\/span><span class="m" data-i18n="[^"]+">[^<]+<\/span><\/div><\/li>/g)];
     expect(items.length).toBeGreaterThanOrEqual(4);
@@ -225,7 +225,7 @@ describe('Feature: Header und Footer sind auf allen Seiten identisch', () => {
 });
 
 describe('Feature: Kontaktformular', () => {
-  const html = readFileSync(join(ROOT, 'pages/contact/index.html'), 'utf8');
+  const html = readFileSync(join(ROOT, 'pages/about/index.html'), 'utf8'); // Kontakt als Kachel auf About (27.11.2026)
 
   it('hat einen Honigtopf, der für Menschen unsichtbar und nicht anspringbar ist', () => {
     expect(html).toMatch(/<p class="trap" aria-hidden="true">/);
@@ -243,7 +243,7 @@ describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
   // sie aus dem Markup — mit Untergrenze, damit ein versehentlich geleerter
   // Bereich <!-- cms:bands --> nicht still durchgeht. Die Fläche ist
   // ausdrücklich kein Link — nur "Learn more" öffnet den Bereich darunter.
-  const BAND_PAGES = [['lunar-habitato', 2], ['dual-use', 1], ['people', 2], ['founders-journal', 1]];
+  const BAND_PAGES = [['lunar-habitato', 2], ['dual-use', 1], ['founders-journal', 1], ['about', 3]];
   // Obergrenze: redaktionell großzügig, fängt aber einen Fehler, der Kacheln
   // vervielfacht. Seit der Kachel-Bereich nicht mehr in die 300-Zeilen-Regel
   // zählt, ist sie die einzige Bremse. Das CMS prüft dieselbe Zahl beim Anlegen

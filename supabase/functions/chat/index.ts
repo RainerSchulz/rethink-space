@@ -25,14 +25,14 @@ const RULES = `Du bist der Assistent der Website RETHINK SPACE von Dr. Karl Joha
 Du beantwortest Fragen zum Projekt (Mond-Habitate, Design, Technik, Deployment, Dual-Use, IP), zum Autor und zu seinen Büchern.
 
 Regeln:
-- Antworte ausschließlich auf Basis der Wissensbasis unten. Wenn etwas dort nicht steht, sag das offen und verweise auf die Kontaktseite /pages/contact/ oder die E-Mail-Adresse.
+- Antworte ausschließlich auf Basis der Wissensbasis unten. Wenn etwas dort nicht steht, sag das offen und verweise auf die Kontaktseite /pages/about/#band-contact oder die E-Mail-Adresse.
 - Erfinde keine Fakten, Zahlen, Daten, Partner oder Zitate. Angaben aus Projektmaterial des Inhabers kennzeichnest du als Angaben des Projekts.
 - Zitiere aus Büchern höchstens einen Satz und verweise für mehr auf das Buch (Amazon-Link aus der Wissensbasis).
 - Fragen außerhalb von RETHINK SPACE, dem Autor und seinen Themen lehnst du freundlich in einem Satz ab und bietest an, zu diesen Themen zu helfen.
 - Keine medizinische, rechtliche oder finanzielle Beratung, keine personenbezogenen Daten über Dritte.
 - Antworte knapp: meist 2 bis 6 Sätze, bei Aufzählungen kurze Zeilen. Reiner Text ohne Markdown, keine Sternchen, keine Überschriften.
-- Verweise auf passende Seiten immer als Pfad, und nur auf diese: / (Startseite) /pages/lunar-habitato/ /pages/dual-use/ /pages/people/ /pages/founders-journal/ /pages/about/ /pages/contact/ /pages/legal-notice/ /pages/privacy/ — andere Pfade gibt es nicht, erfinde keine.
-- Du bist eine KI; gib dich nicht als Person aus. Bei Fragen nach Kontakt oder Zusammenarbeit verweise auf /pages/contact/.`;
+- Verweise auf passende Seiten immer als Pfad, und nur auf diese: / (Startseite) /pages/lunar-habitato/ /pages/dual-use/ /pages/founders-journal/ /pages/about/ /pages/about/#band-founder /pages/about/#band-team /pages/about/#band-contact /pages/legal-notice/ /pages/privacy/ — andere Pfade gibt es nicht, erfinde keine.
+- Du bist eine KI; gib dich nicht als Person aus. Bei Fragen nach Kontakt oder Zusammenarbeit verweise auf /pages/about/#band-contact.`;
 
 const LANG_HINT: Record<string, string> = {
   de: "Antworte in der Sprache, in der die Frage gestellt ist. Ist sie nicht erkennbar, antworte auf Deutsch (Sie-Form).",
@@ -157,8 +157,8 @@ Deno.serve(async (req) => {
         const final = await stream.finalMessage();
         if (final.stop_reason === "refusal" && !answer) {
           const note = lang === "de"
-            ? "Diese Frage kann ich hier nicht beantworten. Bitte wenden Sie sich über /pages/contact/ an uns."
-            : "I cannot answer that here. Please reach out via /pages/contact/.";
+            ? "Diese Frage kann ich hier nicht beantworten. Bitte wenden Sie sich über /pages/about/#band-contact an uns."
+            : "I cannot answer that here. Please reach out via /pages/about/#band-contact.";
           answer = note;
           send({ type: "text", text: note });
         }

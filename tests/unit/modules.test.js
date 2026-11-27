@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EN } from '../../src/site/i18n/en.js';
+import { readFileSync } from 'node:fs';
 
 const HEADER = `
   <header class="site-header">
@@ -79,35 +80,32 @@ describe('Feature: Navigation (modules/nav.js)', () => {
   });
 });
 
-describe('Feature: Menüpunkt „About“ mit Kacheln zu People und Contact', () => {
-  it('Scenario: auf People/Contact ist „About“ als Bereich markiert, auf About als Seite', async () => {
-    document.body.innerHTML = '<nav class="nav"><a href="/pages/dual-use/">Dual Use</a><a href="/pages/about/">About</a></nav>';
-    const { markCurrentPage } = await fresh('../../src/site/modules/nav.js');
-    const about = () => document.querySelector('a[href="/pages/about/"]').getAttribute('aria-current');
-    for (const [path, want] of [['/pages/people/', 'true'], ['/pages/contact/', 'true'], ['/pages/about/', 'page'], ['/pages/dual-use/', null]]) {
-      window.history.pushState({}, '', path);
-      markCurrentPage();
-      expect(about(), path).toBe(want);
-    }
-  });
+describe('Feature: Seite „About“ mit Founder, Team und Contact (statt People und Contact)', () => {
+  const body = (f) => readFileSync(f, 'utf8').replace(/^[\s\S]*<body[^>]*>|<\/body>[\s\S]*$/g, '');
 
-  it('Scenario: alle Seiten führen „About“ ganz rechts, People und Contact nicht mehr im Menü', async () => {
-    const { readFileSync } = await import('node:fs');
-    for (const f of ['index.html', 'pages/people/index.html', 'pages/contact/index.html', 'pages/about/index.html', 'pages/privacy/index.html']) {
-      document.body.innerHTML = readFileSync(f, 'utf8').replace(/^[\s\S]*<body[^>]*>|<\/body>[\s\S]*$/g, '');
+  it('Scenario: alle Seiten führen vier Menüpunkte, „About“ ganz rechts', () => {
+    for (const f of ['index.html', 'pages/about/index.html', 'pages/privacy/index.html', 'pages/404/index.html']) {
+      document.body.innerHTML = body(f);
       const links = [...document.querySelectorAll('#site-nav > a')].map((a) => a.getAttribute('href'));
       expect(links, f).toEqual(['/pages/lunar-habitato/', '/pages/dual-use/', '/pages/founders-journal/', '/pages/about/']);
     }
   });
 
-  it('Scenario: die Seite About hat Kacheln Founder, Team, Contact als Links, mit Bild und Alt-Text', async () => {
-    const { readFileSync } = await import('node:fs');
-    document.body.innerHTML = readFileSync('pages/about/index.html', 'utf8').replace(/^[\s\S]*<body[^>]*>|<\/body>[\s\S]*$/g, '');
-    const tiles = [...document.querySelectorAll('main a.band--link')];
-    expect(tiles.map((a) => a.getAttribute('href'))).toEqual(['/pages/people/#band-founder', '/pages/people/#band-team', '/pages/contact/']);
-    for (const t of tiles) {
-      expect(t.querySelector('img.band-media').getAttribute('alt')).toMatch(/^ABOUT – /);
-      expect(t.querySelector('h2.band-h[data-i18n]')).not.toBeNull();
+  it('Scenario: About hat die Kacheln Founder, Team, Contact — aufklappbar, mit Bild und Alt-Text', () => {
+    document.body.innerHTML = body('pages/about/index.html');
+    expect([...document.querySelectorAll('main .band-toggle')].map((b) => b.getAttribute('aria-controls'))).toEqual(['band-founder', 'band-team', 'band-contact']);
+    expect(document.querySelectorAll('main a.band--link')).toHaveLength(0); // klappen auf, keine Links mehr
+    for (const img of document.querySelectorAll('main img.band-media')) expect(img.getAttribute('alt')).toMatch(/^ABOUT – /);
+    expect(document.querySelector('#band-contact form[data-contact]')).not.toBeNull();
+    expect(document.querySelectorAll('main h1')).toHaveLength(1);
+  });
+
+  it('Scenario: die alten Adressen leiten auf die passende Kachel weiter, ohne Skript', () => {
+    for (const [old, to] of [['people', '/pages/about/#band-founder'], ['contact', '/pages/about/#band-contact']]) {
+      const html = readFileSync(`public/pages/${old}/index.html`, 'utf8');
+      expect(html, old).toContain(`<meta http-equiv="refresh" content="0; url=${to}">`);
+      expect(html, old).toContain('<meta name="robots" content="noindex">');
+      expect(html, old).not.toMatch(/<script/);
     }
   });
 });

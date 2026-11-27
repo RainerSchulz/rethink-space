@@ -30,8 +30,8 @@ export function collapseAll(root = document) {
 }
 
 /**
- * Sprungadresse auf einen Bereich (z. B. /pages/people/#band-founder von den Kacheln der Seite About, Inhaber
- * 27.11.2026): diesen Bereich aufklappen und die Kachel in den Blick holen. Andere Adressen bleiben unberührt.
+ * Sprungadresse auf einen Bereich (z. B. /pages/about/#band-contact — „Get in touch“ und die Weiterleitungen
+ * der früheren Seiten People und Contact, Inhaber 27.11.2026): diesen Bereich aufklappen und die Kachel in den Blick holen. Andere Adressen bleiben unberührt.
  * @returns {boolean} ob ein Bereich aufgeklappt wurde
  */
 export function openFromHash(hash = location.hash) {

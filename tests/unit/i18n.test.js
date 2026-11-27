@@ -89,7 +89,7 @@ describe('Feature: Schlüssel-Abdeckung (HTML + src)', () => {
     // Aussage statt Zahl: die Wurzel und die vier Menueseiten muessen dabei
     // sein. Eine blosse Mindestzahl haette nach dem Aufraeumen nur gemeckert.
     for (const f of ['index.html', 'pages/lunar-habitato/index.html', 'pages/dual-use/index.html',
-      'pages/people/index.html', 'pages/founders-journal/index.html', 'pages/contact/index.html']) {
+      'pages/founders-journal/index.html', 'pages/about/index.html']) {
       expect(htmlFiles, f).toContain(f);
     }
   });

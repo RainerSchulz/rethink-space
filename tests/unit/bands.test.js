@@ -29,7 +29,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('jede echte Kachel-Seite hat einen sauber lesbaren Bereich (unabhängig vom Inhalt)', () => {
-    for (const slug of ['lunar-habitato', 'dual-use', 'people', 'founders-journal']) {
+    for (const slug of ['lunar-habitato', 'dual-use', 'founders-journal', 'about']) {
       const bands = parseBands(splitRegion(page(slug)).region);
       const found = bands.map((b) => b.id);
       expect(new Set(found).size, `${slug}: doppelte Kachel-IDs`).toBe(found.length);
@@ -44,7 +44,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('lässt jede Seite unverändert, wenn das CMS nichts geändert hat', () => {
-    for (const slug of ['lunar-habitato', 'dual-use', 'people', 'founders-journal']) {
+    for (const slug of ['lunar-habitato', 'dual-use', 'founders-journal', 'about']) {
       const h = page(slug);
       const r = applyBands(h, asData(parseBands(splitRegion(h).region)));
       expect(r.changed, slug).toBe(false);
@@ -100,7 +100,7 @@ describe('Feature: Kacheln aus dem CMS', () => {
   });
 
   it('meldet eine Seite ohne Bereich statt sie anzufassen', () => {
-    const h = page('contact');
+    const h = page('legal-notice');
     const r = applyBands(h, []);
     expect(r.html).toBe(h);
     expect(r.skipped).toMatch(/kein Bereich/);

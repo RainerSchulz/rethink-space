@@ -83,9 +83,6 @@ export const EN = {
   // ── News ──────────────────────────────────────────────────────────
 
   // ── Author ────────────────────────────────────────────────────────
-  'people.meta.title':           'Dr. Dr. Johannes Lierfeld – Founder & CEO | RETHINK SPACE',
-  'people.meta.description':     'Meet Dr. Dr. Johannes Lierfeld – author, AI and BCI researcher and founder of RETHINK SPACE – and the network behind lunar habitat design.',
-  'people.page.h1': 'People behind RETHINK SPACE',
   'people.band.founder': 'Founder ',
   'people.band.team': 'Team',
   'people.panel.team.text': '**"EVERYBODY IS LOST IN SPACE WITHOUT THE RIGHT TEAM." **\n\nRETHINK SPACE entertains a growing network of space tech specialists, such as:\n\nProf. Dr. Valentina Sumini (Polytecnico Torino, MIT Media Lab)\n\nDr. Tommy Nilsson (Fraunhofer FIT / ESA)\n\nMuch gratitude to both of you! Our collaboration is a big part of the scientific validation of RETHINK SPACE.\n\nHereby I thank my long-time co-developers and business partners Maximilian Weidmann and Richard Kayser.\n\n3D printing enthusiast Jonas Grünewald supports RETHINK SPACE as a start-up coach. Jonas is also the guy who introduced me into the space tech industry eventually, so forever grateful!\n\nOur head of strategy, Murat Ural, has been shaping our main cooperation strategy - we don´t look for investors, but the right partners - and did an awesome job throughout the re-branding and US flip. Thank you, Murat!\n\nA special "Thank you!" to Rainer Schulz for his exceptional IT expertise and valuable contribution to building the RETHINK SPACE website. Your commitment and technical excellence made a real difference!\n\nMuch gratitude goes out to Marco Knieling and Emir Sahin, some of my best students who now support our R&D.\n\nRETHINK SPACE aims to stay lean and agile. However, we will grow the team organically. \n\nSuitable positions would be: \n\n- BCI specialist with strong researching experience\n- space scientist (ISRU / swarm robotics experience)\n',
@@ -108,8 +105,6 @@ export const EN = {
   'people.books.the-conversion-theory-brain-computer-int.meta': 'Brain-Computer Interfaces, the Qualia Problem and the Irreversible Conversion; (English); [transcript!] / Columbia University Press, 2026',
 
   // ── Contact ───────────────────────────────────────────────────────
-  'contact.meta.title':       'Contact RETHINK SPACE – Research, Industry, Press',
-  'contact.meta.description': 'Contact RETHINK SPACE for research cooperation, industry partnerships and press enquiries on lunar habitats and the new space economy.',
   'contact.hero.eyebrow':     '',
   'contact.hero.title':       'Let’s talk.',
   'contact.hero.lead':        'Research, industry, press – we answer every serious enquiry.',

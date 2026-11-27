@@ -7,7 +7,7 @@ import { EN } from '../../src/site/i18n/en.js';
 import { richToPlain } from '../../src/site/i18n/rich-text.js';
 
 const PAGES = [
-  'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'contact',
+  'lunar-habitato', 'dual-use', 'founders-journal', 'about',
   'legal-notice', 'privacy', '404',
 ];
 
@@ -49,20 +49,19 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
     await expect(page.locator('.lang')).toHaveCount(0);
   });
 
-  test('Kopfnavigation: vier Punkte, „About“ führt zu den Kacheln Founder, Team und Contact', async ({ page, isMobile }) => {
+  test('Kopfnavigation: vier Punkte; About klappt Founder, Team und Contact auf der Seite auf', async ({ page, isMobile }) => {
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
     await expect(page.locator('#site-nav a')).toHaveText(['nav.habitat', 'nav.dual-use', 'nav.journal', 'nav.about'].map((k) => EN[k]));
     await page.locator('#site-nav a[href="/pages/about/"]').click();
     await expect(page).toHaveURL(/\/pages\/about\/$/);
     await expect(page).toHaveTitle(EN['about.meta.title']);
-    const tiles = page.locator('main a.band--link');
-    await expect(tiles.locator('.band-h')).toHaveText([EN['people.band.founder'], EN['people.band.team'], EN['nav.contact']].map((t) => t.trim()));
-    await tiles.nth(1).click(); // Team: People-Seite, Kachel Team aufgeklappt
-    await expect(page).toHaveURL(/\/pages\/people\/#band-team$/);
-    await expect(page.locator('#band-team')).toBeVisible();
+    await expect(page.locator('main .band-h')).toHaveText([EN['people.band.founder'], EN['people.band.team'], EN['nav.contact']].map((t) => t.trim()));
+    await page.locator('[aria-controls="band-contact"]').click(); // Contact klappt darunter auf, keine neue Seite
+    await expect(page.locator('#band-contact form[data-contact]')).toBeVisible();
+    await expect(page).toHaveURL(/\/pages\/about\/$/);
     await expect(page.locator('#band-founder')).toBeHidden();
-    await expect(page.locator('#site-nav a[href="/pages/about/"]')).toHaveAttribute('aria-current', 'true');
+    await expect(page.locator('#site-nav a[href="/pages/about/"]')).toHaveAttribute('aria-current', 'page');
   });
 });
 
@@ -108,9 +107,9 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
 
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
-    await page.locator('#site-nav a[href="/pages/about/"]').click(); // Contact erreicht man über die Kachel auf „About“
-    await page.locator('main a.band--link[href="/pages/contact/"]').click();
-    await expect(page).toHaveURL(/\/pages\/contact\/$/);
+    await page.locator('#site-nav a[href="/pages/about/"]').click();
+    await expect(page).toHaveURL(/\/pages\/about\/$/);
+    await page.locator('[aria-controls="band-contact"]').click(); // Kontakt klappt auf About auf
 
     // Der Honigtopf steht absichtlich MIT Ausdehnung außerhalb des Bildes —
     // display:none wuerde von vielen Maschinen uebersprungen, und genau die
@@ -136,7 +135,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     const status = page.locator('.form-status');
     await expect(status).toBeVisible();
     await expect(status).toHaveAttribute('data-art', 'erfolg');
-    await expect(page).toHaveURL(/\/pages\/contact\/$/); // kein Neuladen
+    await expect(page).toHaveURL(/\/pages\/about\/$/); // kein Neuladen
     expect(gesendet).toHaveLength(1);
     expect(gesendet[0]).toMatchObject({ name: 'Test', email: 'test@example.com', message: 'Hello', website: '', area: 'Live Area' });
   });
@@ -146,7 +145,9 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     await page.addInitScript((u) => { window.RETHINK_CONTACT_ENDPOINT = u; }, ENDPOINT);
     await page.route(ENDPOINT, (route) => route.abort());
 
-    await page.goto('/pages/contact/');
+    // Ziel der Weiterleitung von /pages/contact/ (die statische Datei prüft modules.test.js; der Dev-Server liefert sie nicht)
+    await page.goto('/pages/about/#band-contact');
+    await expect(page.locator('#band-contact')).toBeVisible(); // die Sprungadresse klappt Contact auf
     await page.fill('input[name="name"]', 'Test');
     await page.fill('input[name="email"]', 'test@example.com');
     await page.fill('textarea[name="message"]', 'Hello');
@@ -159,10 +160,10 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
   });
 });
 
-test.describe('Feature: People-Seite', () => {
+test.describe('Feature: Founder auf About (früher People-Seite)', () => {
   test('Portrait wird im Band „Founder & CEO“ geladen und ersetzt den Platzhalter', async ({ page }) => {
-    await page.goto('/pages/people/');
-    await page.locator('.band-toggle').first().click();
+    await page.goto('/pages/about/');
+    await page.locator('[aria-controls="band-founder"]').click();
     // Im CMS lässt sich das Portrait entfernen (hidden) — dann darf es nicht zu sehen sein.
     const box = page.locator('.portrait');
     if (await box.getAttribute('hidden') !== null) {
@@ -207,7 +208,7 @@ test.describe('Feature: Barrierefreiheit — Tastatur und Fokus', () => {
 });
 
 test.describe('Feature: Bänder klappen auf, statt zu verlinken', () => {
-  for (const slug of ['lunar-habitato', 'dual-use', 'people', 'founders-journal']) {
+  for (const slug of ['lunar-habitato', 'dual-use', 'founders-journal', 'about']) {
     test(`/pages/${slug}/: "Learn more" öffnet den Bereich darunter, ohne Seitenwechsel`, async ({ page }) => {
       await page.goto(`/pages/${slug}/`);
       await expect(page.locator('.band-panel:visible')).toHaveCount(0); // alles zu beim Laden
