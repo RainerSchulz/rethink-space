@@ -39,6 +39,7 @@ for (const key of Object.keys(EN)) {
 const PAGE_URL = {
   home: '/', habitat: '/pages/lunar-habitato/', dual: '/pages/dual-use/', people: '/pages/people/',
   journal: '/pages/founders-journal/',
+  about: '/pages/about/',
   contact: '/pages/contact/', imprint: '/pages/legal-notice/', legal: '/pages/legal-notice/',
   privacy: '/pages/privacy/', notfound: '/pages/404/',
 };

@@ -79,46 +79,35 @@ describe('Feature: Navigation (modules/nav.js)', () => {
   });
 });
 
-describe('Feature: Untermenü „About“ (People, Contact)', () => {
-  const GROUP = `<nav class="nav" id="site-nav">
-      <a href="/pages/lunar-habitato/">Lunar Habitato</a>
-      <div class="nav-group">
-        <button class="nav-more" type="button" aria-expanded="false" aria-controls="nav-about">About</button>
-        <div class="nav-sub" id="nav-about"><a href="/pages/people/">People</a><a href="/pages/contact/">Contact</a></div>
-      </div>
-    </nav>`;
-
-  it('Scenario: auf People/Contact ist „About“ markiert, sonst nicht', async () => {
-    document.body.innerHTML = GROUP;
+describe('Feature: Menüpunkt „About“ mit Kacheln zu People und Contact', () => {
+  it('Scenario: auf People/Contact ist „About“ als Bereich markiert, auf About als Seite', async () => {
+    document.body.innerHTML = '<nav class="nav"><a href="/pages/dual-use/">Dual Use</a><a href="/pages/about/">About</a></nav>';
     const { markCurrentPage } = await fresh('../../src/site/modules/nav.js');
-    window.history.pushState({}, '', '/pages/people/');
-    markCurrentPage();
-    expect(document.querySelector('.nav-group').classList.contains('current')).toBe(true);
-    window.history.pushState({}, '', '/pages/lunar-habitato/');
-    markCurrentPage();
-    expect(document.querySelector('.nav-group').classList.contains('current')).toBe(false);
+    const about = () => document.querySelector('a[href="/pages/about/"]').getAttribute('aria-current');
+    for (const [path, want] of [['/pages/people/', 'true'], ['/pages/contact/', 'true'], ['/pages/about/', 'page'], ['/pages/dual-use/', null]]) {
+      window.history.pushState({}, '', path);
+      markCurrentPage();
+      expect(about(), path).toBe(want);
+    }
   });
 
-  it('Scenario: auf- und zuklappen setzt aria-expanded; closeMenu klappt es zu', async () => {
-    document.body.innerHTML = GROUP;
-    const { toggleGroup, closeMenu } = await fresh('../../src/site/modules/nav.js');
-    const group = document.querySelector('.nav-group');
-    toggleGroup(group);
-    expect(group.classList.contains('open')).toBe(true);
-    expect(document.querySelector('.nav-more').getAttribute('aria-expanded')).toBe('true');
-    closeMenu();
-    expect(group.classList.contains('open')).toBe(false);
-    expect(document.querySelector('.nav-more').getAttribute('aria-expanded')).toBe('false');
-  });
-
-  it('Scenario: alle Seiten haben das Untermenü mit People und Contact, ganz rechts', async () => {
+  it('Scenario: alle Seiten führen „About“ ganz rechts, People und Contact nicht mehr im Menü', async () => {
     const { readFileSync } = await import('node:fs');
-    for (const f of ['index.html', 'pages/people/index.html', 'pages/contact/index.html', 'pages/privacy/index.html']) {
+    for (const f of ['index.html', 'pages/people/index.html', 'pages/contact/index.html', 'pages/about/index.html', 'pages/privacy/index.html']) {
       document.body.innerHTML = readFileSync(f, 'utf8').replace(/^[\s\S]*<body[^>]*>|<\/body>[\s\S]*$/g, '');
-      const nav = document.querySelector('#site-nav');
-      expect(nav.lastElementChild.classList.contains('nav-group'), f).toBe(true);
-      expect([...nav.querySelectorAll('.nav-sub a')].map((a) => a.getAttribute('href')), f).toEqual(['/pages/people/', '/pages/contact/']);
-      expect(nav.querySelectorAll(':scope > a[href="/pages/people/"], :scope > a[href="/pages/contact/"]'), f).toHaveLength(0);
+      const links = [...document.querySelectorAll('#site-nav > a')].map((a) => a.getAttribute('href'));
+      expect(links, f).toEqual(['/pages/lunar-habitato/', '/pages/dual-use/', '/pages/founders-journal/', '/pages/about/']);
+    }
+  });
+
+  it('Scenario: die Seite About hat Kacheln Founder, Team, Contact als Links, mit Bild und Alt-Text', async () => {
+    const { readFileSync } = await import('node:fs');
+    document.body.innerHTML = readFileSync('pages/about/index.html', 'utf8').replace(/^[\s\S]*<body[^>]*>|<\/body>[\s\S]*$/g, '');
+    const tiles = [...document.querySelectorAll('main a.band--link')];
+    expect(tiles.map((a) => a.getAttribute('href'))).toEqual(['/pages/people/#band-founder', '/pages/people/#band-team', '/pages/contact/']);
+    for (const t of tiles) {
+      expect(t.querySelector('img.band-media').getAttribute('alt')).toMatch(/^ABOUT – /);
+      expect(t.querySelector('h2.band-h[data-i18n]')).not.toBeNull();
     }
   });
 });
@@ -150,6 +139,14 @@ describe('Feature: Bänder (modules/bands.js)', () => {
     expect(document.getElementById('band-1').hidden).toBe(true);
     expect(document.getElementById('band-2').hidden).toBe(true);
     expect(document.querySelectorAll('.band-toggle[aria-expanded="true"]')).toHaveLength(0);
+  });
+
+  it('Scenario: Sprungadresse #band-2 (Kachel auf About) klappt genau diesen Bereich auf; andere Adressen nichts', async () => {
+    const { openFromHash } = await fresh('../../src/site/modules/bands.js');
+    expect(openFromHash('#band-2')).toBe(true);
+    expect(document.getElementById('band-2').hidden).toBe(false);
+    expect(document.getElementById('band-1').hidden).toBe(true);
+    for (const h of ['', '#main', '#band-9', '#x"]']) expect(openFromHash(h), h).toBe(false);
   });
 
   it('Scenario: Klick auf „Learn more" öffnet nur den eigenen Bereich', async () => {

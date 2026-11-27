@@ -57,7 +57,7 @@ describe('Feature: applyLang() aktualisiert das DOM', () => {
       '<meta name="description" data-i18n-content="home.meta.description" content="x">';
     document.body.innerHTML =
       '<button data-i18n-aria-label="nav.menu" aria-label="x"></button>' +
-      '<a data-i18n="nav.people">x</a>' +
+      '<a data-i18n="nav.contact">x</a>' +
       '<input data-i18n-placeholder="contact.form.name" placeholder="x">';
   });
 
@@ -66,14 +66,14 @@ describe('Feature: applyLang() aktualisiert das DOM', () => {
     applyLang();
     expect(document.documentElement.lang).toBe('en');
     expect(document.title).toBe('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
-    expect(document.querySelector('a').textContent).toBe('People');
+    expect(document.querySelector('a').textContent).toBe('Contact');
 
     setLang('de');
     expect(document.documentElement.lang).toBe('de');
     expect(document.title).toBe('RETHINK SPACE – New Space Economy for Lunar Infrastructure');
     expect(document.querySelector('meta').getAttribute('content')).toMatch(/Design, Technologie und Umsetzung/);
     expect(document.querySelector('button').getAttribute('aria-label')).toBe('Menü');
-    expect(document.querySelector('a').textContent).toBe('Menschen');
+    expect(document.querySelector('a').textContent).toBe('Kontakt');
     expect(document.querySelector('input').getAttribute('placeholder')).toBe('Name');
   });
 });

@@ -26,7 +26,7 @@ const SITE = 'https://rethink.space';
 // index.html in der Wurzel, damit die Adresse rethink.space/ und nicht
 // rethink.space/pages/landing/ lautet.
 const EXPECTED_PAGES = [
-  'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'contact',
+  'lunar-habitato', 'dual-use', 'people', 'founders-journal', 'about', 'contact',
   'legal-notice', 'privacy', '404',
 ];
 
@@ -184,8 +184,13 @@ describe.each(pages)('Feature: Shell-Regeln für $file', ({ slug, file, html, ur
   it('alle internen Links zeigen auf vorhandene Seiten', () => {
     const links = [...html.matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]).filter((h) => !h.startsWith('//'));
     const missing = links.filter((h) => {
-      const m = h.match(/^\/pages\/([a-z0-9-]+)\/$/);
-      if (m) return !existsSync(join(ROOT, 'pages', m[1], 'index.html'));
+      const m = h.match(/^\/pages\/([a-z0-9-]+)\/(?:#([a-z0-9-]+))?$/);
+      if (m) {
+        const target = join(ROOT, 'pages', m[1], 'index.html');
+        if (!existsSync(target)) return true;
+        // Sprungadresse (Kacheln auf About → #band-founder): das Ziel muss es auf der Seite geben
+        return Boolean(m[2]) && !readFileSync(target, 'utf8').includes(`id="${m[2]}"`);
+      }
       return !existsSync(join(ROOT, 'public', h)) && !existsSync(join(ROOT, h));
     });
     expect(missing, `Fehlende Ziele in ${file}: ${missing.join(', ')}`).toHaveLength(0);

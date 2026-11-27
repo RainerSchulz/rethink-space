@@ -10,6 +10,7 @@ export const PAGES = {
   'dual-use':  'pages/dual-use/index.html',
   people:      'pages/people/index.html',
   'founders-journal': 'pages/founders-journal/index.html',
+  about:       'pages/about/index.html',            // Kacheln zu People und Contact (Inhaber 27.11.2026)
   contact:     'pages/contact/index.html',
   'legal-notice': 'pages/legal-notice/index.html',
   privacy:     'pages/privacy/index.html',

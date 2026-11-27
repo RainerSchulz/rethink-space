@@ -8,7 +8,6 @@ export const DE = {
   'nav.menu':        'Menü',
   'nav.habitat':      'Lunar Habitato',
   'nav.dual-use':    'Dual Use',
-  'nav.people':      'Menschen',
   'nav.journal':     'Founder’s Journal',
   'nav.contact':     'Kontakt',
   'nav.about':       'Über uns',
@@ -59,6 +58,9 @@ export const DE = {
   'journal.meta.title':       'Founder’s Journal – RETHINK SPACE',
   'journal.meta.description': 'Das Founder’s Journal von Dr. Dr. Johannes Lierfeld: Markenmanifest von RETHINK SPACE und die Stationen von LUNAR HABITATO, von Tiny Houses zu Mond-Habitaten.',
   'journal.page.h1': 'Founder’s Journal – von Tiny Houses zu Mond-Habitaten',
+  'about.meta.title': 'Über RETHINK SPACE – Menschen und Kontakt | RETHINK SPACE',
+  'about.meta.description': 'Über RETHINK SPACE: Gründer und Team hinter LUNAR HABITATO kennenlernen und Kontakt aufnehmen – für Lizenzen, Partnerschaften und Investitionen.',
+  'about.page.h1': 'Über RETHINK SPACE – Menschen und Kontakt',
   'journal.band.history':   'History',
   'journal.panel.history.text': 'Am Anfang stand eine Frage: Wie sieht ein Ort aus, an dem Menschen jenseits der Erde nicht nur überleben, sondern arbeiten, forschen und sich erholen?\n\nAus der ersten Skizze wurden Studien, Demonstratoren und Partnerschaften. Die Meilensteine dieses Weges entstehen hier.',
   // ── Design ────────────────────────────────────────────────────────

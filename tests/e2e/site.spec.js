@@ -49,26 +49,20 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
     await expect(page.locator('.lang')).toHaveCount(0);
   });
 
-  test('Kopfnavigation: drei Punkte und „About“ mit People und Contact', async ({ page, isMobile }) => {
+  test('Kopfnavigation: vier Punkte, „About“ führt zu den Kacheln Founder, Team und Contact', async ({ page, isMobile }) => {
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
-    await expect(page.locator('#site-nav > a')).toHaveText(['nav.habitat', 'nav.dual-use', 'nav.journal'].map((k) => EN[k]));
-    await expect(page.locator('#site-nav .nav-more')).toHaveText(EN['nav.about']);
-    const sub = page.locator('#site-nav .nav-sub a');
-    if (!isMobile) { // am PC zugeklappt, per Klick auf
-      await expect(sub.first()).toBeHidden();
-      await page.locator('.nav-more').click();
-      await expect(page.locator('.nav-more')).toHaveAttribute('aria-expanded', 'true');
-    }
-    await expect(sub).toHaveText(['nav.people', 'nav.contact'].map((k) => EN[k]));
-    await expect(sub.first()).toBeVisible();
-    await sub.nth(1).click();
-    await expect(page).toHaveURL(/\/pages\/contact\/$/);
-    await expect(page.locator('.nav-group')).toHaveClass(/current/);
-    if (!isMobile) { // nach dem Wechsel wieder zu, sobald die Maus weg ist
-      await page.mouse.move(10, 600);
-      await expect(sub.first()).toBeHidden();
-    }
+    await expect(page.locator('#site-nav a')).toHaveText(['nav.habitat', 'nav.dual-use', 'nav.journal', 'nav.about'].map((k) => EN[k]));
+    await page.locator('#site-nav a[href="/pages/about/"]').click();
+    await expect(page).toHaveURL(/\/pages\/about\/$/);
+    await expect(page).toHaveTitle(EN['about.meta.title']);
+    const tiles = page.locator('main a.band--link');
+    await expect(tiles.locator('.band-h')).toHaveText([EN['people.band.founder'], EN['people.band.team'], EN['nav.contact']].map((t) => t.trim()));
+    await tiles.nth(1).click(); // Team: People-Seite, Kachel Team aufgeklappt
+    await expect(page).toHaveURL(/\/pages\/people\/#band-team$/);
+    await expect(page.locator('#band-team')).toBeVisible();
+    await expect(page.locator('#band-founder')).toBeHidden();
+    await expect(page.locator('#site-nav a[href="/pages/about/"]')).toHaveAttribute('aria-current', 'true');
   });
 });
 
@@ -113,8 +107,9 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     });
 
     await page.goto('/');
-    await page.locator(isMobile ? '.burger' : '.nav-more').click(); // Contact steht unter „About“
-    await page.locator('#site-nav a[href="/pages/contact/"]').click();
+    if (isMobile) await page.locator('.burger').click();
+    await page.locator('#site-nav a[href="/pages/about/"]').click(); // Contact erreicht man über die Kachel auf „About“
+    await page.locator('main a.band--link[href="/pages/contact/"]').click();
     await expect(page).toHaveURL(/\/pages\/contact\/$/);
 
     // Der Honigtopf steht absichtlich MIT Ausdehnung außerhalb des Bildes —

@@ -9,7 +9,7 @@ import { initNav, markCurrentPage, closeMenu } from './modules/nav.js';
 import { initRouter, PAGE_EVENT } from './modules/router.js';
 import { initContact } from './modules/contact.js';
 import { initPortrait } from './modules/portrait.js';
-import { initBands } from './modules/bands.js';
+import { initBands, openFromHash } from './modules/bands.js';
 import { initChat } from './modules/chat.js';
 
 function initPage() {
@@ -31,4 +31,5 @@ window.addEventListener(PAGE_EVENT, () => {
   // Fokus auf den neuen Inhalt setzen, damit Screenreader und Tastatur beim
   // Seitenwechsel ohne Neuladen nicht im alten Header hängen bleiben.
   document.querySelector('main')?.focus({ preventScroll: true });
+  openFromHash(); // Kacheln auf About: /pages/people/#band-founder klappt Founder auf
 });
