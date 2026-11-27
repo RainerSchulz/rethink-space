@@ -16,6 +16,19 @@ export function contactEndpoint() {
   return window.RETHINK_CONTACT_ENDPOINT || import.meta.env.VITE_CONTACT_ENDPOINT || '';
 }
 
+/**
+ * Woher die Geschäftsbereiche kommen: die Supabase-Funktion „contact“ (GET). Das Absenden geht an den Webhook des Inhabers
+ * (VITE_CONTACT_ENDPOINT, helix.stacktrix.de), der kein GET kennt (27.11.2026: 405) — deshalb eine eigene Adresse.
+ * Ohne eigene Angabe dieselben Supabase-Funktionen wie der Chatbot (…/functions/v1/chat → …/functions/v1/contact).
+ */
+export function areasEndpoint() {
+  if (window.RETHINK_AREAS_ENDPOINT) return window.RETHINK_AREAS_ENDPOINT;
+  const own = String(import.meta.env.VITE_CONTACT_AREAS_ENDPOINT ?? '').trim();
+  if (own) return own;
+  const chat = String(import.meta.env.VITE_CHAT_ENDPOINT ?? '').trim();
+  return /\/functions\/v1\/chat$/.test(chat) ? chat.replace(/\/chat$/, '/contact') : '';
+}
+
 /** Fehlerschlüssel der Funktion in einen Satz übersetzen. */
 function fehlertext(code) {
   if (code === 'rate_limited') return t('contact.form.too-many');
@@ -74,8 +87,8 @@ export function renderAreas(form, data) {
   return true;
 }
 
-/** Auswahl beim Öffnen der Seite laden (GET an dieselbe Funktion wie das Absenden). */
-export async function loadAreas(form, endpoint = contactEndpoint()) {
+/** Auswahl beim Öffnen der Seite laden (GET an die Supabase-Funktion „contact“, areasEndpoint — nicht an den Webhook). */
+export async function loadAreas(form, endpoint = areasEndpoint()) {
   if (!endpoint || !form.querySelector('fieldset.areas')) return false;
   try {
     const res = await fetch(endpoint, { method: 'GET' });

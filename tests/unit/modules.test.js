@@ -152,7 +152,7 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
   };
   const warte = () => new Promise((r) => setTimeout(r, 0));
 
-  beforeEach(() => { delete window.RETHINK_CONTACT_ENDPOINT; vi.unstubAllGlobals(); });
+  beforeEach(() => { delete window.RETHINK_CONTACT_ENDPOINT; delete window.RETHINK_AREAS_ENDPOINT; vi.unstubAllGlobals(); });
 
   it('Scenario: ohne Endpoint bleibt es beim ehrlichen Hinweis', async () => {
     document.body.innerHTML = FORM;
@@ -214,10 +214,12 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
 
   it('Scenario: die Geschäftsbereiche kommen beim Öffnen frisch aus dem CMS — ohne Veröffentlichen', async () => {
     document.body.innerHTML = FORM.replace('<button', `${AREAS}<button`);
-    window.RETHINK_CONTACT_ENDPOINT = 'https://test.example/contact';
+    // Absenden an den Webhook, Bereiche von der Supabase-Funktion — zwei Adressen (27.11.2026)
+    window.RETHINK_CONTACT_ENDPOINT = 'https://webhook.example/contact';
+    window.RETHINK_AREAS_ENDPOINT = 'https://x.supabase.co/functions/v1/contact';
     const abrufe = [];
     vi.stubGlobal('fetch', (url, opts) => {
-      abrufe.push(opts?.method);
+      abrufe.push(`${opts?.method} ${url}`);
       if (opts?.method === 'GET') {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({ legend: 'Area of interest', areas: [
           { id: 'partners', label: 'Partners / Investors' }, { id: 'isru', label: 'Lunar Platform <b>Licensing</b>' }, { id: 'BAD id', label: 'x' },
@@ -240,7 +242,7 @@ describe('Feature: Kontaktformular (modules/contact.js)', () => {
     absenden();
     await warte();
     expect(gesendet[0].area).toBe('Partners / Investors');
-    expect(abrufe).toEqual(['GET']);
+    expect(abrufe).toEqual(['GET https://x.supabase.co/functions/v1/contact']); // nie ein GET an den Webhook
   });
 
   it('Scenario: ohne Antwort oder mit leerer Liste bleibt die Auswahl aus dem HTML', async () => {
@@ -327,5 +329,17 @@ describe('Feature: Autoren-Portrait (modules/portrait.js)', () => {
     const { initPortrait } = await fresh('../../src/site/modules/portrait.js');
     expect(initPortrait()).toBeNull();
     expect(document.querySelector('.portrait').children).toHaveLength(0);
+  });
+});
+
+describe('Feature: Adresse der Geschäftsbereiche (areasEndpoint)', () => {
+  it('ohne eigene Angabe die Supabase-Funktion „contact“ neben dem Chatbot — nie der Webhook des Formulars', async () => {
+    vi.stubEnv('VITE_CHAT_ENDPOINT', 'https://abc.supabase.co/functions/v1/chat');
+    vi.stubEnv('VITE_CONTACT_ENDPOINT', 'https://helix.example/api/workflows/webhook/x');
+    const { areasEndpoint } = await fresh('../../src/site/modules/contact.js');
+    expect(areasEndpoint()).toBe('https://abc.supabase.co/functions/v1/contact');
+    vi.stubEnv('VITE_CHAT_ENDPOINT', '');
+    expect(areasEndpoint()).toBe('');
+    vi.unstubAllEnvs();
   });
 });

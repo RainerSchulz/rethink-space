@@ -86,7 +86,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
 
   test('Formular funktioniert auch nach einem Seitenwechsel', async ({ page, isMobile }) => {
     const ENDPOINT = 'https://test.supabase.co/functions/v1/contact';
-    await page.addInitScript((u) => { window.RETHINK_CONTACT_ENDPOINT = u; }, ENDPOINT);
+    await page.addInitScript((u) => { window.RETHINK_CONTACT_ENDPOINT = u; window.RETHINK_AREAS_ENDPOINT = u; }, ENDPOINT);
     const gesendet = [];
     await page.route(ENDPOINT, async (route) => {
       const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type' };
