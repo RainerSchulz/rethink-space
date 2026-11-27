@@ -97,7 +97,10 @@ async function areas(cors: Record<string, string>): Promise<Response> {
   const headers = { ...cors, "Cache-Control": "public, max-age=60" };
   if (!SUPABASE_URL || !SERVICE_KEY) return json({ error: "not_configured" }, 503, headers);
   const hole = async (path: string) => {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } });
+    const get = () => fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } });
+    let res = await get();
+    // Der erste Abruf nach einer Pause scheitert vereinzelt mit 401 (Logs 27.11.2026), der zweite klappt — einmal wiederholen
+    if (res.status === 401) res = await get();
     if (!res.ok) throw new Error(`${res.status} ${path}`);
     return await res.json();
   };
