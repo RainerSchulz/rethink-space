@@ -72,9 +72,14 @@
       <nav class="nav" id="site-nav" aria-label="Main navigation" data-i18n-aria-label="nav.main">
         <a href="/pages/lunar-habitato/" data-i18n="nav.habitat">LUNAR HABITATO</a>
         <a href="/pages/dual-use/" data-i18n="nav.dual-use">Dual Use</a>
-        <a href="/pages/people/" data-i18n="nav.people">People</a>
         <a href="/pages/founders-journal/" data-i18n="nav.journal">Founder’s Journal</a>
-        <a href="/pages/contact/" data-i18n="nav.contact">Contact</a>
+        <div class="nav-group">
+          <button class="nav-more" type="button" aria-expanded="false" aria-controls="nav-about" data-i18n="nav.about">About</button>
+          <div class="nav-sub" id="nav-about">
+            <a href="/pages/people/" data-i18n="nav.people">People</a>
+            <a href="/pages/contact/" data-i18n="nav.contact">Contact</a>
+          </div>
+        </div>
       </nav>
     </div>
   </header>

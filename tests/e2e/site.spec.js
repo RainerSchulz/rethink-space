@@ -49,12 +49,26 @@ test.describe('Feature: Sprache — die Website ist einsprachig Englisch', () =>
     await expect(page.locator('.lang')).toHaveCount(0);
   });
 
-  test('Kopfnavigation führt genau fünf Punkte', async ({ page, isMobile }) => {
+  test('Kopfnavigation: drei Punkte und „About“ mit People und Contact', async ({ page, isMobile }) => {
     await page.goto('/');
     if (isMobile) await page.locator('.burger').click();
-    await expect(page.locator('#site-nav a')).toHaveText(
-      ['nav.habitat', 'nav.dual-use', 'nav.people', 'nav.journal', 'nav.contact'].map((k) => EN[k]),
-    );
+    await expect(page.locator('#site-nav > a')).toHaveText(['nav.habitat', 'nav.dual-use', 'nav.journal'].map((k) => EN[k]));
+    await expect(page.locator('#site-nav .nav-more')).toHaveText(EN['nav.about']);
+    const sub = page.locator('#site-nav .nav-sub a');
+    if (!isMobile) { // am PC zugeklappt, per Klick auf
+      await expect(sub.first()).toBeHidden();
+      await page.locator('.nav-more').click();
+      await expect(page.locator('.nav-more')).toHaveAttribute('aria-expanded', 'true');
+    }
+    await expect(sub).toHaveText(['nav.people', 'nav.contact'].map((k) => EN[k]));
+    await expect(sub.first()).toBeVisible();
+    await sub.nth(1).click();
+    await expect(page).toHaveURL(/\/pages\/contact\/$/);
+    await expect(page.locator('.nav-group')).toHaveClass(/current/);
+    if (!isMobile) { // nach dem Wechsel wieder zu, sobald die Maus weg ist
+      await page.mouse.move(10, 600);
+      await expect(sub.first()).toBeHidden();
+    }
   });
 });
 
@@ -99,7 +113,7 @@ test.describe('Feature: Seitenwechsel ohne Neuladen', () => {
     });
 
     await page.goto('/');
-    if (isMobile) await page.locator('.burger').click();
+    await page.locator(isMobile ? '.burger' : '.nav-more').click(); // Contact steht unter „About“
     await page.locator('#site-nav a[href="/pages/contact/"]').click();
     await expect(page).toHaveURL(/\/pages\/contact\/$/);
 

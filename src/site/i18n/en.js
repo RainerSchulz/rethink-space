@@ -11,6 +11,7 @@ export const EN = {
   'nav.people':      'People',
   'nav.journal':     'Founder’s Journal',
   'nav.contact':     'Contact',
+  'nav.about':       'About',
   'footer.imprint':  'Legal notice',
   'footer.privacy':  'Privacy policy',
   'footer.project':  'A project by Dr. Dr. Johannes Lierfeld',

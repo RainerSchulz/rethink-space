@@ -11,6 +11,7 @@ export const DE = {
   'nav.people':      'Menschen',
   'nav.journal':     'Founder’s Journal',
   'nav.contact':     'Kontakt',
+  'nav.about':       'Über uns',
   'footer.imprint':  'Impressum',
   'footer.privacy':  'Datenschutz',
   'footer.project':  'Ein Projekt von Dr. Johannes Lierfeld',

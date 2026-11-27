@@ -133,6 +133,27 @@ p { margin: 0 0 18px; color: var(--text-soft); }
 }
 .nav a:hover,
 .nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--accent); }
+/* Untermenü „About“ (Inhaber 27.11.2026): People und Contact. Am PC beim Überfahren, Antippen oder per Tastatur
+   (nav.js setzt .open); die Seiten und ihre Adressen bleiben. */
+.nav-group { position: relative; }
+.nav-more {
+  font: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-nav); background: none; border: 0; border-bottom: 2px solid transparent; cursor: pointer;
+  padding: 6px 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+}
+.nav-more::after { content: ""; width: 6px; height: 6px; border: solid currentColor; border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
+.nav-more:hover, .nav-group.open .nav-more, .nav-group.current .nav-more { color: #fff; }
+.nav-group.current .nav-more { border-bottom-color: var(--accent); }
+.nav-group.open .nav-more::after { transform: translateY(1px) rotate(-135deg); }
+.nav-sub {
+  /* Text der Unterpunkte beginnt genau unter „About“ (Inhaber 27.11.2026): links um Innenmaß + Rahmen versetzt */
+  position: absolute; top: 100%; left: -17px; padding: 8px 16px; margin-top: 6px; width: max-content;
+  background: #0a0a0c; border: 1px solid var(--line); display: none; flex-direction: column; gap: 2px; z-index: 20;
+}
+.nav-sub::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; height: 8px; } /* Brücke für die Maus */
+.nav-group.open .nav-sub { display: flex; }
+@media (hover: hover) { .nav-group:hover .nav-sub { display: flex; } }
 .burger { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 9px; margin-left: auto; } /* 44 × 44 px */
 .burger svg { display: block; }
 
@@ -532,7 +553,7 @@ p { margin: 0 0 18px; color: var(--text-soft); }
    ≤820 Tablet hoch & Handy (Burger-Menü) · ≤480 kleines Handy · Handy quer. */
 @media (max-width: 1100px) {   /* Menü verdichten, damit es einzeilig bleibt */
   .nav { gap: 16px; }
-  .nav a { font-size: 11.5px; }
+  .nav a, .nav-more { font-size: 11.5px; }
 }
 @media (max-width: 1000px) {
   .hero-copy { grid-template-columns: 1fr minmax(0, 460px); }
@@ -550,6 +571,15 @@ p { margin: 0 0 18px; color: var(--text-soft); }
   }
   .nav.open { display: flex; }
   .nav a { width: 100%; padding: 8px 0; font-size: 12px; border-bottom: 1px solid rgba(255, 255, 255, .06); } /* kompakt: 8 Einträge auf einen Blick */
+  /* Burger-Menü: „About“ als Zwischenüberschrift, People und Contact eingerückt darunter — immer sichtbar */
+  .nav-group { width: 100%; }
+  .nav-more { width: 100%; padding: 8px 0; font-size: 12px; cursor: default; pointer-events: none;
+    border-bottom: 1px solid rgba(255, 255, 255, .06); }
+  .nav-more::after { display: none; }
+  .nav-group.current .nav-more { border-bottom-color: rgba(255, 255, 255, .06); }
+  .nav-sub, .nav-group:hover .nav-sub { position: static; display: flex; min-width: 0; margin: 0; padding: 0 0 0 16px;
+    background: none; border: 0; gap: 0; }
+  .nav-sub::before { display: none; }
 }
 @media (max-width: 820px) {
   /* Handy: kleinere Überschrift, Lead und Button nebeneinander, alles kompakter */

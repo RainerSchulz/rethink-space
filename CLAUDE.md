@@ -34,8 +34,8 @@ Kein `<style>`, kein `style="…"`, kein `<script>` außer dem Vite-Entry und JS
 Links sind absolut: `/pages/<name>/`. Neue Seite → `vite.pages.js`, `public/sitemap.xml`, Header- und Footer-Nav auf **allen** Seiten, `EXPECTED_PAGES` in den Tests.
 
 ### 4. Header und Footer sind auf allen Seiten identisch
-Die Kopfnavigation führt genau vier Punkte, alle gleich gestaltet (kein abgesetzter Kontakt-Button, kein Sprachschalter):
-`Lunar Habitato` (`/pages/lunar-habitato/`) · `Dual Use` (`/pages/dual-use/`) · `People` (`/pages/people/`) · `Founder’s Journal` (`/pages/founders-journal/`, seit 23.11.2026) · `Contact` (`/pages/contact/`).
+Die Kopfnavigation führt vier Punkte, alle gleich gestaltet (kein abgesetzter Kontakt-Button, kein Sprachschalter):
+`Lunar Habitato` (`/pages/lunar-habitato/`) · `Dual Use` (`/pages/dual-use/`) · `Founder’s Journal` (`/pages/founders-journal/`) · `About` (ganz rechts, Untermenü `People` `/pages/people/` und `Contact` `/pages/contact/`; Inhaber 27.11.2026). „About“ ist ein Knopf (`.nav-more`, Schlüssel `nav.about`), keine eigene Seite — am PC aufklappen bei Überfahren/Klick/Tastatur, im Burger-Menü stehen People und Contact eingerückt darunter (`modules/nav.js`, `.nav-group`/`.nav-sub` in `site.css`).
 Der Footer ist eine Zeile: Copyright, Impressum, Datenschutz, Projekthinweis und rechts die Symbole für LinkedIn und E-Mail. Keine Footer-Navigation.
 Änderung am Rahmen → alle Seiten. Aktive Seite setzt `nav.js` per `aria-current`, nicht das HTML.
 

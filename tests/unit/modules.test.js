@@ -79,6 +79,50 @@ describe('Feature: Navigation (modules/nav.js)', () => {
   });
 });
 
+describe('Feature: Untermenü „About“ (People, Contact)', () => {
+  const GROUP = `<nav class="nav" id="site-nav">
+      <a href="/pages/lunar-habitato/">Lunar Habitato</a>
+      <div class="nav-group">
+        <button class="nav-more" type="button" aria-expanded="false" aria-controls="nav-about">About</button>
+        <div class="nav-sub" id="nav-about"><a href="/pages/people/">People</a><a href="/pages/contact/">Contact</a></div>
+      </div>
+    </nav>`;
+
+  it('Scenario: auf People/Contact ist „About“ markiert, sonst nicht', async () => {
+    document.body.innerHTML = GROUP;
+    const { markCurrentPage } = await fresh('../../src/site/modules/nav.js');
+    window.history.pushState({}, '', '/pages/people/');
+    markCurrentPage();
+    expect(document.querySelector('.nav-group').classList.contains('current')).toBe(true);
+    window.history.pushState({}, '', '/pages/lunar-habitato/');
+    markCurrentPage();
+    expect(document.querySelector('.nav-group').classList.contains('current')).toBe(false);
+  });
+
+  it('Scenario: auf- und zuklappen setzt aria-expanded; closeMenu klappt es zu', async () => {
+    document.body.innerHTML = GROUP;
+    const { toggleGroup, closeMenu } = await fresh('../../src/site/modules/nav.js');
+    const group = document.querySelector('.nav-group');
+    toggleGroup(group);
+    expect(group.classList.contains('open')).toBe(true);
+    expect(document.querySelector('.nav-more').getAttribute('aria-expanded')).toBe('true');
+    closeMenu();
+    expect(group.classList.contains('open')).toBe(false);
+    expect(document.querySelector('.nav-more').getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('Scenario: alle Seiten haben das Untermenü mit People und Contact, ganz rechts', async () => {
+    const { readFileSync } = await import('node:fs');
+    for (const f of ['index.html', 'pages/people/index.html', 'pages/contact/index.html', 'pages/privacy/index.html']) {
+      document.body.innerHTML = readFileSync(f, 'utf8').replace(/^[\s\S]*<body[^>]*>|<\/body>[\s\S]*$/g, '');
+      const nav = document.querySelector('#site-nav');
+      expect(nav.lastElementChild.classList.contains('nav-group'), f).toBe(true);
+      expect([...nav.querySelectorAll('.nav-sub a')].map((a) => a.getAttribute('href')), f).toEqual(['/pages/people/', '/pages/contact/']);
+      expect(nav.querySelectorAll(':scope > a[href="/pages/people/"], :scope > a[href="/pages/contact/"]'), f).toHaveLength(0);
+    }
+  });
+});
+
 describe('Feature: Bänder (modules/bands.js)', () => {
   const BANDS = `
     <div class="band-group">
